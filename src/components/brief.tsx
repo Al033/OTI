@@ -479,7 +479,7 @@ function ShowYourWork({
             <div className="flex items-center gap-2">
               <ScrollText className="h-3.5 w-3.5 text-[var(--color-muted-foreground)]" />
               <span>Show your work</span>
-              <Badge variant="outline">all 10 candidates · retrieval scores</Badge>
+              <Badge variant="outline">retrieval candidates · scores</Badge>
             </div>
             <ChevronDown
               className={cn(

@@ -416,7 +416,21 @@ const DEMO_EXAMPLES: DemoExample[] = [
 
 export const DEMO_RESULTS: ReadonlyMap<string, PipelineResult> = new Map(
   DEMO_EXAMPLES.map((d) => {
-    const candidates = retrieve(d.queryTags, { topK: 10 });
+    // The hand-written demo briefs were curated for narrative quality, so a
+    // chosen analogue may rank below the top-10 of the deterministic Jaccard
+    // retrieval. To keep the "show your work" panel coherent (every selected
+    // analogue must be visible with its retrieval scores), pull the full
+    // corpus ranking and union the top-10 with any chosen analogues that
+    // would otherwise fall below it.
+    const top10 = retrieve(d.queryTags, { topK: 10 });
+    const fullRanked = retrieve(d.queryTags, { topK: 100 });
+    const chosenIds = new Set(d.brief.analogues.map((a) => a.eventId));
+    const inTop10 = new Set(top10.map((c) => c.eventId));
+    const extras = fullRanked.filter(
+      (c) => chosenIds.has(c.eventId) && !inTop10.has(c.eventId),
+    );
+    const candidates = [...top10, ...extras];
+
     const result: PipelineResult = {
       query: d.query,
       queryTags: d.queryTags,

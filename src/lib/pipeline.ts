@@ -1,13 +1,26 @@
-import { tagQuery, synthesizeBrief, DEFAULT_TAG_MODEL, DEFAULT_SYNTH_MODEL } from "./llm";
-import { retrieve, hydrate } from "./retrieval";
-import type { PipelineResult } from "./types";
+import {
+  tagQuery,
+  synthesizeBrief,
+  DEFAULT_TAG_MODEL,
+  DEFAULT_SYNTH_MODEL,
+} from "./llm";
+import { embedQuery, QUERY_EMBEDDING_MODEL } from "./embed";
+import { retrieve, hydrate, getEmbeddingsSource } from "./retrieval";
+import { rerankCandidates } from "./rerank";
+import { CORPUS_VERSION } from "./events";
+import type { PipelineResult, RetrievalAudit } from "./types";
 
 /**
- * End-to-end orchestration: tag → retrieve → synthesise.
+ * End-to-end orchestration: tag → embed → retrieve → rerank → synthesise.
  *
- * Returned PipelineResult is the full audit trail for the brief, including
- * every retrieval candidate considered and both component scores. The UI
- * surfaces this via the "show your work" disclosure.
+ * The returned PipelineResult is the full audit trail for the brief:
+ *   - queryTags: the controlled-vocab interpretation of the input
+ *   - candidates: every retrieved candidate (post-rerank) with all scores
+ *   - retrievalAudit: which embedding source / rerank model was used
+ *   - corpusVersion: stable hash of the corpus identity
+ *   - brief: the LLM-synthesised one-pager
+ *
+ * The UI surfaces this via the "show your work" disclosure.
  */
 
 export interface RunPipelineArgs {
@@ -15,6 +28,8 @@ export interface RunPipelineArgs {
   tagModel?: string;
   synthModel?: string;
   topK?: number;
+  /** Pre-rerank pool size. Default 15 → reranked to topK. */
+  rerankPool?: number;
 }
 
 export async function runPipeline(args: RunPipelineArgs): Promise<PipelineResult> {
@@ -22,33 +37,64 @@ export async function runPipeline(args: RunPipelineArgs): Promise<PipelineResult
 
   const tagModel = args.tagModel ?? DEFAULT_TAG_MODEL;
   const synthModel = args.synthModel ?? DEFAULT_SYNTH_MODEL;
+  const topK = args.topK ?? 10;
+  const pool = Math.max(args.rerankPool ?? 15, topK);
 
-  const queryTags = await tagQuery({ query: args.query, model: tagModel });
+  // Tagging and query-embedding can run in parallel.
+  const [queryTags, queryEmbedding] = await Promise.all([
+    tagQuery({ query: args.query, model: tagModel }),
+    embedQuery(args.query),
+  ]);
 
-  const candidates = retrieve(queryTags, { topK: args.topK ?? 10 });
-  if (candidates.length < 3) {
+  const preRerank = await retrieve(queryTags, {
+    topK: pool,
+    queryEmbedding,
+  });
+  if (preRerank.length < 3) {
     throw new Error(
-      `Retrieval returned only ${candidates.length} candidates; corpus is too small or tags too narrow.`,
+      `Retrieval returned only ${preRerank.length} candidates after region/score filters; loosen the regimeTags or set region=GLOBAL.`,
     );
   }
 
-  const hydrated = hydrate(candidates);
-  const brief = await synthesizeBrief({
+  const hydrated = hydrate(preRerank);
+  const reranked = await rerankCandidates({
+    query: args.query,
+    candidates: hydrated,
+    topK,
+  });
+
+  const finalCandidates = reranked.candidates;
+  const { brief, warnings } = await synthesizeBrief({
     userQuery: args.query,
     queryTags,
-    candidates: hydrated,
+    candidates: finalCandidates,
     model: synthModel,
   });
+
+  if (warnings.length > 0) {
+    console.warn("[pipeline] numeric-guard warnings:", warnings);
+  }
+
+  const retrievalAudit: RetrievalAudit = {
+    embeddingsSource: getEmbeddingsSource() ?? "none",
+    rerankUsed: reranked.used,
+    topKBeforeRerank: pool,
+    topKAfterRerank: topK,
+    embeddingModel: QUERY_EMBEDDING_MODEL,
+    rerankModel: reranked.used ? "voyage/rerank-2.5" : null,
+  };
 
   return {
     query: args.query,
     queryTags,
-    candidates,
+    candidates: finalCandidates.map(({ event: _event, ...rest }) => rest),
     brief,
     modelTag: tagModel,
     modelSynth: synthModel,
     durationMs: Date.now() - startedAt,
     generatedAt: new Date().toISOString(),
     isDemo: false,
+    corpusVersion: CORPUS_VERSION,
+    retrievalAudit,
   };
 }

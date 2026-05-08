@@ -2,6 +2,8 @@ import { isNotNull } from "drizzle-orm";
 import { EVENTS, EVENT_BY_ID } from "./events";
 import { jaccardSimilarity } from "./regime-tags";
 import { getEmbeddingsSidecar } from "./embeddings-sidecar";
+import { getRegimeCentroidsSidecar } from "./regime/centroids-sidecar";
+import { fuseTextAndMacro } from "./regime/fuse";
 import { getDb, isDbConfigured, schema } from "./db/client";
 import type {
   HistoricalEvent,
@@ -37,8 +39,12 @@ const W_COSINE = 0.7;
 
 export interface RetrievalOptions {
   topK?: number;
-  /** Pre-computed query embedding. If absent, only Jaccard contributes. */
+  /** Pre-computed query text embedding. If absent, only Jaccard contributes. */
   queryEmbedding?: number[] | null;
+  /** Today's macro z-vector. When provided alongside queryEmbedding, the
+   *  cosine signal is computed in the History-Rhymes-fused space (text
+   *  embedding concatenated with the macro vector, L2-normalised). */
+  queryMacroZ?: Array<number | null> | null;
   /** Clamp candidates to a minimum combined score. */
   minScore?: number;
   /** When false, skip the region hard-filter. */
@@ -52,23 +58,55 @@ export async function retrieve(
   const {
     topK = 15,
     queryEmbedding = null,
+    queryMacroZ = null,
     minScore = 0,
     enforceRegion = true,
   } = options;
 
   const embeddingsByEventId = await loadEmbeddings();
+  const regimeByEventId = await loadRegimeCentroids();
 
   const filtered = enforceRegion && query.region !== "GLOBAL"
     ? EVENTS.filter((e) => e.region === query.region || e.region === "GLOBAL")
     : [...EVENTS];
 
+  // Pre-compute the fused query vector when both signals are available.
+  // History Rhymes (arXiv:2511.09754) fuses [t; α·z] then L2-normalises.
+  const useFused =
+    !!queryEmbedding &&
+    !!queryMacroZ &&
+    regimeByEventId.size > 0;
+  const fusedQuery = useFused
+    ? fuseTextAndMacro({
+        textEmbedding: queryEmbedding,
+        macroZ: queryMacroZ,
+      }).vector
+    : null;
+
   const rows = filtered.map((event) => {
     const jaccard = jaccardSimilarity(event.regimeTags, query.regimeTags);
     const eventEmbedding = embeddingsByEventId.get(event.id) ?? null;
-    const cosine =
-      queryEmbedding && eventEmbedding && eventEmbedding.length === queryEmbedding.length
-        ? cosineSimilarity(queryEmbedding, eventEmbedding)
-        : null;
+    const eventRegime = regimeByEventId.get(event.id) ?? null;
+
+    let cosine: number | null = null;
+    if (queryEmbedding && eventEmbedding) {
+      if (
+        fusedQuery &&
+        eventRegime &&
+        eventEmbedding.length === queryEmbedding.length
+      ) {
+        // Fused-space cosine: candidate's text embedding fused with its
+        // historical regime vector, against today-fused query.
+        const fusedCandidate = fuseTextAndMacro({
+          textEmbedding: eventEmbedding,
+          macroZ: eventRegime,
+        }).vector;
+        cosine = cosineSimilarity(fusedQuery, fusedCandidate);
+      } else if (eventEmbedding.length === queryEmbedding.length) {
+        // Text-only fallback when either side lacks a regime vector.
+        cosine = cosineSimilarity(queryEmbedding, eventEmbedding);
+      }
+    }
     return { event, jaccard, cosine };
   });
 
@@ -169,6 +207,52 @@ async function loadEmbeddings(): Promise<Map<string, number[]>> {
 
 export function getEmbeddingsSource(): "db" | "sidecar" | "none" | null {
   return _embeddingsSource;
+}
+
+let _regimeCache: Map<string, Array<number | null>> | null = null;
+let _regimeSource: "db" | "sidecar" | "none" | null = null;
+
+async function loadRegimeCentroids(): Promise<Map<string, Array<number | null>>> {
+  if (_regimeCache) return _regimeCache;
+
+  if (isDbConfigured()) {
+    try {
+      const db = getDb();
+      const rows = await db
+        .select({
+          id: schema.events.id,
+          z: schema.events.regimeZVector,
+        })
+        .from(schema.events)
+        .where(isNotNull(schema.events.regimeZVector));
+      const m = new Map<string, Array<number | null>>();
+      for (const row of rows) if (row.z) m.set(row.id, row.z);
+      if (m.size > 0) {
+        _regimeCache = m;
+        _regimeSource = "db";
+        return m;
+      }
+    } catch (err) {
+      console.warn("[retrieval] DB regime-centroid lookup failed:", err);
+    }
+  }
+
+  const sidecar = getRegimeCentroidsSidecar();
+  if (sidecar) {
+    const m = new Map<string, Array<number | null>>();
+    for (const [id, c] of Object.entries(sidecar.centroids)) m.set(id, c.z);
+    _regimeCache = m;
+    _regimeSource = "sidecar";
+    return m;
+  }
+
+  _regimeCache = new Map();
+  _regimeSource = "none";
+  return _regimeCache;
+}
+
+export function getRegimeSource(): "db" | "sidecar" | "none" | null {
+  return _regimeSource;
 }
 
 /**

@@ -4,6 +4,8 @@ import { tagQuery, streamSynthesisPhaseA, streamSynthesisPhaseB, applyNumericGua
 import { embedQuery, QUERY_EMBEDDING_MODEL } from "@/lib/embed";
 import { retrieve, hydrate, getEmbeddingsSource } from "@/lib/retrieval";
 import { rerankCandidates } from "@/lib/rerank";
+import { fetchTodayMacroZ } from "@/lib/regime/today";
+import { FUSION_ALPHA } from "@/lib/regime/fuse";
 import { sanitiseUserQuery } from "@/lib/prompts";
 import {
   consumeRateLimitToken,
@@ -137,17 +139,20 @@ export async function POST(req: NextRequest) {
       try {
         send({ kind: "started" });
 
-        // Tagging + query embedding in parallel.
-        const [queryTags, queryEmbedding] = await Promise.all([
+        // Tagging, query embedding, and today's macro z in parallel.
+        const [queryTags, queryEmbedding, todayMacroZ] = await Promise.all([
           tagQuery({ query, model: tagModelFinal }),
           embedQuery(query),
+          fetchTodayMacroZ(),
         ]);
         send({ kind: "queryTags", queryTags });
 
-        // Retrieve + rerank.
+        // Retrieve + rerank. Fused (text + α·macro) cosine when both
+        // signals are available; falls back to text-only otherwise.
         const preRerank = await retrieve(queryTags, {
           topK: 15,
           queryEmbedding,
+          queryMacroZ: todayMacroZ,
         });
         if (preRerank.length < 3) {
           send({ kind: "error", code: "too_few_candidates" });
@@ -162,6 +167,7 @@ export async function POST(req: NextRequest) {
         });
         const finalCandidates = reranked.candidates;
 
+        const fusedRetrieval = !!queryEmbedding && !!todayMacroZ;
         const retrievalAudit: RetrievalAudit = {
           embeddingsSource: getEmbeddingsSource() ?? "none",
           rerankUsed: reranked.used,
@@ -169,6 +175,9 @@ export async function POST(req: NextRequest) {
           topKAfterRerank: 10,
           embeddingModel: QUERY_EMBEDDING_MODEL,
           rerankModel: reranked.used ? "voyage/rerank-2.5" : null,
+          fusedRetrieval,
+          fusionAlpha: fusedRetrieval ? FUSION_ALPHA : undefined,
+          multiQueryCount: 1,
         };
 
         send({

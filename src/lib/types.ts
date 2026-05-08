@@ -161,6 +161,13 @@ export const RetrievalAuditSchema = z.object({
   topKAfterRerank: z.number().int(),
   embeddingModel: z.string(),
   rerankModel: z.string().nullable(),
+  /** History Rhymes-style fused retrieval. True when the cosine signal
+   *  used [t; α·z] fusion against today's regime vector. */
+  fusedRetrieval: z.boolean().optional(),
+  /** When fused, the α used. */
+  fusionAlpha: z.number().optional(),
+  /** Number of paraphrase queries fused via RRF (1 = no expansion). */
+  multiQueryCount: z.number().int().optional(),
 });
 export type RetrievalAudit = z.infer<typeof RetrievalAuditSchema>;
 

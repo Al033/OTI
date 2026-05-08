@@ -92,7 +92,7 @@ React streams the brief progressively
 - **Next.js 16** App Router + RSC + Route Handlers
 - **Tailwind v4** (CSS-first config) + **shadcn/ui** primitives + Radix
 - **Vercel AI SDK v6** with `streamObject` + Zod
-- **Vercel AI Gateway** for multi-provider routing (Claude / OpenAI / Google / Mistral) and embeddings (voyage-3-large)
+- **Vercel AI Gateway** for multi-provider routing (Claude / OpenAI / Google / Mistral) and embeddings (voyage-4-large MoE, Jan 2026)
 - **Voyage AI** rerank-2.5 (called directly via `VOYAGE_API_KEY`)
 - **Drizzle ORM** + **Neon Postgres** + **pgvector** (HNSW cosine index, 1024d)
 - **Visx** for inline Tufte sparklines with hover-to-reveal exact values

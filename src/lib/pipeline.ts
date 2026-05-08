@@ -8,6 +8,8 @@ import { embedQuery, QUERY_EMBEDDING_MODEL } from "./embed";
 import { retrieve, hydrate, getEmbeddingsSource } from "./retrieval";
 import { rerankCandidates } from "./rerank";
 import { CORPUS_VERSION } from "./events";
+import { fetchTodayMacroZ } from "./regime/today";
+import { FUSION_ALPHA } from "./regime/fuse";
 import type { PipelineResult, RetrievalAudit } from "./types";
 
 /**
@@ -40,15 +42,19 @@ export async function runPipeline(args: RunPipelineArgs): Promise<PipelineResult
   const topK = args.topK ?? 10;
   const pool = Math.max(args.rerankPool ?? 15, topK);
 
-  // Tagging and query-embedding can run in parallel.
-  const [queryTags, queryEmbedding] = await Promise.all([
+  // Tagging, query-embedding, and today's macro z run in parallel.
+  // The macro fetch is cached for 1h across requests, so this is cheap
+  // after the first request of the hour.
+  const [queryTags, queryEmbedding, todayMacroZ] = await Promise.all([
     tagQuery({ query: args.query, model: tagModel }),
     embedQuery(args.query),
+    fetchTodayMacroZ(),
   ]);
 
   const preRerank = await retrieve(queryTags, {
     topK: pool,
     queryEmbedding,
+    queryMacroZ: todayMacroZ,
   });
   if (preRerank.length < 3) {
     throw new Error(
@@ -75,6 +81,7 @@ export async function runPipeline(args: RunPipelineArgs): Promise<PipelineResult
     console.warn("[pipeline] numeric-guard warnings:", warnings);
   }
 
+  const fusedRetrieval = !!queryEmbedding && !!todayMacroZ;
   const retrievalAudit: RetrievalAudit = {
     embeddingsSource: getEmbeddingsSource() ?? "none",
     rerankUsed: reranked.used,
@@ -82,6 +89,9 @@ export async function runPipeline(args: RunPipelineArgs): Promise<PipelineResult
     topKAfterRerank: topK,
     embeddingModel: QUERY_EMBEDDING_MODEL,
     rerankModel: reranked.used ? "voyage/rerank-2.5" : null,
+    fusedRetrieval,
+    fusionAlpha: fusedRetrieval ? FUSION_ALPHA : undefined,
+    multiQueryCount: 1,
   };
 
   return {

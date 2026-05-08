@@ -303,11 +303,25 @@ function AssetMovesSection({
                   className="border-b border-[var(--color-border-subtle)] last:border-0 hover:bg-[var(--color-surface-elevated)]/30"
                 >
                   <td className="px-4 py-3 font-medium">{asset.label}</td>
-                  {analogueEvents.map((a) => (
-                    <td key={a.event.id} className="px-4 py-3">
-                      <AssetCell series={a.event.assetMoves[asset.key]} unit={asset.unit} />
-                    </td>
-                  ))}
+                  {analogueEvents.map((a) => {
+                    const prov = (
+                      a.event as unknown as {
+                        assetMovesProvenance?: Record<
+                          string,
+                          "fred" | "stooq" | "approximate" | "missing"
+                        >;
+                      }
+                    ).assetMovesProvenance?.[asset.key];
+                    return (
+                      <td key={a.event.id} className="px-4 py-3">
+                        <AssetCell
+                          series={a.event.assetMoves[asset.key]}
+                          unit={asset.unit}
+                          provenance={prov}
+                        />
+                      </td>
+                    );
+                  })}
                 </tr>
               ))}
             </tbody>
@@ -321,9 +335,11 @@ function AssetMovesSection({
 function AssetCell({
   series,
   unit,
+  provenance,
 }: {
   series: ReturnSeries;
   unit: "pct" | "bps" | "level";
+  provenance?: "fred" | "stooq" | "approximate" | "missing";
 }) {
   const values = [series.d1, series.d5, series.m1, series.m3, series.m6];
   const m1 = series.m1;
@@ -375,7 +391,39 @@ function AssetCell({
       >
         {m1 === null ? "—" : unit === "bps" ? formatBps(m1) : unit === "level" ? (m1 > 0 ? `+${m1.toFixed(1)}` : m1.toFixed(1)) : formatPct(m1)}
       </span>
+      <ProvenanceChip provenance={provenance} />
     </div>
+  );
+}
+
+function ProvenanceChip({
+  provenance,
+}: {
+  provenance?: "fred" | "stooq" | "approximate" | "missing";
+}) {
+  if (!provenance || provenance === "missing") return null;
+  const label =
+    provenance === "fred" ? "FRED" : provenance === "stooq" ? "Stooq" : "approx";
+  const tone =
+    provenance === "fred" || provenance === "stooq"
+      ? "verified"
+      : "approximate";
+  return (
+    <span
+      title={
+        tone === "verified"
+          ? `Programmatically refreshed from ${label} via \`pnpm refresh-prices\``
+          : "Hand-curated approximation from public records — not tick-accurate"
+      }
+      className={cn(
+        "mono text-[8px] uppercase tracking-wider px-1 py-0.5 rounded border",
+        tone === "verified"
+          ? "border-[var(--color-positive-subtle)]/60 text-[var(--color-positive)]/80"
+          : "border-[var(--color-border)] text-[var(--color-muted-foreground)]",
+      )}
+    >
+      {label}
+    </span>
   );
 }
 

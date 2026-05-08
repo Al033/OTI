@@ -9,6 +9,11 @@
 
 import { EVENTS as RAW_EVENTS } from "../../data/events";
 import { HistoricalEventSchema, type HistoricalEvent } from "./types";
+import {
+  applyAssetMovesSidecar,
+  type AssetMoveProvenance,
+} from "./asset-moves-sidecar";
+import type { Asset } from "./refresh/sources";
 
 const EventArraySchema = HistoricalEventSchema.array().min(1);
 
@@ -24,7 +29,27 @@ if (!parsed.success) {
   );
 }
 
-export const EVENTS: HistoricalEvent[] = parsed.data;
+// Apply asset-moves sidecar (FRED/Stooq-canonical numbers from
+// `pnpm refresh-prices`). When the sidecar is missing, the hand-curated
+// approximate values stay in place and provenance defaults to
+// "approximate".
+const merged = parsed.data.map((e) => {
+  const { assetMoves, provenance, asOf } = applyAssetMovesSidecar(
+    e as unknown as { id: string; assetMoves: Record<Asset, Record<string, number | null>> },
+  );
+  return Object.assign({}, e, {
+    assetMoves: assetMoves as HistoricalEvent["assetMoves"],
+    assetMovesProvenance: provenance,
+    assetMovesAsOf: asOf,
+  });
+});
+
+export const EVENTS = merged as Array<
+  HistoricalEvent & {
+    assetMovesProvenance: Record<Asset, AssetMoveProvenance>;
+    assetMovesAsOf: Record<Asset, string | null>;
+  }
+>;
 
 export const EVENT_BY_ID: ReadonlyMap<string, HistoricalEvent> = new Map(
   EVENTS.map((e) => [e.id, e]),

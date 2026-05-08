@@ -16,6 +16,7 @@
     "seed": "tsx scripts/seed.ts",
     "embeddings": "tsx scripts/build-embeddings.ts",
     "regime:centroids": "tsx scripts/build-regime-centroids.ts",
+    "refresh-prices": "tsx scripts/refresh-prices.ts",
     "test": "node --import tsx --test --test-reporter=spec tests/**/*.test.ts",
     "eval": "node --import tsx --test --test-reporter=spec tests/eval/*.test.ts -- --report",
     "format": "prettier --write \"**/*.{ts,tsx,md,json,css}\""

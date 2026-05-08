@@ -56,5 +56,11 @@ yarn-error.log*
 # Comment out for no-DB deployments.
 /data/regime-centroids.json
 
+# build-time asset-moves sidecar (regenerable via `pnpm refresh-prices`).
+# Optional — when present, FRED/Stooq-canonical numbers override the
+# hand-curated approximations in data/events.ts. Commit this if you want
+# the deployed app to ship verifiable returns by default.
+/data/asset-moves.json
+
 # claude local config
 .claude/

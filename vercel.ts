@@ -5,6 +5,19 @@ const config = {
   buildCommand: "next build",
   framework: "nextjs",
   installCommand: "pnpm install",
+  // OTI Daily cron jobs.
+  //   regime-snapshot — 21:05 UTC Mon-Fri (5:05pm ET, after US close).
+  //                     Pulls macro-state vector, runs k-NN, writes
+  //                     today's brief.
+  //   publish-digest  — 10:00 UTC Tue-Sat (6am ET next day). Reads
+  //                     yesterday's brief, posts to Bluesky, sends
+  //                     Resend digest.
+  // Both gated by CRON_SECRET — Vercel sets the Authorization header
+  // automatically when the env var is present on the project.
+  crons: [
+    { path: "/api/cron/regime-snapshot", schedule: "5 21 * * 1-5" },
+    { path: "/api/cron/publish-digest", schedule: "0 10 * * 2-6" },
+  ],
   headers: [
     {
       source: "/(.*)",

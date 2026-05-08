@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { Group } from "@visx/group";
 import { LinePath, Circle } from "@visx/shape";
 import { scaleLinear } from "@visx/scale";
@@ -20,12 +21,19 @@ interface SparklineProps {
   /** Render a baseline at zero, if zero is in range. */
   showBaseline?: boolean;
   strokeWidth?: number;
+  /** Optional human-readable labels per point (used for the hover title). */
+  labels?: Array<string>;
+  /** Unit hint for the hover label ("pct", "bps", "level"). */
+  unit?: "pct" | "bps" | "level";
+  /** Accessible series name, e.g. "S&P 500". */
+  ariaLabel?: string;
 }
 
 /**
- * Tufte-style inline sparkline. No axes, no labels, no chart junk.
- * Accepts nulls in the series; they are skipped, leaving a connected
- * line through the present points only.
+ * Tufte-style inline sparkline. Hover reveals the exact value at each
+ * point — drops the previous aria-hidden so screen readers receive an
+ * announceable summary, and adds a desktop hover-tooltip via SVG title
+ * elements per point.
  */
 export function Sparkline({
   values,
@@ -37,17 +45,23 @@ export function Sparkline({
   showEndpoint = true,
   showBaseline = false,
   strokeWidth = 1.25,
+  labels,
+  unit = "pct",
+  ariaLabel,
 }: SparklineProps) {
   const data = values
-    .map((v, i) => ({ x: i, y: v }))
-    .filter((d): d is { x: number; y: number } => d.y !== null && Number.isFinite(d.y));
+    .map((v, i) => ({ x: i, y: v, label: labels?.[i] }))
+    .filter((d): d is { x: number; y: number; label: string | undefined } =>
+      d.y !== null && Number.isFinite(d.y),
+    );
 
   if (data.length < 2) {
     return (
       <div
         className={cn("inline-block", className)}
         style={{ width, height }}
-        aria-hidden
+        role="img"
+        aria-label={ariaLabel ?? "sparkline (insufficient data)"}
       />
     );
   }
@@ -82,14 +96,26 @@ export function Sparkline({
           ? "var(--color-accent)"
           : "var(--color-muted-foreground)";
 
+  // Build a textual summary for screen-readers and the SVG <title>.
+  const seriesSummary = (() => {
+    const fmt = (n: number) => formatValue(n, unit);
+    const minIdx = ys.indexOf(Math.min(...ys));
+    const maxIdx = ys.indexOf(Math.max(...ys));
+    const minLabel = labels?.[minIdx] ?? `point ${minIdx + 1}`;
+    const maxLabel = labels?.[maxIdx] ?? `point ${maxIdx + 1}`;
+    const lastLabel = labels?.[data.length - 1] ?? `last`;
+    return `${ariaLabel ?? "series"}: low ${fmt(ys[minIdx])} at ${minLabel}, high ${fmt(ys[maxIdx])} at ${maxLabel}, ${fmt(last.y)} at ${lastLabel}`;
+  })();
+
   return (
     <svg
       width={width}
       height={height}
       className={cn("inline-block align-middle", className)}
       role="img"
-      aria-hidden
+      aria-label={seriesSummary}
     >
+      <title>{seriesSummary}</title>
       <Group>
         {showBaseline && yMin <= 0 && yMax >= 0 ? (
           <line
@@ -110,6 +136,23 @@ export function Sparkline({
           strokeWidth={strokeWidth}
           curve={curveMonotoneX}
         />
+        {/* Per-point hover hit-targets: nearly invisible but interactive. */}
+        {data.map((d, i) => (
+          <g key={i}>
+            <circle
+              cx={xScale(d.x)}
+              cy={yScale(d.y)}
+              r={Math.max(3, height / 4)}
+              fill="transparent"
+              stroke="transparent"
+              style={{ cursor: "default" }}
+            >
+              <title>
+                {(d.label ?? `point ${i + 1}`)}: {formatValue(d.y, unit)}
+              </title>
+            </circle>
+          </g>
+        ))}
         {showEndpoint ? (
           <Circle
             cx={xScale(last.x)}
@@ -121,4 +164,14 @@ export function Sparkline({
       </Group>
     </svg>
   );
+}
+
+function formatValue(n: number, unit: "pct" | "bps" | "level"): string {
+  if (unit === "bps") {
+    return n > 0 ? `+${n.toFixed(0)}bp` : `${n.toFixed(0)}bp`;
+  }
+  if (unit === "level") {
+    return n > 0 ? `+${n.toFixed(1)}` : n.toFixed(1);
+  }
+  return n > 0 ? `+${n.toFixed(1)}%` : `${n.toFixed(1)}%`;
 }

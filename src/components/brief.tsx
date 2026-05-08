@@ -186,7 +186,16 @@ function AnalogueCard({
               <span className="ml-1 text-[10px] text-[var(--color-muted-foreground)]">@1m</span>
             </span>
           </div>
-          <Sparkline values={series} width={224} height={28} className="mt-2" showBaseline />
+          <Sparkline
+            values={series}
+            width={224}
+            height={28}
+            className="mt-2"
+            showBaseline
+            labels={["1d", "5d", "1m", "3m", "6m"]}
+            unit="pct"
+            ariaLabel={`S&P 500 returns following ${event.title}`}
+          />
         </div>
 
         <div className="space-y-2">
@@ -351,6 +360,8 @@ function AssetCell({
         height={22}
         tone={tone as "positive" | "negative" | "neutral"}
         showBaseline
+        labels={["1d", "5d", "1m", "3m", "6m"]}
+        unit={unit}
       />
       <span
         className={cn(

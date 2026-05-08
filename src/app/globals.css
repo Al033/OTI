@@ -139,3 +139,49 @@
     animation: fade-up 0.4s ease-out;
   }
 }
+
+/* Print: paginated, monochrome-safe brief. The shipped FT/Bridgewater
+   register reads well on paper if we strip backdrop blur, gradients, and
+   the dark surface fills. */
+@media print {
+  body {
+    background: #fff !important;
+    background-image: none !important;
+    color: #111 !important;
+  }
+  header,
+  footer,
+  nav,
+  .print\:hidden,
+  [data-print-hide] {
+    display: none !important;
+  }
+  main {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  article {
+    break-inside: avoid;
+  }
+  h1,
+  h2,
+  h3 {
+    color: #111 !important;
+    page-break-after: avoid;
+  }
+  .glass,
+  .shimmer,
+  .grid-bg,
+  .fade-up {
+    background: transparent !important;
+    animation: none !important;
+    backdrop-filter: none !important;
+  }
+  table {
+    page-break-inside: avoid;
+  }
+  a {
+    color: #0b5fff !important;
+    text-decoration: underline;
+  }
+}

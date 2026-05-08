@@ -3,6 +3,13 @@ import { z } from "zod";
 import { runPipeline } from "@/lib/pipeline";
 import { isAllowedModel } from "@/lib/llm";
 import { DEMO_RESULTS } from "@/lib/demo-cache";
+import { saveBrief, briefIdFor } from "@/lib/brief-store";
+import {
+  consumeRateLimitToken,
+  rateLimitKey,
+  looksLikeBot,
+} from "@/lib/rate-limit";
+import { sanitiseUserQuery } from "@/lib/prompts";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,44 +26,62 @@ const RequestSchema = z
     message: "Either query or demoId must be provided.",
   });
 
+function publicError(status: number, code: string, hint?: string) {
+  return NextResponse.json({ error: code, hint }, { status });
+}
+
 export async function POST(req: NextRequest) {
   let body: unknown;
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    return publicError(400, "invalid_json");
   }
 
   const parsed = RequestSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json(
-      { error: "Invalid request", details: parsed.error.flatten() },
-      { status: 400 },
-    );
+    return publicError(400, "invalid_request");
   }
 
-  const { query, tagModel, synthModel, demoId } = parsed.data;
+  const { tagModel, synthModel, demoId } = parsed.data;
+  const rawQuery = parsed.data.query;
 
-  // Demo mode bypass — works without API keys.
+  // Demo path: precomputed, no LLM cost, no rate limit.
   if (demoId) {
     const cached = DEMO_RESULTS.get(demoId);
-    if (cached) {
-      return NextResponse.json(cached);
-    }
-    return NextResponse.json({ error: "Unknown demo id" }, { status: 404 });
+    if (cached) return NextResponse.json(cached);
+    return publicError(404, "unknown_demo_id");
   }
 
-  if (tagModel && !isAllowedModel(tagModel)) {
-    return NextResponse.json(
-      { error: `Model ${tagModel} is not in the allowlist.` },
-      { status: 400 },
+  // Bot heuristic — cheap filter before any cost.
+  if (looksLikeBot(req)) {
+    return publicError(
+      429,
+      "bot_detected",
+      "Automated clients should use the public read-only API at /api/events.",
     );
   }
-  if (synthModel && !isAllowedModel(synthModel)) {
+
+  // Per-IP token bucket.
+  const rl = consumeRateLimitToken(rateLimitKey(req));
+  const headers: Record<string, string> = {
+    "X-RateLimit-Remaining": String(rl.remaining),
+    "X-RateLimit-Reset": String(rl.resetSeconds),
+  };
+  if (!rl.ok) {
     return NextResponse.json(
-      { error: `Model ${synthModel} is not in the allowlist.` },
-      { status: 400 },
+      { error: "rate_limited", hint: `Try again in ${rl.resetSeconds}s.` },
+      { status: 429, headers },
     );
+  }
+
+  // Model allowlist: prevents using arbitrary provider/model strings to
+  // route through the gateway.
+  if (tagModel && !isAllowedModel(tagModel)) {
+    return publicError(400, "tag_model_not_allowed");
+  }
+  if (synthModel && !isAllowedModel(synthModel)) {
+    return publicError(400, "synth_model_not_allowed");
   }
 
   const hasGatewayKey = !!process.env.AI_GATEWAY_API_KEY;
@@ -64,28 +89,27 @@ export async function POST(req: NextRequest) {
   const hasOpenAIKey = !!process.env.OPENAI_API_KEY;
 
   if (!hasGatewayKey && !hasAnthropicKey && !hasOpenAIKey) {
-    return NextResponse.json(
-      {
-        error:
-          "No AI provider configured. Set AI_GATEWAY_API_KEY (recommended) or a direct provider key in .env.local. " +
-          "You can still try the demo examples on the home page.",
-      },
-      { status: 503 },
-    );
+    return publicError(503, "no_provider_configured", "Try the /examples demo briefs.");
   }
 
-  if (!query) {
-    return NextResponse.json({ error: "Query is required" }, { status: 400 });
-  }
+  if (!rawQuery) return publicError(400, "missing_query");
+  const query = sanitiseUserQuery(rawQuery);
+  if (query.length < 8) return publicError(400, "query_too_short_after_sanitisation");
 
   try {
     const result = await runPipeline({ query, tagModel, synthModel });
-    return NextResponse.json(result);
+
+    // Best-effort persistence so the brief is sharable. Failure here doesn't
+    // break the response — the brief still renders in the client even if KV
+    // / Postgres is down.
+    saveBrief(briefIdFor(query, result.modelTag, result.modelSynth, result.corpusVersion), result).catch((err) => {
+      console.warn("[analyze] saveBrief failed:", err);
+    });
+
+    return NextResponse.json(result, { headers });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    return NextResponse.json(
-      { error: "Pipeline failed", message },
-      { status: 500 },
-    );
+    // Log full error server-side; return a stable code to the client.
+    console.error("[analyze] pipeline failed:", err);
+    return publicError(500, "pipeline_failed");
   }
 }

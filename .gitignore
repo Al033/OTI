@@ -48,5 +48,9 @@ yarn-error.log*
 /data/cache/
 /scripts/.embeddings.cache.json
 
+# build-time embedding sidecar (large, regenerable via `pnpm embeddings --json`).
+# Comment this line out for deployments without a Postgres backing.
+/data/embeddings.json
+
 # claude local config
 .claude/

@@ -81,7 +81,15 @@ export default function DatasetPage() {
                         {e.surpriseFactor}/5
                       </td>
                       <td className="px-4 py-3">
-                        <Sparkline values={series} width={100} height={22} showBaseline />
+                        <Sparkline
+                          values={series}
+                          width={100}
+                          height={22}
+                          showBaseline
+                          labels={["1d", "5d", "1m", "3m", "6m"]}
+                          unit="pct"
+                          ariaLabel={`S&P 500 returns following ${e.title}`}
+                        />
                       </td>
                       <td className="px-4 py-3 text-right mono text-xs">
                         <span

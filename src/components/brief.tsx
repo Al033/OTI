@@ -442,6 +442,32 @@ function FailedTradeQuotes({
             <p className="italic text-[var(--color-foreground)]/85">"{q.quote}"</p>
             <p className="mono text-[10px] text-[var(--color-muted-foreground)]">
               — {q.attribution} <span className="opacity-60">· {q.eventTitle}</span>
+              {q.sourceUrl && (
+                <>
+                  {" "}
+                  ·{" "}
+                  <a
+                    href={q.archiveUrl ?? q.sourceUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="underline-offset-2 hover:underline text-[var(--color-accent)]"
+                  >
+                    source
+                  </a>
+                </>
+              )}
+              {(q.provenance ?? "paraphrase_no_source") !== "verified" && (
+                <span
+                  title={
+                    q.provenance === "paraphrase_with_source"
+                      ? "Paraphrase of contemporaneous reporting; primary source identified but not URL-cited."
+                      : "Paraphrase of contemporaneous reporting; no URL on file. Treat as illustrative, not as a verified quote."
+                  }
+                  className="ml-1 inline-flex items-center gap-0.5 rounded border border-[var(--color-warning-subtle)] px-1 text-[9px] uppercase tracking-wider text-[var(--color-warning)]"
+                >
+                  paraphrase
+                </span>
+              )}
             </p>
           </div>
         </li>

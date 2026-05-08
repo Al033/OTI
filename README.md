@@ -1,5 +1,8 @@
 # OTI
 
+[![CI](https://github.com/Al033/OTI/actions/workflows/ci.yml/badge.svg)](https://github.com/Al033/OTI/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 > **Markets don't predict — they remember.**
 > A historical-analogue research engine for macro markets.
 > Memory, not prediction.
@@ -144,9 +147,39 @@ Recommended: install the **Neon** Marketplace integration — `POSTGRES_URL` is 
 
 ## API surface
 
-- **`POST /api/analyze`** — synchronous JSON pipeline run. Returns the full `PipelineResult` payload. Per-IP rate-limited (token bucket: burst 10, sustained 10/min) and bot-heuristic-gated. Use this for programmatic access.
+- **`GET /api/events`** — slim list of all 30 events in the corpus. CORS-open, 1h cached.
+- **`GET /api/events/:id`** — full event payload. Add `?view=pit` for the point-in-time view (no hindsight, no longer-horizon asset moves).
+- **`GET /api/openapi.json`** — OpenAPI 3.1 spec.
+- **`POST /api/analyze`** — synchronous JSON pipeline run. Returns the full `PipelineResult` payload. Per-IP rate-limited (token bucket: burst 10, sustained 10/min) and bot-heuristic-gated.
 - **`POST /api/analyze/stream`** — newline-delimited JSON streaming variant. The interactive UI uses this. Emits events for each pipeline phase: `started`, `queryTags`, `candidates`, `phaseA` (partials), `phaseAFinal`, `phaseB` (partials), `phaseBFinal`, `complete`, `error`.
+- **`POST /api/mcp`** — Model Context Protocol JSON-RPC server. Exposes three tools (`search_analogues`, `get_event`, `list_events`) that any MCP-compatible client (Claude Desktop, Cursor, OpenBB Workspace) can call. See [`/api`](src/app/api/page.tsx) for setup.
 - **`GET /b/:id`** — server-rendered permalink for a previously-generated brief. 30-day TTL.
+
+## Use OTI as an MCP server
+
+Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "oti": {
+      "url": "https://your-oti-deployment.vercel.app/api/mcp",
+      "type": "http"
+    }
+  }
+}
+```
+
+Restart Claude Desktop. Now `search_analogues`, `get_event`, and `list_events` are tools any conversation can call. Same surface works for Cursor and any agent built on the official MCP SDK.
+
+## Tests + eval
+
+```bash
+pnpm test    # node:test runner — corpus integrity + retrieval gold-set
+pnpm eval    # same, with verbose per-case scoring
+```
+
+The retrieval gold set is in [`tests/eval/gold.ts`](tests/eval/gold.ts) — 20 hand-tagged queries with their expected analogues. CI gates on `recall@3 ≥ 0.80` and `precision@1 ≥ 0.50`. Adjust the floors only with a comment explaining why.
 
 ## The dataset
 

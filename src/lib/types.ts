@@ -40,11 +40,27 @@ export const AssetMovesSchema = z.object({
 });
 export type AssetMoves = z.infer<typeof AssetMovesSchema>;
 
-export const FailedTradeSchema = z.object({
-  quote: z.string().min(1),
-  attribution: z.string().min(1),
-  sourceUrl: z.string().url().optional(),
-});
+export const QuoteProvenanceSchema = z.enum([
+  "verified", // sourceUrl present; quote checked against the source.
+  "paraphrase_no_source", // contemporaneous-style paraphrase; no URL. UI shows a warning.
+  "paraphrase_with_source", // paraphrase but the source is identified (e.g. an FT column without a stable URL).
+]);
+export type QuoteProvenance = z.infer<typeof QuoteProvenanceSchema>;
+
+export const FailedTradeSchema = z
+  .object({
+    quote: z.string().min(1),
+    attribution: z.string().min(1),
+    sourceUrl: z.string().url().optional(),
+    /** Defaults to paraphrase_no_source for backwards compatibility with v0.1 entries. */
+    provenance: QuoteProvenanceSchema.default("paraphrase_no_source"),
+    /** Optional Wayback Machine snapshot URL for link-rot safety. */
+    archiveUrl: z.string().url().optional(),
+  })
+  .refine((v) => v.provenance !== "verified" || !!v.sourceUrl, {
+    message: "verified provenance requires sourceUrl",
+    path: ["sourceUrl"],
+  });
 export type FailedTrade = z.infer<typeof FailedTradeSchema>;
 
 export const SourceSchema = z.object({

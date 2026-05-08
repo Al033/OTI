@@ -26,7 +26,7 @@ Required fields:
 - `outcomeInHindsight` — what actually happened. Used only by the `consensusError` and `failedTradesPattern` synthesis fields.
 - `assetMoves` — return series at 1d / 5d / 1m / 3m / 6m horizons for S&P, UST10Y (bps), DXY (%), gold (%), oil (%), HY OAS (bps), VIX (level points). Use `null` when the underlying index didn't exist (pre-1990 VIX, pre-1996 HY OAS).
 - `flowPatterns` — narrative description of positioning / flow dynamics.
-- `failedTrades` — array of contemporary quotes with attribution. **Quotes should be verifiable.**
+- `failedTrades` — array of contemporary quotes. Each entry has `quote`, `attribution`, optional `sourceUrl`, optional `archiveUrl` (Wayback snapshot), and `provenance` ∈ {`verified`, `paraphrase_with_source`, `paraphrase_no_source`}. **New quotes added in v0.2+ should be `verified` with `sourceUrl` set.** Existing v0.1 paraphrases without URLs render with a visible "paraphrase" badge in the brief; adding a `sourceUrl` and bumping the provenance is one of the highest-leverage contributions.
 - `consensusError` — what consensus systematically got wrong.
 - `lessons` — bulleted, transferable insights.
 - `sources` — at least one, with verifiable URL.

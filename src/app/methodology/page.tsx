@@ -25,8 +25,8 @@ export default function MethodologyPage() {
             <p className="text-pretty text-lg leading-relaxed text-[var(--color-muted-foreground)]">
               OTI is a memory tool. It surfaces structurally similar past events
               from a curated dataset and asks an LLM to write the brief. It
-              does not forecast. The five things below are the load-bearing
-              decisions that let it do this honestly.
+              does not forecast. The decisions below are the load-bearing
+              choices that let it do this honestly.
             </p>
           </header>
 
@@ -52,9 +52,9 @@ export default function MethodologyPage() {
 
           <Section
             label="02"
-            title="Two-stage hybrid retrieval"
+            title="Two-stage hybrid retrieval, RRF-fused, region-filtered, reranked"
           >
-            <p>The pipeline runs in three steps:</p>
+            <p>The pipeline runs in five steps:</p>
             <ol>
               <li>
                 <strong>Tag.</strong> A cheap LLM (Claude Haiku 4.5 by default)
@@ -65,64 +65,106 @@ export default function MethodologyPage() {
                 is the contract between the user query and the corpus.
               </li>
               <li>
-                <strong>Retrieve.</strong> For each event in the corpus, we
-                compute Jaccard similarity over the tag sets and (when
-                embeddings are present) cosine similarity over event
-                descriptions. We combine them with a weighted score, plus
-                small bonuses for trigger-type and region match. Top-10
-                candidates pass through.
+                <strong>Embed.</strong> The query is embedded with{" "}
+                <Code>voyage-3-large</Code> at 1024d via the Vercel AI Gateway,
+                in parallel with tagging. The same model populates the corpus
+                at build time via <Code>pnpm embeddings</Code>.
               </li>
               <li>
-                <strong>Synthesise.</strong> A reasoning model (Claude Sonnet
-                4.6 by default; OpenAI / Google / Mistral selectable) sees the
-                top-10 candidates and emits a strictly-typed brief via the AI
-                SDK's <Code>generateObject</Code>. The brief schema constrains
-                the chosen <Code>eventId</Code> values to the corpus IDs at
-                build time. The model cannot return events outside the corpus.
+                <strong>Retrieve.</strong> For every event in the region-filtered
+                corpus we compute Jaccard over the regime-tag sets and cosine
+                over the embeddings. The two rankings are fused via reciprocal
+                rank fusion (k=60, weights J=1.0, C=0.7). Region is a hard
+                filter, not a score bonus — uncalibrated bonuses inflate the
+                combined score when one signal is missing. Top-15 candidates
+                pass through.
+              </li>
+              <li>
+                <strong>Rerank.</strong> A Voyage <Code>rerank-2.5</Code>{" "}
+                cross-encoder reranks the top-15 against the user's free-text
+                query. Top-10 candidates pass to synthesis. Skipped when{" "}
+                <Code>VOYAGE_API_KEY</Code> is absent — retrieval still works,
+                quality just drops.
+              </li>
+              <li>
+                <strong>Synthesise (two phases).</strong> Phase A picks the
+                three best-fit analogues using the point-in-time view only.
+                Phase B writes the cross-event consensus error and failed-trade
+                pattern with the full hindsight payload. See section 03.
               </li>
             </ol>
           </Section>
 
           <Section
             label="03"
-            title="The narrativeAtTime / outcomeInHindsight split"
+            title="Two-phase synthesis enforces look-ahead defence"
           >
             <p>
-              The single most important schema decision. Every event stores
-              two prose fields:
+              Every event stores two prose fields:
             </p>
             <ul>
               <li>
-                <strong>narrativeAtTime</strong> — what the consensus
-                actually believed in the days before the event. The synthesis
-                prompt is allowed to use this when explaining why an analogue
-                fits the user's event.
+                <strong>narrativeAtTime</strong> — what consensus actually
+                believed in the days before the event.
               </li>
               <li>
                 <strong>outcomeInHindsight</strong> — what actually happened.
-                The synthesis prompt is restricted to using this only when
-                writing the "consensus error" and "failed trades pattern"
-                sections.
               </li>
             </ul>
             <p>
-              This separation is the structural defence against look-ahead
-              bias. When the model reasons about whether 1992 Black Wednesday
-              is analogous to a current sterling event, it sees the
-              point-in-time consensus that markets believed sterling could be
-              defended — not the hindsight that Soros made $1bn.
+              Phase A of synthesis sees only <Code>narrativeAtTime</Code> + the
+              t=0 (1-day) market reaction for each candidate. It cannot see{" "}
+              <Code>outcomeInHindsight</Code>, longer-horizon asset moves,{" "}
+              <Code>failedTrades</Code>, or per-event{" "}
+              <Code>consensusError</Code>. It emits the analogue picks with
+              their <em>whyAnalogous</em> reasoning grounded purely in
+              point-in-time prose.
+            </p>
+            <p>
+              Phase B fires only after the three picks are locked. It sees the
+              full hindsight payload for those three events, and emits the
+              cross-analogue <Code>failedTradesPattern</Code>,{" "}
+              <Code>consensusError</Code>, and <Code>caveats</Code>. It cannot
+              regenerate the analogue list, the headline, or the summary.
+            </p>
+            <p>
+              The <em>structural</em> defence against look-ahead bias is the
+              prompt context — what the model is allowed to see — not a verbal
+              instruction it could ignore. Embeddings are computed only over
+              the point-in-time text, so the cosine-similarity step also
+              cannot leak hindsight.
             </p>
           </Section>
 
           <Section
             label="04"
+            title="Numeric paraphrase guard"
+          >
+            <p>
+              Every prose field in the brief is post-processed: digit-runs that
+              don't match a tiny whitelist (4-digit years, "S&P 500", "60/40",
+              "9/11", "N=…") are scrubbed and replaced with{" "}
+              <Code>[…]</Code>. The asset-move table is rendered deterministically
+              from the corpus; the LLM never invents percentages, basis points,
+              or index levels in narrative text.
+            </p>
+            <p>
+              This closes the failure mode where the model would paraphrase the
+              candidate's asset moves into prose ("the S&P fell 18% over six
+              weeks") and create stats that don't match the rendered table.
+              The guard logs every redaction so we can audit prompt drift.
+            </p>
+          </Section>
+
+          <Section
+            label="05"
             title="Show your work"
           >
             <p>Every brief includes a "show your work" panel that exposes:</p>
             <ul>
               <li>The query interpretation: trigger type, regime tags, surprise factor, the LLM's rationale.</li>
-              <li>All 10 retrieved candidates with Jaccard, cosine, and combined scores. The 3 selected analogues are highlighted; the other 7 are visible.</li>
-              <li>The model used for tagging and synthesis, and the wall-clock time.</li>
+              <li>All retrieved candidates with Jaccard, cosine, RRF combined, and rerank scores. The 3 selected analogues are highlighted.</li>
+              <li>The model used for tagging and synthesis, the embedding source (Postgres / sidecar / none), whether rerank ran, and the wall-clock time.</li>
             </ul>
             <p>
               If the system selects a weak analogue, the audit panel lets you
@@ -133,7 +175,7 @@ export default function MethodologyPage() {
           </Section>
 
           <Section
-            label="05"
+            label="06"
             title="Where this gets things wrong"
           >
             <p>Specific known failure modes:</p>
@@ -154,16 +196,15 @@ export default function MethodologyPage() {
               <li>
                 <strong>Asset-move precision.</strong> Returns are sourced
                 from public records and intended to convey direction and
-                magnitude. They are <em>not</em> tick-accurate. The repo
-                includes (TODO) a <Code>pnpm refresh-prices</Code> script to
-                pull canonical FRED data into the dataset.
+                magnitude. They are <em>not</em> tick-accurate.
               </li>
               <li>
-                <strong>LLM confabulation about quotes.</strong> Failed-trade
-                quotes in the corpus are sourced (or paraphrased from
-                contemporaneous reporting). The LLM is instructed to
-                synthesise patterns, not to invent specific quotes. We have
-                not seen quote fabrication, but we cannot prove its absence.
+                <strong>Quote provenance.</strong> Most v0.1 failed-trade
+                quotes are paraphrases of contemporaneous reporting without
+                stable source URLs. We render a "paraphrase" badge next to
+                each unverified quote. Going forward, new quotes added to the
+                corpus require a <Code>sourceUrl</Code> and ideally a Wayback
+                snapshot.
               </li>
               <li>
                 <strong>Three-analogue forced fit.</strong> The schema
@@ -172,22 +213,31 @@ export default function MethodologyPage() {
                 might not fit" surface and the disagreement banner are how
                 we mitigate; they are imperfect.
               </li>
+              <li>
+                <strong>Walk-forward integrity.</strong> A unit test asserts
+                that retrieval doesn't surface strictly-future events for a
+                tag-only query. The synthesis layer also avoids hindsight
+                leakage structurally (see section 03), but the retrieval-side
+                temporal filter is intentionally informational only — until
+                we add a <Code>maxDate</Code> query option, retrieval ignores
+                event ordering.
+              </li>
             </ul>
             <p>
               If you find a concrete failure, please{" "}
-              <Link
-                href="https://github.com/"
+              <a
+                href="https://github.com/Al033/OTI/issues"
                 className="text-[var(--color-accent)] underline-offset-4 hover:underline"
               >
                 open an issue
-              </Link>
+              </a>
               . The corpus and pipeline are MIT-licensed; better tagging and
               new events are the most useful contributions.
             </p>
           </Section>
 
           <Section
-            label="06"
+            label="07"
             title="What this is not"
           >
             <ul>
@@ -203,6 +253,45 @@ export default function MethodologyPage() {
             <p className="text-sm text-[var(--color-muted-foreground)]">
               For real research, this should be the first 30 seconds of your
               workflow, not the last.
+            </p>
+          </Section>
+
+          <Section label="08" title="Verifying the claims">
+            <p>
+              Every claim above is testable from the repo:
+            </p>
+            <ul>
+              <li>
+                <Code>tests/walk-forward.test.ts</Code> — corpus integrity +
+                retrieval temporal property.
+              </li>
+              <li>
+                <Code>tests/eval/retrieval.test.ts</Code> + 20-case gold set —
+                pinned recall@3 ≥ 0.80 and precision@1 ≥ 0.50.
+              </li>
+              <li>
+                <Code>src/lib/llm.ts</Code> <Code>applyNumericGuard</Code> —
+                the digit-run scrubber.
+              </li>
+              <li>
+                <Code>src/lib/prompts.ts</Code> <Code>sanitiseUserQuery</Code>{" "}
+                — the prompt-injection input guard.
+              </li>
+              <li>
+                <Code>src/app/api/analyze/stream/route.ts</Code> — the two-
+                phase synthesis orchestration with explicit context boundaries.
+              </li>
+            </ul>
+            <p>
+              Run <Code>pnpm test</Code> locally, or watch the GitHub Actions
+              CI badge in the{" "}
+              <Link
+                href="https://github.com/Al033/OTI"
+                className="text-[var(--color-accent)] underline-offset-4 hover:underline"
+              >
+                repo
+              </Link>
+              .
             </p>
           </Section>
         </article>

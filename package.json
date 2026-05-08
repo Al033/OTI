@@ -15,6 +15,7 @@
     "db:studio": "drizzle-kit studio",
     "seed": "tsx scripts/seed.ts",
     "embeddings": "tsx scripts/build-embeddings.ts",
+    "regime:centroids": "tsx scripts/build-regime-centroids.ts",
     "test": "node --import tsx --test --test-reporter=spec tests/**/*.test.ts",
     "eval": "node --import tsx --test --test-reporter=spec tests/eval/*.test.ts -- --report",
     "format": "prettier --write \"**/*.{ts,tsx,md,json,css}\""

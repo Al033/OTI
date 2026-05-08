@@ -52,5 +52,9 @@ yarn-error.log*
 # Comment this line out for deployments without a Postgres backing.
 /data/embeddings.json
 
+# build-time regime-centroid sidecar (regenerable via `pnpm regime:centroids --json`).
+# Comment out for no-DB deployments.
+/data/regime-centroids.json
+
 # claude local config
 .claude/

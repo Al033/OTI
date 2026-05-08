@@ -45,7 +45,9 @@ export const events = pgTable(
     lessons: jsonb("lessons").$type<string[]>().notNull(),
     sources: jsonb("sources").$type<Source[]>().notNull(),
 
-    embedding: vector("embedding", { dimensions: 1536 }),
+    // 1024d matches voyage-3-large's recommended Matryoshka tier
+    // (best accuracy-to-storage ratio per Voyage's docs).
+    embedding: vector("embedding", { dimensions: 1024 }),
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -57,6 +59,23 @@ export const events = pgTable(
     ),
   }),
 );
+
+/**
+ * Cached briefs for share-link/deep-link UX. Generated briefs get a stable
+ * id (hash of query + model + corpus version) and 30-day TTL.
+ */
+export const briefs = pgTable("briefs", {
+  id: text("id").primaryKey(),
+  query: text("query").notNull(),
+  modelTag: text("model_tag").notNull(),
+  modelSynth: text("model_synth").notNull(),
+  payload: jsonb("payload").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+});
+
+export type BriefRow = typeof briefs.$inferSelect;
+export type NewBriefRow = typeof briefs.$inferInsert;
 
 export type EventRow = typeof events.$inferSelect;
 export type NewEventRow = typeof events.$inferInsert;

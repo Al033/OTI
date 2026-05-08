@@ -32,6 +32,25 @@ export const EVENT_BY_ID: ReadonlyMap<string, HistoricalEvent> = new Map(
 
 export const EVENT_IDS = EVENTS.map((e) => e.id) as readonly string[];
 
+/**
+ * Stable hash of the corpus identity (count + concatenated ids + earliest/latest
+ * dates). Bumps any time the corpus changes; used as a cache-key component
+ * for shareable brief permalinks.
+ */
+export const CORPUS_VERSION: string = (() => {
+  const sorted = [...EVENTS].sort((a, b) => (a.id < b.id ? -1 : 1));
+  const seed = `${sorted.length}|${sorted.map((e) => e.id).join(",")}|${
+    sorted[0]?.date ?? ""
+  }|${sorted[sorted.length - 1]?.date ?? ""}`;
+  // FNV-1a 32-bit, hex.
+  let h = 0x811c9dc5;
+  for (let i = 0; i < seed.length; i++) {
+    h ^= seed.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return `v1.${(h >>> 0).toString(16)}`;
+})();
+
 export function getEvent(id: string): HistoricalEvent | undefined {
   return EVENT_BY_ID.get(id);
 }

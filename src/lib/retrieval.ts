@@ -1,5 +1,8 @@
-import { EVENTS } from "./events";
+import { isNotNull } from "drizzle-orm";
+import { EVENTS, EVENT_BY_ID } from "./events";
 import { jaccardSimilarity } from "./regime-tags";
+import { getEmbeddingsSidecar } from "./embeddings-sidecar";
+import { getDb, isDbConfigured, schema } from "./db/client";
 import type {
   HistoricalEvent,
   QueryTags,
@@ -7,68 +10,92 @@ import type {
 } from "./types";
 
 /**
- * Two-stage hybrid retrieval.
+ * Two-stage hybrid retrieval with reciprocal-rank fusion.
  *
  *   Stage A — Jaccard similarity over regimeTags (deterministic, auditable).
- *   Stage B — Cosine similarity over embeddings (semantic), if a query
- *             embedding is available; otherwise skipped.
+ *   Stage B — Cosine similarity over voyage-3-large 1024d embeddings.
+ *             Pulled from Postgres when configured, from a sidecar JSON
+ *             at data/embeddings.json otherwise, or skipped (Jaccard-only)
+ *             when neither is available.
  *
- *   Combined score = JACCARD_WEIGHT * jaccard + (1 - JACCARD_WEIGHT) * cosine
- *                    + small bonus for matching triggerType.
+ * Fusion is reciprocal rank fusion (RRF, k=60). Each signal contributes
+ * `weight / (k + rank + 1)`. RRF is robust to score-scale drift between
+ * Jaccard (range [0,1]) and cosine (range [-1,1] but for normalised text
+ * embeddings effectively [0,1]).
  *
- * The combined score is reported alongside the component scores so the
- * "show your work" panel can audit how each candidate was ranked.
+ * Region is a *hard filter*: a US-region query never returns an EU-only
+ * event. This replaces a previously-uncalibrated bonus that silently
+ * inflated combined scores when an embedding signal was missing.
+ *
+ * The combined RRF score is reported alongside both component scores so
+ * the "show your work" panel can audit how each candidate was ranked.
  */
 
-const JACCARD_WEIGHT = 0.6;
-const TRIGGER_BONUS = 0.05;
-const REGION_BONUS = 0.02;
-const SURPRISE_FACTOR_WEIGHT = 0.03;
+const RRF_K = 60;
+const W_JACCARD = 1.0;
+const W_COSINE = 0.7;
 
 export interface RetrievalOptions {
   topK?: number;
+  /** Pre-computed query embedding. If absent, only Jaccard contributes. */
   queryEmbedding?: number[] | null;
-  /** Optional: clamp candidates to a minimum combined score. */
+  /** Clamp candidates to a minimum combined score. */
   minScore?: number;
+  /** When false, skip the region hard-filter. */
+  enforceRegion?: boolean;
 }
 
-export function retrieve(
+export async function retrieve(
   query: QueryTags,
   options: RetrievalOptions = {},
-): RetrievalCandidate[] {
-  const { topK = 10, queryEmbedding = null, minScore = 0 } = options;
+): Promise<RetrievalCandidate[]> {
+  const {
+    topK = 15,
+    queryEmbedding = null,
+    minScore = 0,
+    enforceRegion = true,
+  } = options;
 
-  const candidates: RetrievalCandidate[] = EVENTS.map((event) => {
+  const embeddingsByEventId = await loadEmbeddings();
+
+  const filtered = enforceRegion && query.region !== "GLOBAL"
+    ? EVENTS.filter((e) => e.region === query.region || e.region === "GLOBAL")
+    : [...EVENTS];
+
+  const rows = filtered.map((event) => {
     const jaccard = jaccardSimilarity(event.regimeTags, query.regimeTags);
+    const eventEmbedding = embeddingsByEventId.get(event.id) ?? null;
+    const cosine =
+      queryEmbedding && eventEmbedding && eventEmbedding.length === queryEmbedding.length
+        ? cosineSimilarity(queryEmbedding, eventEmbedding)
+        : null;
+    return { event, jaccard, cosine };
+  });
 
-    let cosine: number | null = null;
-    if (queryEmbedding && event.embedding && event.embedding.length === queryEmbedding.length) {
-      cosine = cosineSimilarity(queryEmbedding, event.embedding);
-    }
+  const jaccardRanks = rankIndices(rows.map((r) => r.jaccard));
+  const hasCosine = rows.length > 0 && rows[0].cosine !== null;
+  const cosineRanks = hasCosine
+    ? rankIndices(rows.map((r) => r.cosine ?? -Infinity))
+    : null;
 
-    const triggerBonus = event.triggerType === query.triggerType ? TRIGGER_BONUS : 0;
-    const regionBonus =
-      event.region === query.region || event.region === "GLOBAL" || query.region === "GLOBAL"
-        ? REGION_BONUS
-        : 0;
+  const candidates: RetrievalCandidate[] = rows.map((r, i) => {
+    const jRank = jaccardRanks[i];
+    const cRank = cosineRanks?.[i] ?? null;
 
-    // Reward similar surprise factors (within 1 step).
-    const surpriseDelta = Math.abs(event.surpriseFactor - query.surpriseFactor);
-    const surpriseBonus = surpriseDelta <= 1 ? SURPRISE_FACTOR_WEIGHT : 0;
+    const jPart = W_JACCARD / (RRF_K + jRank + 1);
+    const cPart = cRank === null ? 0 : W_COSINE / (RRF_K + cRank + 1);
 
-    const semanticPart = cosine ?? 0;
-    const combined = clamp01(
-      JACCARD_WEIGHT * jaccard +
-        (1 - JACCARD_WEIGHT) * semanticPart +
-        triggerBonus +
-        regionBonus +
-        surpriseBonus,
-    );
+    // Normalise so that "best possible RRF on this configuration" maps to 1.
+    const bestPossible =
+      cRank === null
+        ? W_JACCARD / (RRF_K + 1)
+        : (W_JACCARD + W_COSINE) / (RRF_K + 1);
+    const combined = bestPossible === 0 ? 0 : (jPart + cPart) / bestPossible;
 
     return {
-      eventId: event.id,
-      jaccard,
-      cosine,
+      eventId: r.event.id,
+      jaccard: r.jaccard,
+      cosine: r.cosine,
       combined,
     } satisfies RetrievalCandidate;
   });
@@ -77,6 +104,15 @@ export function retrieve(
     .filter((c) => c.combined >= minScore)
     .sort((a, b) => b.combined - a.combined)
     .slice(0, topK);
+}
+
+function rankIndices(scores: number[]): number[] {
+  const order = scores
+    .map((s, i) => ({ s, i }))
+    .sort((a, b) => b.s - a.s);
+  const ranks = new Array<number>(scores.length);
+  for (let r = 0; r < order.length; r++) ranks[order[r].i] = r;
+  return ranks;
 }
 
 function cosineSimilarity(a: number[], b: number[]): number {
@@ -92,22 +128,97 @@ function cosineSimilarity(a: number[], b: number[]): number {
   return denom === 0 ? 0 : dot / denom;
 }
 
-function clamp01(x: number): number {
-  return Math.max(0, Math.min(1, x));
+let _embeddingsCache: Map<string, number[]> | null = null;
+let _embeddingsSource: "db" | "sidecar" | "none" | null = null;
+
+async function loadEmbeddings(): Promise<Map<string, number[]>> {
+  if (_embeddingsCache) return _embeddingsCache;
+
+  if (isDbConfigured()) {
+    try {
+      const db = getDb();
+      const rows = await db
+        .select({ id: schema.events.id, embedding: schema.events.embedding })
+        .from(schema.events)
+        .where(isNotNull(schema.events.embedding));
+      const map = new Map<string, number[]>();
+      for (const row of rows) {
+        if (row.embedding) map.set(row.id, row.embedding);
+      }
+      if (map.size > 0) {
+        _embeddingsCache = map;
+        _embeddingsSource = "db";
+        return _embeddingsCache;
+      }
+    } catch (err) {
+      console.warn("[retrieval] DB embedding lookup failed, falling back:", err);
+    }
+  }
+
+  const sidecar = getEmbeddingsSidecar();
+  if (sidecar) {
+    _embeddingsCache = sidecar;
+    _embeddingsSource = "sidecar";
+    return _embeddingsCache;
+  }
+
+  _embeddingsCache = new Map();
+  _embeddingsSource = "none";
+  return _embeddingsCache;
+}
+
+export function getEmbeddingsSource(): "db" | "sidecar" | "none" | null {
+  return _embeddingsSource;
 }
 
 /**
- * Helper: hydrate retrieval candidates with their full event payloads.
- * Used by the synthesis prompt builder so the LLM sees one self-contained
- * blob per candidate rather than re-joining at render time.
+ * Hydrate retrieval candidates with their full event payloads. O(1) per
+ * candidate via the EVENT_BY_ID map.
  */
 export function hydrate(
   candidates: RetrievalCandidate[],
 ): Array<RetrievalCandidate & { event: HistoricalEvent }> {
   const out: Array<RetrievalCandidate & { event: HistoricalEvent }> = [];
   for (const c of candidates) {
-    const event = EVENTS.find((e) => e.id === c.eventId);
+    const event = EVENT_BY_ID.get(c.eventId);
     if (event) out.push({ ...c, event });
   }
   return out;
+}
+
+/**
+ * Synchronous Jaccard-only retrieval. Used by the demo-cache module at
+ * load time — no DB, no embeddings, no rerank, no async. Producing an
+ * audit panel for the precomputed demos doesn't need the full pipeline.
+ */
+export function retrieveSync(
+  query: QueryTags,
+  options: Pick<RetrievalOptions, "topK" | "minScore" | "enforceRegion"> = {},
+): RetrievalCandidate[] {
+  const { topK = 15, minScore = 0, enforceRegion = true } = options;
+  const filtered = enforceRegion && query.region !== "GLOBAL"
+    ? EVENTS.filter((e) => e.region === query.region || e.region === "GLOBAL")
+    : [...EVENTS];
+
+  const rows = filtered.map((event) => ({
+    event,
+    jaccard: jaccardSimilarity(event.regimeTags, query.regimeTags),
+  }));
+
+  const jaccardRanks = rankIndices(rows.map((r) => r.jaccard));
+  const candidates: RetrievalCandidate[] = rows.map((r, i) => {
+    const jPart = W_JACCARD / (RRF_K + jaccardRanks[i] + 1);
+    const bestPossible = W_JACCARD / (RRF_K + 1);
+    return {
+      eventId: r.event.id,
+      jaccard: r.jaccard,
+      cosine: null,
+      combined: bestPossible === 0 ? 0 : jPart / bestPossible,
+    };
+  });
+
+  return candidates
+    .filter((c) => c.combined >= minScore)
+    .sort((a, b) => b.combined - a.combined)
+    .slice(0, topK);
 }

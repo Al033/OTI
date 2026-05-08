@@ -134,8 +134,19 @@ export const RetrievalCandidateSchema = z.object({
   jaccard: z.number().min(0).max(1),
   cosine: z.number().min(-1).max(1).nullable(),
   combined: z.number().min(0).max(1),
+  rerankScore: z.number().nullable().optional(),
 });
 export type RetrievalCandidate = z.infer<typeof RetrievalCandidateSchema>;
+
+export const RetrievalAuditSchema = z.object({
+  embeddingsSource: z.enum(["db", "sidecar", "none"]),
+  rerankUsed: z.boolean(),
+  topKBeforeRerank: z.number().int(),
+  topKAfterRerank: z.number().int(),
+  embeddingModel: z.string(),
+  rerankModel: z.string().nullable(),
+});
+export type RetrievalAudit = z.infer<typeof RetrievalAuditSchema>;
 
 export const PipelineResultSchema = z.object({
   query: z.string(),
@@ -147,5 +158,7 @@ export const PipelineResultSchema = z.object({
   durationMs: z.number(),
   generatedAt: z.string(),
   isDemo: z.boolean(),
+  corpusVersion: z.string(),
+  retrievalAudit: RetrievalAuditSchema,
 });
 export type PipelineResult = z.infer<typeof PipelineResultSchema>;

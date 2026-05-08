@@ -7,10 +7,14 @@ const url = process.env.POSTGRES_URL;
 /**
  * Lazy DB client. The app must work end-to-end without a database for
  * the demo and local-development flows; only the seed/embeddings scripts
- * require a real Postgres connection.
+ * and prod-grade retrieval require a real Postgres connection.
  */
 let _client: postgres.Sql | null = null;
 let _db: ReturnType<typeof drizzle<typeof schema>> | null = null;
+
+export function isDbConfigured(): boolean {
+  return !!url;
+}
 
 export function getDb() {
   if (_db) return _db;

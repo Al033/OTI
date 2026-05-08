@@ -1,5 +1,7 @@
-import { retrieve } from "./retrieval";
-import type { PipelineResult, QueryTags } from "./types";
+import { retrieveSync } from "./retrieval";
+import { CORPUS_VERSION, EVENT_BY_ID } from "./events";
+import { REGIME_TAG_SET } from "./regime-tags";
+import type { PipelineResult, QueryTags, RetrievalAudit } from "./types";
 
 /**
  * Pre-computed outputs for a small set of example queries so the public
@@ -414,6 +416,34 @@ const DEMO_EXAMPLES: DemoExample[] = [
   },
 ];
 
+// Module-level invariants. A bad demo entry breaks dev startup — preferable
+// to silent corruption of the public-facing demo path.
+for (const d of DEMO_EXAMPLES) {
+  for (const tag of d.queryTags.regimeTags) {
+    if (!REGIME_TAG_SET.has(tag)) {
+      throw new Error(
+        `[demo-cache] regimeTag "${tag}" in demo ${d.id} is not in REGIME_TAGS.`,
+      );
+    }
+  }
+  for (const a of d.brief.analogues) {
+    if (!EVENT_BY_ID.has(a.eventId)) {
+      throw new Error(
+        `[demo-cache] eventId "${a.eventId}" in demo ${d.id} is not in EVENTS.`,
+      );
+    }
+  }
+}
+
+const DEMO_RETRIEVAL_AUDIT: RetrievalAudit = {
+  embeddingsSource: "none",
+  rerankUsed: false,
+  topKBeforeRerank: 15,
+  topKAfterRerank: 10,
+  embeddingModel: "demo (precomputed, Jaccard-only)",
+  rerankModel: null,
+};
+
 export const DEMO_RESULTS: ReadonlyMap<string, PipelineResult> = new Map(
   DEMO_EXAMPLES.map((d) => {
     // The hand-written demo briefs were curated for narrative quality, so a
@@ -422,8 +452,8 @@ export const DEMO_RESULTS: ReadonlyMap<string, PipelineResult> = new Map(
     // analogue must be visible with its retrieval scores), pull the full
     // corpus ranking and union the top-10 with any chosen analogues that
     // would otherwise fall below it.
-    const top10 = retrieve(d.queryTags, { topK: 10 });
-    const fullRanked = retrieve(d.queryTags, { topK: 100 });
+    const top10 = retrieveSync(d.queryTags, { topK: 10 });
+    const fullRanked = retrieveSync(d.queryTags, { topK: 100 });
     const chosenIds = new Set(d.brief.analogues.map((a) => a.eventId));
     const inTop10 = new Set(top10.map((c) => c.eventId));
     const extras = fullRanked.filter(
@@ -441,6 +471,8 @@ export const DEMO_RESULTS: ReadonlyMap<string, PipelineResult> = new Map(
       durationMs: 0,
       generatedAt: "2025-04-15T00:00:00.000Z",
       isDemo: true,
+      corpusVersion: CORPUS_VERSION,
+      retrievalAudit: DEMO_RETRIEVAL_AUDIT,
     };
     return [d.id, result];
   }),

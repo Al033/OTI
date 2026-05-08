@@ -3,6 +3,9 @@ import { Footer } from "@/components/footer";
 import { AnalyzeShell } from "@/components/analyze-shell";
 import { EVENTS } from "@/lib/events";
 import { DEMO_RESULTS } from "@/lib/demo-cache";
+import { getRecentBriefs } from "@/lib/regime/store";
+import { formatDate } from "@/lib/utils";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 interface PageProps {
@@ -13,12 +16,17 @@ export default async function HomePage({ searchParams }: PageProps) {
   const params = await searchParams;
   const demoId = Array.isArray(params.demo) ? params.demo[0] : params.demo;
   const initialResult = demoId ? DEMO_RESULTS.get(demoId) : null;
+  const recent = await getRecentBriefs(1);
+  const latest = recent[0] ?? null;
 
   return (
     <>
       <Header />
-      <main className="mx-auto max-w-5xl px-6 pt-16 pb-24 md:pt-24">
-        <Hero />
+      <main className="mx-auto max-w-5xl px-6 pt-12 pb-24 md:pt-20">
+        {latest && <TodayStrip date={latest.date} headline={latest.brief.headline} />}
+        <div className="mt-8">
+          <Hero />
+        </div>
         <div className="mt-12">
           <AnalyzeShell events={EVENTS} initialResult={initialResult ?? null} />
         </div>
@@ -26,6 +34,25 @@ export default async function HomePage({ searchParams }: PageProps) {
       </main>
       <Footer />
     </>
+  );
+}
+
+function TodayStrip({ date, headline }: { date: string; headline: string }) {
+  return (
+    <Link
+      href="/today"
+      className="group flex items-center gap-3 rounded-lg border border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-4 py-3 transition-colors hover:bg-[var(--color-surface-elevated)]"
+    >
+      <span className="relative inline-flex h-2 w-2 shrink-0">
+        <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--color-accent)] opacity-75 animate-ping" />
+        <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--color-accent)]" />
+      </span>
+      <span className="text-[10px] font-medium uppercase tracking-wider text-[var(--color-muted-foreground)] shrink-0">
+        OTI Daily · {formatDate(date)}
+      </span>
+      <span className="truncate text-sm font-medium">{headline}</span>
+      <ArrowRight className="ml-auto h-3.5 w-3.5 text-[var(--color-muted-foreground)] transition-transform group-hover:translate-x-0.5" />
+    </Link>
   );
 }
 

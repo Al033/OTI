@@ -139,11 +139,59 @@ vercel link
 # Pull production env (after wiring keys in dashboard)
 vercel env pull
 
+# Apply DB migrations (events + briefs + regime tables)
+pnpm db:push
+
+# Seed corpus + populate embeddings + populate regime centroids
+pnpm seed
+pnpm embeddings
+pnpm regime:centroids
+
 # Deploy
 vercel deploy --prod
 ```
 
-Recommended: install the **Neon** Marketplace integration — `POSTGRES_URL` is auto-injected. Set `AI_GATEWAY_API_KEY` from the AI Gateway dashboard, and optionally `VOYAGE_API_KEY` for the rerank pass.
+**Required env vars on Vercel:**
+
+- `POSTGRES_URL` — auto-injected when you install the Neon Marketplace integration.
+- `AI_GATEWAY_API_KEY` — from the AI Gateway dashboard. Routes Claude/OpenAI/Google/Mistral chat models *and* the voyage-3-large embedding model.
+- `FRED_API_KEY` — free at https://fred.stlouisfed.org/docs/api/api_key.html. Required for daily-regime cron + `pnpm regime:centroids`.
+- `CRON_SECRET` — any random string. Vercel sets `Authorization: Bearer ${CRON_SECRET}` on cron invocations automatically.
+
+**Optional but recommended:**
+
+- `VOYAGE_API_KEY` — enables the rerank-2.5 cross-encoder pass; quality drop without it is non-trivial.
+- `BSKY_HANDLE` + `BSKY_APP_PWD` — enables the daily Bluesky auto-post.
+- `RESEND_API_KEY` + `RESEND_FROM` + `RESEND_AUDIENCE_ID` — enables the daily email digest.
+
+**Vercel plan**: the cron schedules in [`vercel.ts`](vercel.ts) require Vercel **Pro** ($20/mo) — the Hobby tier's ±59min jitter is unacceptable for a market-state snapshot tied to close. Enable **Fluid Compute** on the project so the snapshot route can run for up to 5min when generating a fresh brief.
+
+## OTI Daily — the regime flywheel (v0.3)
+
+A self-publishing daily research artifact at [`/today`](src/app/today/page.tsx) that re-generates each weekday at 5pm ET:
+
+- Pulls a free 8-component macro-state vector (VIX, MOVE, HY OAS, term slope, real rate, breakeven, dollar regime, policy stance) from FRED + Yahoo at close.
+- Z-scores against the trailing 1260 trading days, fits a Ledoit-Wolf-shrunk covariance over the corpus regime centroids, runs Mahalanobis k-NN.
+- Returns three positive analogues + **one negative analogue** — the regime that scored similarly on macro state but resolved oppositely on the S&P. The "disambiguator" surfaces the macro variable that distinguishes today from that near-miss. (Inspired by [IntRec](https://arxiv.org/abs/2602.17639) and [Half-Truths Break Similarity Retrieval](https://arxiv.org/abs/2602.23906).)
+- Synthesises a daily brief (Claude Sonnet 4.6 by default, schema-constrained to corpus IDs, numeric paraphrase guarded).
+- Each day permalinks at `/today/<date>` with a custom 1200×675 [OG card](src/app/api/og/today/[date]/route.tsx) for FinTwit / Bluesky / Substack unfurls.
+- A 6am ET cron auto-posts the headline + OG card to **Bluesky** (X is too expensive in 2026 after the Feb pricing change) and sends the **Resend** daily-digest email broadcast.
+
+The corpus centroid build is one command:
+
+```bash
+pnpm regime:centroids          # write to Postgres
+pnpm regime:centroids --json   # also write data/regime-centroids.json sidecar
+```
+
+In dev without a Vercel Cron, you can manually trigger a snapshot:
+
+```bash
+curl -X POST localhost:3000/api/cron/regime-snapshot \
+     -H "Authorization: Bearer ${CRON_SECRET}"
+```
+
+The flywheel: every weekday adds an entry to a public `/today/<date>` archive; each entry has its own OG card; FinTwit accounts can quote-tweet ("OTI says today rhymes with Aug 2007 — here's why I disagree"); the cron runs free; the corpus is the moat.
 
 ## API surface
 

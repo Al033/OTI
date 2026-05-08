@@ -256,7 +256,59 @@ export default function MethodologyPage() {
             </p>
           </Section>
 
-          <Section label="08" title="Verifying the claims">
+          <Section label="08" title="OTI Daily — the regime fingerprint">
+            <p>
+              Every weekday at 5pm ET a Vercel Cron runs the Today's
+              Regime pipeline. It computes an 8-component macro-state
+              vector (VIX, MOVE, HY OAS, term slope, real rate, 5y
+              breakeven, dollar regime, policy stance), z-scores it
+              against the trailing five years, and runs Mahalanobis k-NN
+              against the corpus's pre-computed regime centroids.
+            </p>
+            <p>
+              The covariance is shrunk via Ledoit-Wolf — the canonical
+              fix for noisy eigenvalues at our N. Pre-1990 corpus events
+              have null VIX, pre-1996 lack HY OAS, pre-2003 lack real-rate
+              + breakeven; the matching code restricts to the intersection
+              of present dims and requires ≥5 of 8 to overlap before
+              declaring a match.
+            </p>
+            <p>
+              Every daily brief surfaces a <strong>negative analogue</strong>:
+              the regime with the next-smallest macro-state distance whose
+              S&P 1-month direction was OPPOSITE to the top positive's.
+              The disambiguator string identifies the z-dimension that
+              most distinguishes today from that near-miss. This makes
+              "intellectual honesty" a feature instead of a posture —
+              the brief literally tells you which case <em>looked</em>{" "}
+              like today's regime but went the other way, and why. The
+              shape comes from{" "}
+              <a
+                href="https://arxiv.org/abs/2602.17639"
+                className="text-[var(--color-accent)] underline-offset-4 hover:underline"
+              >
+                IntRec (arXiv:2602.17639)
+              </a>{" "}
+              and{" "}
+              <a
+                href="https://arxiv.org/abs/2602.23906"
+                className="text-[var(--color-accent)] underline-offset-4 hover:underline"
+              >
+                Half-Truths Break Similarity Retrieval (arXiv:2602.23906)
+              </a>
+              .
+            </p>
+            <p>
+              Each daily entry permalinks at <Code>/today/&lt;date&gt;</Code>{" "}
+              with a custom OG card. A 6am ET cron the next morning posts
+              the headline + card to Bluesky and emails a digest via Resend.
+              X is deliberately not in the loop — its post-Feb-2026 pricing
+              ($0.20/post with URLs) breaks the "free public artifact"
+              promise.
+            </p>
+          </Section>
+
+          <Section label="09" title="Verifying the claims">
             <p>
               Every claim above is testable from the repo:
             </p>

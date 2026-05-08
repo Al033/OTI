@@ -19,6 +19,16 @@ export function Header() {
           </Link>
           <nav className="hidden items-center gap-5 text-xs text-[var(--color-muted-foreground)] md:flex">
             <Link
+              href="/today"
+              className="hover:text-[var(--color-foreground)] transition-colors flex items-center gap-1.5"
+            >
+              <span className="relative inline-flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--color-accent)] opacity-75 animate-ping" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
+              </span>
+              Today
+            </Link>
+            <Link
               href="/methodology"
               className="hover:text-[var(--color-foreground)] transition-colors"
             >

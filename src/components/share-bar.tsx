@@ -9,6 +9,9 @@ import type { PipelineResult } from "@/lib/types";
 interface ShareBarProps {
   result: PipelineResult;
   briefId: string | null;
+  /** Path prefix for the shareable URL. Defaults to "/b/". For the
+   *  daily-regime page pass "/" (briefId already includes "today/<date>"). */
+  pathPrefix?: string;
 }
 
 /**
@@ -16,12 +19,12 @@ interface ShareBarProps {
  * The permalink is /b/:id; the brief is persisted server-side at request
  * time so the link works even on a fresh tab without re-running the LLM.
  */
-export function ShareBar({ result, briefId }: ShareBarProps) {
+export function ShareBar({ result, briefId, pathPrefix = "/b/" }: ShareBarProps) {
   const [copied, setCopied] = React.useState(false);
 
   const url =
     briefId && typeof window !== "undefined"
-      ? `${window.location.origin}/b/${briefId}`
+      ? `${window.location.origin}${pathPrefix}${briefId}`
       : null;
 
   function copyLink() {

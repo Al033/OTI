@@ -36,11 +36,17 @@ export function Header() {
             >
               Dataset
             </Link>
+            <Link
+              href="/api"
+              className="hover:text-[var(--color-foreground)] transition-colors"
+            >
+              API
+            </Link>
           </nav>
         </div>
         <div className="flex items-center gap-3">
           <a
-            href="https://github.com/"
+            href="https://github.com/Al033/OTI"
             target="_blank"
             rel="noreferrer"
             className="text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors"

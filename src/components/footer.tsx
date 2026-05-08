@@ -32,6 +32,16 @@ export function Footer() {
                   Dataset
                 </Link>
               </li>
+              <li>
+                <Link href="/api" className="hover:text-[var(--color-foreground)] text-[var(--color-muted-foreground)] transition-colors">
+                  API & MCP
+                </Link>
+              </li>
+              <li>
+                <a href="https://github.com/Al033/OTI" target="_blank" rel="noreferrer" className="hover:text-[var(--color-foreground)] text-[var(--color-muted-foreground)] transition-colors">
+                  GitHub
+                </a>
+              </li>
             </ul>
           </div>
           <div>

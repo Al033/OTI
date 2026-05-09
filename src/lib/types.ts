@@ -185,6 +185,36 @@ export const VerifierAuditSchema = z.object({
 });
 export type VerifierAudit = z.infer<typeof VerifierAuditSchema>;
 
+/**
+ * Calibrated 80% (or alpha-adjusted) prediction intervals per (asset,
+ * horizon), computed by leave-one-out walk-forward conformal calibration
+ * over the corpus. See lib/conformal.ts for the calibration recipe.
+ *
+ * Values are in the asset's native unit:
+ *   pct (S&P, DXY, gold, oil) — full percentage points
+ *   bps (UST, HY OAS) — basis points
+ *   level (VIX) — absolute index points
+ *
+ * `coverage` is the (1-α) target — typically 0.80. The empirical
+ * coverage on holdout data may differ at small N; methodology page
+ * documents this caveat.
+ */
+const HorizonRecord = z.record(
+  z.enum(["d1", "d5", "m1", "m3", "m6"]),
+  z
+    .object({
+      lo: z.number(),
+      hi: z.number(),
+      coverage: z.number(),
+    })
+    .nullable(),
+);
+export const CalibratedIntervalsSchema = z.record(
+  z.enum(["sp500", "ust10y", "dxy", "gold", "oil", "creditHY", "vix"]),
+  HorizonRecord,
+);
+export type CalibratedIntervals = z.infer<typeof CalibratedIntervalsSchema>;
+
 export const PipelineResultSchema = z.object({
   query: z.string(),
   queryTags: QueryTagsSchema,
@@ -198,5 +228,6 @@ export const PipelineResultSchema = z.object({
   corpusVersion: z.string(),
   retrievalAudit: RetrievalAuditSchema,
   verifierAudit: VerifierAuditSchema.optional(),
+  calibratedIntervals: CalibratedIntervalsSchema.optional(),
 });
 export type PipelineResult = z.infer<typeof PipelineResultSchema>;

@@ -12,6 +12,7 @@ import { fetchTodayMacroZ } from "./regime/today";
 import { FUSION_ALPHA } from "./regime/fuse";
 import { expandQuery, reciprocalRankFusion } from "./multi-query";
 import { verifyBrief } from "./verifier";
+import { buildCalibratedIntervals } from "./conformal-apply";
 import type {
   PipelineResult,
   RetrievalAudit,
@@ -137,6 +138,13 @@ export async function runPipeline(args: RunPipelineArgs): Promise<PipelineResult
     console.info("[pipeline] verifier warnings:", verifierAudit.warnings);
   }
 
+  // Conformal-calibrated intervals for the chosen 3 analogues. Null
+  // when the sidecar isn't present; UI falls back to empirical bands.
+  const chosenEvents = brief.analogues
+    .map((a) => finalCandidates.find((c) => c.eventId === a.eventId)?.event)
+    .filter((e): e is NonNullable<typeof e> => !!e);
+  const calibratedIntervals = buildCalibratedIntervals(chosenEvents) ?? undefined;
+
   const fusedRetrieval = !!queryEmbedding && !!todayMacroZ;
   const retrievalAudit: RetrievalAudit = {
     embeddingsSource: getEmbeddingsSource() ?? "none",
@@ -163,5 +171,6 @@ export async function runPipeline(args: RunPipelineArgs): Promise<PipelineResult
     corpusVersion: CORPUS_VERSION,
     retrievalAudit,
     verifierAudit,
+    calibratedIntervals,
   };
 }

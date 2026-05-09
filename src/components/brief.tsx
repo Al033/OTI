@@ -25,6 +25,7 @@ import type {
   PipelineResult,
   HistoricalEvent,
   ReturnSeries,
+  CalibratedIntervals,
 } from "@/lib/types";
 
 type AssetKey = "sp500" | "ust10y" | "dxy" | "gold" | "oil" | "creditHY" | "vix";
@@ -50,7 +51,7 @@ export function Brief({ result, events }: BriefProps) {
 
       <AnalogueGrid analogueEvents={analogueEvents} />
 
-      <AssetMovesSection analogueEvents={analogueEvents} />
+      <AssetMovesSection analogueEvents={analogueEvents} calibratedIntervals={result.calibratedIntervals} />
 
       <PatternSection
         icon={<Quote className="h-3.5 w-3.5" />}
@@ -279,8 +280,10 @@ const ASSETS: Array<{ key: AssetKey; label: string; unit: "pct" | "bps" | "level
 
 function AssetMovesSection({
   analogueEvents,
+  calibratedIntervals,
 }: {
   analogueEvents: Array<{ output: PipelineResult["brief"]["analogues"][number]; event: HistoricalEvent }>;
+  calibratedIntervals?: CalibratedIntervals;
 }) {
   const bands = bandsForEnsemble(analogueEvents.map((a) => a.event));
 
@@ -352,7 +355,13 @@ function AssetMovesSection({
                     );
                   })}
                   <td className="px-4 py-3 border-l border-[var(--color-border-subtle)]">
-                    <BandCell band={bands[asset.key].m1} unit={asset.unit} />
+                    <BandCell
+                      band={bands[asset.key].m1}
+                      unit={asset.unit}
+                      calibrated={
+                        calibratedIntervals?.[asset.key]?.m1 ?? null
+                      }
+                    />
                   </td>
                 </tr>
               ))}
@@ -361,11 +370,13 @@ function AssetMovesSection({
         </div>
       </Card>
       <p className="text-[11px] leading-relaxed text-[var(--color-muted-foreground)]">
-        @1m range is the empirical min / median / max across N=3 analogues —
-        not a calibrated forecast interval. Three datapoints have zero
-        statistical power; they describe history, not probability.
-        Conformal-calibrated coverage requires a calibration set of ≥30
-        events (planned for v0.5).
+        @1m: when calibrated coverage is shown (in accent), it's the
+        leave-one-out walk-forward conformal interval calibrated on the
+        full corpus — coverage approaches the stated rate as N grows;
+        at N=39 the claim is approximate, not exact. When only the N=3
+        empirical range is shown, no sidecar has been generated yet —
+        run <code className="mono text-[10px]">pnpm conformal</code>.
+        Either way, this describes history, not probability.
       </p>
     </section>
   );
@@ -438,9 +449,11 @@ function AssetCell({
 function BandCell({
   band,
   unit,
+  calibrated,
 }: {
   band: QuantileBand;
   unit: "pct" | "bps" | "level";
+  calibrated?: { lo: number; hi: number; coverage: number } | null;
 }) {
   if (band.n === 0 || band.median === null) {
     return <span className="mono text-[10px] text-[var(--color-muted-foreground)]">—</span>;
@@ -461,10 +474,19 @@ function BandCell({
           ? "positive"
           : "negative"
         : "neutral";
+
+  // Prefer calibrated interval when present; show empirical underneath
+  // as supporting context.
+  const showCalibrated = !!calibrated;
+
   return (
     <div
       className="flex flex-col gap-0.5 leading-tight"
-      title={`Empirical range across N=${band.n} analogues — not a calibrated forecast interval`}
+      title={
+        showCalibrated && calibrated
+          ? `Calibrated ${(calibrated.coverage * 100).toFixed(0)}% interval from leave-one-out walk-forward conformal calibration over the full corpus. Empirical N=3 range shown as supporting context.`
+          : `Empirical range across N=${band.n} analogues — not a calibrated forecast interval`
+      }
     >
       <span
         className={cn(
@@ -478,9 +500,15 @@ function BandCell({
       >
         {fmt(band.median)}
       </span>
-      <span className="mono text-[9px] text-[var(--color-muted-foreground)] whitespace-nowrap">
-        [{fmt(band.min)}, {fmt(band.max)}]
-      </span>
+      {showCalibrated && calibrated ? (
+        <span className="mono text-[9px] text-[var(--color-accent)]/80 whitespace-nowrap">
+          {(calibrated.coverage * 100).toFixed(0)}% [{fmt(calibrated.lo)}, {fmt(calibrated.hi)}]
+        </span>
+      ) : (
+        <span className="mono text-[9px] text-[var(--color-muted-foreground)] whitespace-nowrap">
+          N=3 [{fmt(band.min)}, {fmt(band.max)}]
+        </span>
+      )}
     </div>
   );
 }

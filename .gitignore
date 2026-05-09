@@ -62,5 +62,10 @@ yarn-error.log*
 # the deployed app to ship verifiable returns by default.
 /data/asset-moves.json
 
+# build-time conformal-quantile sidecar (regenerable via `pnpm conformal`).
+# Optional — when present, briefs render calibrated 80% intervals
+# alongside empirical N=3 bands. Commit this for prod deployments.
+/data/conformal-quantiles.json
+
 # claude local config
 .claude/

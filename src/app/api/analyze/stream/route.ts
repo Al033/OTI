@@ -7,6 +7,7 @@ import { rerankCandidates } from "@/lib/rerank";
 import { fetchTodayMacroZ } from "@/lib/regime/today";
 import { FUSION_ALPHA } from "@/lib/regime/fuse";
 import { verifyBrief } from "@/lib/verifier";
+import { buildCalibratedIntervals } from "@/lib/conformal-apply";
 import { expandQuery, reciprocalRankFusion } from "@/lib/multi-query";
 import { sanitiseUserQuery } from "@/lib/prompts";
 import {
@@ -285,6 +286,12 @@ export async function POST(req: NextRequest) {
           console.warn("[analyze/stream] verifier issues:", verifierAudit.issues);
         }
 
+        const chosenEvents = brief.analogues
+          .map((a) => finalCandidates.find((c) => c.eventId === a.eventId)?.event)
+          .filter((e): e is NonNullable<typeof e> => !!e);
+        const calibratedIntervals =
+          buildCalibratedIntervals(chosenEvents) ?? undefined;
+
         const result: PipelineResult = {
           query,
           queryTags,
@@ -298,6 +305,7 @@ export async function POST(req: NextRequest) {
           corpusVersion: CORPUS_VERSION,
           retrievalAudit,
           verifierAudit,
+          calibratedIntervals,
         };
 
         const briefId = briefIdFor(

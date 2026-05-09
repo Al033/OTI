@@ -1,5 +1,10 @@
 import { ImageResponse } from "next/og";
 import { getDailyBrief, getMatches } from "@/lib/regime/store";
+import {
+  SYNTHETIC_DATE,
+  SYNTHETIC_BRIEF,
+  SYNTHETIC_SIMILARITIES,
+} from "@/lib/regime/synthetic-today";
 import { EVENT_BY_ID } from "@/lib/events";
 
 export const runtime = "nodejs";
@@ -31,10 +36,31 @@ export async function GET(_req: Request, ctx: RouteParams) {
   const isValid = /^\d{4}-\d{2}-\d{2}$/.test(date);
   const brief = isValid ? await getDailyBrief(date) : null;
   const matches = isValid ? await getMatches(date) : null;
-  const top = matches?.positives[0];
-  const topEvent = top ? EVENT_BY_ID.get(top.eventId) : null;
+  let top = matches?.positives[0] as
+    | { eventId: string; similarity: number }
+    | undefined;
+  let topEvent = top ? EVENT_BY_ID.get(top.eventId) : null;
+  let regimeSummary = brief?.brief.regimeSummary;
+  let isPreview = false;
 
-  if (!brief || !top || !topEvent) {
+  // Synthetic-preview fallback when nothing's persisted and the URL is
+  // today's date — keeps the OG card aligned with what the page actually
+  // renders. Live cron path takes precedence whenever it has data.
+  if ((!brief || !top || !topEvent) && date === SYNTHETIC_DATE) {
+    const syn = SYNTHETIC_BRIEF.positives[0];
+    const synEvent = EVENT_BY_ID.get(syn.eventId);
+    if (synEvent) {
+      top = {
+        eventId: syn.eventId,
+        similarity: SYNTHETIC_SIMILARITIES.positives[0],
+      };
+      topEvent = synEvent;
+      regimeSummary = SYNTHETIC_BRIEF.regimeSummary;
+      isPreview = true;
+    }
+  }
+
+  if (!top || !topEvent || !regimeSummary) {
     return new ImageResponse(
       (
         <div
@@ -108,6 +134,21 @@ export async function GET(_req: Request, ctx: RouteParams) {
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <Logo />
             <span>OTI Daily</span>
+            {isPreview && (
+              <span
+                style={{
+                  fontSize: 16,
+                  color: ACCENT,
+                  letterSpacing: 4,
+                  border: `1px solid ${ACCENT}`,
+                  padding: "2px 10px",
+                  borderRadius: 4,
+                  marginLeft: 8,
+                }}
+              >
+                PREVIEW
+              </span>
+            )}
           </div>
           <span style={{ fontFamily: "ui-monospace, monospace" }}>{date}</span>
         </div>
@@ -157,7 +198,7 @@ export async function GET(_req: Request, ctx: RouteParams) {
               fontWeight: 400,
             }}
           >
-            {truncate(brief.brief.regimeSummary, 180)}
+            {truncate(regimeSummary, 180)}
           </p>
         </div>
 

@@ -161,7 +161,7 @@ export const MCP_TOOLS = [
   {
     name: "search_analogues",
     description:
-      "Find historical macro events analogous to a user-described market event. Returns top-K events with their point-in-time narrative, t=0 market reaction, and retrieval scores. Use this when the user asks 'what does this rhyme with', 'what historical analogues fit', or wants memory-style framing for a current market event. Schema-constrained to OTI's 30-event corpus (1971-2025).",
+      "Find historical macro events analogous to a user-described market event. Returns top-K events with their point-in-time narrative, t=0 market reaction, and retrieval scores. Use this when the user asks 'what does this rhyme with', 'what historical analogues fit', or wants memory-style framing for a current market event. Schema-constrained to OTI's 39-event corpus (1929-2025).",
     inputSchema: zodToJsonSchema(SearchAnaloguesInputSchema),
   },
   {

@@ -22,7 +22,7 @@ export default function ApiPage() {
               Pull OTI's corpus into your tools
             </h1>
             <p className="max-w-2xl text-pretty text-base leading-relaxed text-[var(--color-muted-foreground)] md:text-lg">
-              Free, public, MIT-licensed. Read-only HTTP for the curated 30-event corpus, and an MCP server so any agentic client (Claude Desktop, Cursor, OpenBB Workspace) can search analogues and pull events directly.
+              Free, public, MIT-licensed. Read-only HTTP for the curated 39-event corpus, and an MCP server so any agentic client (Claude Desktop, Cursor, OpenBB Workspace) can search analogues and pull events directly.
             </p>
           </header>
 

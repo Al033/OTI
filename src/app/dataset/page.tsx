@@ -10,11 +10,12 @@ import { formatDate, formatPct } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Dataset",
   description:
-    "The 30 curated macro events that power OTI. 1971–2025.",
+    "The 39 curated macro events that power OTI. 1929–2025.",
 };
 
 export default function DatasetPage() {
   const sorted = [...EVENTS].sort((a, b) => (a.date < b.date ? -1 : 1));
+  const trajectoryCount = sorted.filter((e) => e.analyticalTrajectory).length;
 
   return (
     <>
@@ -25,13 +26,24 @@ export default function DatasetPage() {
             Dataset
           </p>
           <h1 className="text-balance text-4xl font-semibold tracking-tight md:text-5xl">
-            30 macro events, 1971–2025
+            39 macro events, 1929–2025
           </h1>
           <p className="max-w-2xl text-pretty text-base leading-relaxed text-[var(--color-muted-foreground)] md:text-lg">
             Hand-curated, version-controlled, MIT-licensed. Each row stores
             structured tags, point-in-time narrative, asset-move data,
             failed-trade quotes with attribution, and a retrospective lesson.
             Source: <code className="mono text-xs">data/events.ts</code>.
+          </p>
+          <p className="text-xs text-[var(--color-muted-foreground)]">
+            <span className="mono text-[10px] mr-2 rounded-sm border border-[var(--color-accent)]/30 bg-[color-mix(in_oklch,var(--color-accent)_8%,transparent)] px-1.5 py-0.5 text-[var(--color-accent)]">
+              ↗
+            </span>
+            indicates events that carry an{" "}
+            <code className="mono text-[10px]">analyticalTrajectory</code>{" "}
+            (ARISE pattern, arXiv:2605.03242) — {trajectoryCount}/{sorted.length}{" "}
+            today. Each trajectory describes priorBeliefs, marginalDataPoints,
+            decisionPoints, dominantBias, whatGoodAnalystsDid. Source:{" "}
+            <code className="mono text-[10px]">data/trajectories.ts</code>.
           </p>
         </header>
 
@@ -62,7 +74,18 @@ export default function DatasetPage() {
                         {formatDate(e.date)}
                       </td>
                       <td className="px-4 py-3 font-medium">
-                        {e.title}
+                        <span className="inline-flex items-center gap-1.5">
+                          {e.title}
+                          {e.analyticalTrajectory && (
+                            <span
+                              className="mono text-[9px] rounded-sm border border-[var(--color-accent)]/30 bg-[color-mix(in_oklch,var(--color-accent)_8%,transparent)] px-1 py-0 text-[var(--color-accent)]"
+                              title="Carries analyticalTrajectory"
+                              aria-label="Carries analyticalTrajectory"
+                            >
+                              ↗
+                            </span>
+                          )}
+                        </span>
                         <div className="mt-1 flex flex-wrap gap-1">
                           {e.regimeTags.slice(0, 3).map((t) => (
                             <Badge key={t} variant="outline" className="font-mono text-[9px]">

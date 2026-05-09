@@ -71,7 +71,7 @@ export function Footer() {
             Markets don't predict — they remember.
           </p>
           <p>
-            Built with Next.js, AI SDK, and a curated corpus of 30 macro events.
+            Built with Next.js, AI SDK, and a curated corpus of 39 macro events.
           </p>
         </div>
       </div>

@@ -7,7 +7,7 @@
 > A historical-analogue research engine for macro markets.
 > Memory, not prediction.
 
-Type a market event in plain English. OTI streams a one-page brief with three historical analogues, asset behaviour over the next month, flow patterns, the trades that looked obvious but failed, and where consensus went wrong — from a curated corpus of 30 macro events, 1971–2025.
+Type a market event in plain English. OTI streams a one-page brief with three historical analogues, asset behaviour over the next month, flow patterns, the trades that looked obvious but failed, and where consensus went wrong — from a curated corpus of 39 macro events, 1929–2025.
 
 What used to cost $30k/yr at BCA, $10k/mo at Kensho, or a Bloomberg terminal — free, open, and intellectually honest about its limits.
 
@@ -23,7 +23,7 @@ The product is one screen. Type an event:
 
 And get a one-page brief that:
 
-1. **Picks three historical analogues** from a curated corpus of 30 events, with reasoning grounded in each event's _point-in-time_ narrative (not retrospective hindsight).
+1. **Picks three historical analogues** from a curated corpus of 39 events, with reasoning grounded in each event's _point-in-time_ narrative (not retrospective hindsight).
 2. **Shows asset behaviour** at 1d / 5d / 1m / 3m / 6m horizons across S&P, USTs, USD, gold, oil, HY OAS, and VIX — small-multiples Tufte sparklines per asset, per analogue, with hover-to-reveal exact values.
 3. **Synthesises the recurring failed-trade pattern** across the three regimes — the obvious-looking trade that didn't work.
 4. **Surfaces where consensus went wrong** — the systematic mistake markets made in similar regimes.
@@ -293,7 +293,7 @@ The flywheel: every weekday adds an entry to a public `/today/<date>` archive; e
 
 ## API surface
 
-- **`GET /api/events`** — slim list of all 30 events in the corpus. CORS-open, 1h cached.
+- **`GET /api/events`** — slim list of all 39 events in the corpus. CORS-open, 1h cached.
 - **`GET /api/events/:id`** — full event payload. Add `?view=pit` for the point-in-time view (no hindsight, no longer-horizon asset moves).
 - **`GET /api/openapi.json`** — OpenAPI 3.1 spec.
 - **`POST /api/analyze`** — synchronous JSON pipeline run. Returns the full `PipelineResult` payload. Per-IP rate-limited (token bucket: burst 10, sustained 10/min) and bot-heuristic-gated.

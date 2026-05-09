@@ -35,7 +35,7 @@ function buildSpec() {
       title: "OTI — Historical Macro Analogue Engine",
       version: "0.2.0",
       description:
-        "Read-only access to OTI's curated 30-event historical-macro-analogue corpus, plus the LLM analyse pipeline. Memory, not prediction.",
+        "Read-only access to OTI's curated 39-event historical-macro-analogue corpus, plus the LLM analyse pipeline. Memory, not prediction.",
       license: { name: "MIT", url: "https://github.com/Al033/OTI/blob/main/LICENSE" },
       contact: { name: "OTI", url: "https://github.com/Al033/OTI" },
     },

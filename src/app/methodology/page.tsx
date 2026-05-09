@@ -218,11 +218,12 @@ export default function MethodologyPage() {
             <p>Specific known failure modes:</p>
             <ul>
               <li>
-                <strong>Coverage gaps.</strong> 30 events span 1971–2025 but
-                cluster around developed-market crises. EM, Asia, and pre-1971
-                events are under-represented. If your event is structurally
-                similar to e.g. 1923 Weimar hyperinflation, OTI has nothing to
-                offer.
+                <strong>Coverage gaps.</strong> 39 events span 1929–2025 but
+                still cluster around developed-market crises. EM and Asia
+                episodes are under-represented relative to their historical
+                weight in global macro. If your event is structurally similar
+                to e.g. 1923 Weimar hyperinflation or the 1907 Knickerbocker
+                panic, OTI has nothing to offer.
               </li>
               <li>
                 <strong>Tag drift.</strong> Two curators may tag the same

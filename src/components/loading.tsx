@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 const STEPS = [
   "Tagging your event",
-  "Computing Jaccard scores across 30 events",
+  "Computing Jaccard scores across 39 events",
   "Selecting top candidates",
   "Synthesising the brief",
 ];

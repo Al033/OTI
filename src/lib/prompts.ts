@@ -96,7 +96,7 @@ function buildCorpusKnowledgePrime(): string {
 
   return `Corpus knowledge prime (corpus version ${CORPUS_VERSION}):
 
-You operate against a curated 30-event-class macro-history corpus. Below are the controlled vocabularies and the full event manifest. You will receive specific candidates per request, but this manifest is your authoritative list of what exists in the corpus.
+You operate against a curated 39-event-class macro-history corpus (1929-2025). Below are the controlled vocabularies and the full event manifest. You will receive specific candidates per request, but this manifest is your authoritative list of what exists in the corpus.
 
 Controlled vocabulary — triggerTypes (exactly one per event):
   ${TRIGGER_TYPES.join(", ")}

@@ -23,13 +23,15 @@ import { EVENTS } from "../src/lib/events";
 const FORCE = process.argv.includes("--force");
 const WRITE_JSON = process.argv.includes("--json");
 const SKIP_DB = process.argv.includes("--no-db") || !process.env.POSTGRES_URL;
-const MODEL = process.env.OTI_EMBEDDING_MODEL ?? "voyage/voyage-4-large";
+const MODEL = process.env.OTI_EMBEDDING_MODEL ?? "voyage/voyage-finance-2";
 const DIMENSIONS = Number(process.env.OTI_EMBEDDING_DIMENSIONS ?? 1024);
 
-// IMPORTANT: voyage-4-large produces embeddings in a NEW vector space vs
-// voyage-3-large. If you're upgrading from v0.3, you MUST re-embed every
-// event with `pnpm embeddings --force`. Within Voyage 4 (large/medium/lite)
-// the space is shared, so you can mix tiers without re-embedding.
+// IMPORTANT: switching embedding models produces a NEW vector space,
+// invalidating any previously-stored embeddings. After changing
+// OTI_EMBEDDING_MODEL (e.g. voyage-4-large → voyage-finance-2), you
+// MUST re-embed every event with `pnpm embeddings --force`. Within a
+// model family the space is shared (e.g. mixing voyage-4 nano/lite/
+// large/medium); across families it isn't.
 
 function buildEmbedText(e: (typeof EVENTS)[number]): string {
   return [

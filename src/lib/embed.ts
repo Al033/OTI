@@ -17,8 +17,26 @@ import { fuseTextAndMacro, FUSION_ALPHA } from "./regime/fuse";
  * works in Jaccard-only mode in that case.
  */
 
+/**
+ * Default embedding model: voyage-finance-2 (domain-specialised for
+ * financial prose). The OTI corpus is finance/macro narrative — this
+ * is the bullseye use case. Voyage's published benchmarks show ~7%
+ * NDCG@10 lift over OpenAI text-embedding-3-large on FinanceBench, and
+ * a measurable lift over the general-purpose voyage-4-large on
+ * filing-density text.
+ *
+ * Override via OTI_EMBEDDING_MODEL=voyage/voyage-4-large if you've
+ * already embedded the corpus there and don't want to re-embed.
+ * Voyage-4-large is the right call for non-finance-domain corpora and
+ * for multilingual coverage.
+ *
+ * Both models produce 1024d at the OTI_EMBEDDING_DIMENSIONS default,
+ * so the schema doesn't change between them — but they live in
+ * DIFFERENT vector spaces, so switching requires `pnpm embeddings
+ * --force` to re-embed every event.
+ */
 export const QUERY_EMBEDDING_MODEL =
-  process.env.OTI_EMBEDDING_MODEL ?? "voyage/voyage-4-large";
+  process.env.OTI_EMBEDDING_MODEL ?? "voyage/voyage-finance-2";
 
 export const QUERY_EMBEDDING_DIMENSIONS = Number(
   process.env.OTI_EMBEDDING_DIMENSIONS ?? 1024,

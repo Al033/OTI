@@ -281,15 +281,20 @@ function describeDisambiguator(
   today: Array<number | null>,
   candidate: HistoricalEvent,
 ): string {
-  // Find the dim where today and the candidate differ most in z-value.
-  if (!candidate.regimeZVector || !Array.isArray(candidate.regimeZVector)) {
+  // The events.ts module exports a wider type that includes
+  // regimeZVector at runtime; the narrow HistoricalEvent type used as
+  // the parameter shape doesn't surface it. Cast to access.
+  const candZ = (
+    candidate as unknown as { regimeZVector?: Array<number | null> | null }
+  ).regimeZVector;
+  if (!candZ || !Array.isArray(candZ)) {
     return "(disambiguator unavailable: candidate centroid not stored)";
   }
   let bestIdx = -1;
   let bestGap = -Infinity;
   for (let i = 0; i < REGIME_DIMENSIONS; i++) {
     const a = today[i];
-    const b = (candidate.regimeZVector as Array<number | null>)[i];
+    const b = candZ[i];
     if (a === null || b === null) continue;
     const gap = Math.abs(a - b);
     if (gap > bestGap) {
@@ -301,7 +306,7 @@ function describeDisambiguator(
 
   const comp = REGIME_COMPONENTS[bestIdx];
   const todayVal = today[bestIdx] as number;
-  const candVal = (candidate.regimeZVector as Array<number | null>)[bestIdx] as number;
+  const candVal = candZ[bestIdx] as number;
   const direction = todayVal > candVal ? "elevated" : "compressed";
   return `Today's ${comp.label.toLowerCase()} reading is ${direction} relative to ${candidate.title.split(" — ")[0]} (z=${todayVal.toFixed(2)} vs ${candVal.toFixed(2)})`;
 }

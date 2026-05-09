@@ -52,12 +52,15 @@ export const FailedTradeSchema = z
     quote: z.string().min(1),
     attribution: z.string().min(1),
     sourceUrl: z.string().url().optional(),
-    /** Defaults to paraphrase_no_source for backwards compatibility with v0.1 entries. */
-    provenance: QuoteProvenanceSchema.default("paraphrase_no_source"),
+    /** Optional. Defaults to "paraphrase_no_source" at runtime. We use
+     *  `.optional()` rather than `.default()` so existing v0.1-curated
+     *  events that don't list a provenance still typecheck without a
+     *  data-migration pass; runtime consumers fall back via `?? `. */
+    provenance: QuoteProvenanceSchema.optional(),
     /** Optional Wayback Machine snapshot URL for link-rot safety. */
     archiveUrl: z.string().url().optional(),
   })
-  .refine((v) => v.provenance !== "verified" || !!v.sourceUrl, {
+  .refine((v) => (v.provenance ?? "paraphrase_no_source") !== "verified" || !!v.sourceUrl, {
     message: "verified provenance requires sourceUrl",
     path: ["sourceUrl"],
   });

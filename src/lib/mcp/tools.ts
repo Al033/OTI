@@ -206,7 +206,6 @@ function hasDefault(schema: z.ZodType): boolean {
 
 function zodFieldToSchema(schema: z.ZodType): Record<string, unknown> {
   let inner = schema;
-  let description: string | undefined;
   let defaultVal: unknown;
 
   if (schema instanceof z.ZodOptional) {
@@ -217,7 +216,7 @@ function zodFieldToSchema(schema: z.ZodType): Record<string, unknown> {
     inner = inner.removeDefault();
   }
   // The zod public surface for descriptions is `_def.description`.
-  description = (inner as { _def?: { description?: string } })._def?.description;
+  const description = (inner as { _def?: { description?: string } })._def?.description;
 
   let core: Record<string, unknown>;
   if (inner instanceof z.ZodString) core = { type: "string" };

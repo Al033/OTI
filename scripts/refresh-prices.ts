@@ -36,7 +36,7 @@ interface EventOverride {
   date: string;
   asOf: Record<string, string | null>;
   source: Record<string, "fred" | "stooq" | "missing">;
-  series: Record<string, Partial<Record<"d1" | "d5" | "m1" | "m3" | "m6", number>>>;
+  series: Record<string, Partial<Record<"d1" | "d5" | "m1" | "m3" | "m6", number | null>>>;
 }
 
 interface SidecarShape {

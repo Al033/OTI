@@ -58,21 +58,20 @@ const CACHE_1H = {
  *   }
  */
 function gatewayFallback(primary: string, alternatives: string[]) {
+  // Plain mutable array so the AI SDK's JSONArray type accepts it.
   return {
     gateway: {
-      models: [primary, ...alternatives],
+      models: [primary, ...alternatives] as string[],
     },
-  } as const;
+  };
 }
 
-const SYNTH_FALLBACK_MODELS = [
+const SYNTH_FALLBACK_MODELS: string[] = [
   "anthropic/claude-haiku-4-5",
   "openai/gpt-4o",
 ];
 
-const TAG_FALLBACK_MODELS = [
-  "openai/gpt-4o-mini",
-];
+const TAG_FALLBACK_MODELS: string[] = ["openai/gpt-4o-mini"];
 import {
   QueryTagsSchema,
   BriefOutputSchema,

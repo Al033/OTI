@@ -217,7 +217,10 @@ function StatCard({
       </CardContent>
     </Card>
   );
-  return link ? <Link href={link}>{inner}</Link> : inner;
+  // Cast: stats-card links are dynamic strings (e.g. anchors / hashes)
+  // that aren't enumerable as static routes — typed-routes can't verify
+  // them at build time.
+  return link ? <Link href={link as unknown as never}>{inner}</Link> : inner;
 }
 
 function formatNum(n: number): string {

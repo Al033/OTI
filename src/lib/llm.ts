@@ -43,6 +43,36 @@ const CACHE_1H = {
     cacheControl: { type: "ephemeral", ttl: "1h" } as const,
   },
 } as const;
+
+/**
+ * AI Gateway model-fallback chain for synthesis. When the primary model
+ * is rate-limited or returns a 5xx, the Gateway automatically routes
+ * the request to the next model in the array. Synthesis-quality
+ * fallback prefers Opus 4.7 → Sonnet 4.6 → Haiku 4.5 ("a slightly
+ * worse brief is better than no brief"). Tagging fallback prefers
+ * Haiku → 4o-mini ("classification is easy; just survive").
+ *
+ * Vercel AI Gateway syntax (April 2025, still current May 2026):
+ *   providerOptions: {
+ *     gateway: { models: [...], order: ['anthropic'] }
+ *   }
+ */
+function gatewayFallback(primary: string, alternatives: string[]) {
+  return {
+    gateway: {
+      models: [primary, ...alternatives],
+    },
+  } as const;
+}
+
+const SYNTH_FALLBACK_MODELS = [
+  "anthropic/claude-haiku-4-5",
+  "openai/gpt-4o",
+];
+
+const TAG_FALLBACK_MODELS = [
+  "openai/gpt-4o-mini",
+];
 import {
   QueryTagsSchema,
   BriefOutputSchema,
@@ -104,6 +134,7 @@ export async function tagQuery(args: {
     system: TAG_SYSTEM_PROMPT,
     prompt: buildTagUserPrompt(args.query),
     temperature: 0.1,
+    providerOptions: gatewayFallback(model, TAG_FALLBACK_MODELS),
     experimental_telemetry: TELEMETRY("tag-query"),
   });
   return result.object;
@@ -173,6 +204,9 @@ export async function synthesisPhaseA(args: {
       },
     ],
     temperature: 0.4,
+    providerOptions: {
+      ...gatewayFallback(model, SYNTH_FALLBACK_MODELS),
+    },
     experimental_telemetry: TELEMETRY("synthesis-phase-a"),
   });
   return result.object;
@@ -205,6 +239,9 @@ export async function synthesisPhaseB(args: {
       },
     ],
     temperature: 0.4,
+    providerOptions: {
+      ...gatewayFallback(model, SYNTH_FALLBACK_MODELS),
+    },
     experimental_telemetry: TELEMETRY("synthesis-phase-b"),
   });
   return result.object;
@@ -244,6 +281,9 @@ export function streamSynthesisPhaseA(args: {
       },
     ],
     temperature: 0.4,
+    providerOptions: {
+      ...gatewayFallback(model, SYNTH_FALLBACK_MODELS),
+    },
     experimental_telemetry: TELEMETRY("stream-synthesis-phase-a"),
   });
 }
@@ -274,6 +314,9 @@ export function streamSynthesisPhaseB(args: {
       },
     ],
     temperature: 0.4,
+    providerOptions: {
+      ...gatewayFallback(model, SYNTH_FALLBACK_MODELS),
+    },
     experimental_telemetry: TELEMETRY("stream-synthesis-phase-b"),
   });
 }

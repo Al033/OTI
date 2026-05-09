@@ -55,7 +55,8 @@
     "resend": "^4.0.0",
     "@langfuse/otel": "^4.0.0",
     "@langfuse/tracing": "^4.0.0",
-    "@opentelemetry/sdk-node": "^0.55.0"
+    "@opentelemetry/sdk-node": "^0.55.0",
+    "@vercel/edge-config": "^1.4.0"
   },
   "devDependencies": {
     "typescript": "^5.7.2",

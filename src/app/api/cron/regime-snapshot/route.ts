@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { orchestrateDailyBrief } from "@/lib/regime/orchestrate";
+import { writeEdgeConfigForToday } from "@/lib/edge-config-writer";
+import { EVENT_BY_ID } from "@/lib/events";
 import { isAuthorizedCron } from "../guard";
 
 export const runtime = "nodejs";
@@ -42,6 +44,28 @@ async function runIt(req: NextRequest) {
       asOf: dateOverride ?? undefined,
       force,
     });
+
+    // Push to Edge Config for sub-5ms hot-path reads on the home page.
+    // Best-effort — failure here doesn't fail the cron.
+    let edgeConfigStatus: { ok: boolean; reason?: string } = {
+      ok: false,
+      reason: "skipped",
+    };
+    const top = result.positives[0];
+    if (top) {
+      const topEvent = EVENT_BY_ID.get(top.eventId);
+      if (topEvent) {
+        edgeConfigStatus = await writeEdgeConfigForToday({
+          date: result.date,
+          brief: result.brief,
+          topAnalogueId: top.eventId,
+          topAnalogueTitle: topEvent.title,
+          similarity: top.similarity,
+          corpusVersion: result.corpusVersion,
+        });
+      }
+    }
+
     return NextResponse.json({
       ok: true,
       date: result.date,
@@ -50,6 +74,7 @@ async function runIt(req: NextRequest) {
       topAnalogueId: result.positives[0]?.eventId ?? null,
       topSimilarity: result.positives[0]?.similarity ?? null,
       hasNegative: !!result.negative,
+      edgeConfig: edgeConfigStatus,
     });
   } catch (err) {
     console.error("[cron/regime-snapshot] failed:", err);

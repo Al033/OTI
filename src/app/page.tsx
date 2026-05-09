@@ -4,6 +4,7 @@ import { AnalyzeShell } from "@/components/analyze-shell";
 import { EVENTS } from "@/lib/events";
 import { DEMO_RESULTS } from "@/lib/demo-cache";
 import { getRecentBriefs } from "@/lib/regime/store";
+import { readEdgeConfig } from "@/lib/edge-config";
 import { formatDate } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -16,14 +17,28 @@ export default async function HomePage({ searchParams }: PageProps) {
   const params = await searchParams;
   const demoId = Array.isArray(params.demo) ? params.demo[0] : params.demo;
   const initialResult = demoId ? DEMO_RESULTS.get(demoId) : null;
-  const recent = await getRecentBriefs(1);
-  const latest = recent[0] ?? null;
+
+  // Edge Config first (sub-5ms global read). Falls back to Postgres
+  // when EDGE_CONFIG isn't set or has no value yet.
+  const edge = await readEdgeConfig();
+  let stripData: { date: string; headline: string } | null = edge.today
+    ? { date: edge.today.date, headline: edge.today.headline }
+    : null;
+  if (!stripData) {
+    const recent = await getRecentBriefs(1);
+    if (recent[0]) {
+      stripData = {
+        date: recent[0].date,
+        headline: recent[0].brief.headline,
+      };
+    }
+  }
 
   return (
     <>
       <Header />
       <main className="mx-auto max-w-5xl px-6 pt-12 pb-24 md:pt-20">
-        {latest && <TodayStrip date={latest.date} headline={latest.brief.headline} />}
+        {stripData && <TodayStrip date={stripData.date} headline={stripData.headline} />}
         <div className="mt-8">
           <Hero />
         </div>

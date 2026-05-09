@@ -42,7 +42,7 @@ export const maxDuration = 30;
 
 const SERVER_INFO = {
   name: "oti-historical-analogues",
-  version: "0.2.0",
+  version: "0.5.0",
   title: "OTI — Historical Macro Analogue Engine",
 };
 

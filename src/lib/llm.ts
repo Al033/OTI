@@ -58,14 +58,25 @@ const CACHE_1H = {
  *   }
  */
 function gatewayFallback(primary: string, alternatives: string[]) {
-  // Plain mutable array so the AI SDK's JSONArray type accepts it.
+  // Plain mutable arrays so the AI SDK's JSONArray type accepts it.
   return {
     gateway: {
       models: [primary, ...alternatives] as string[],
+      // Auto-caching at the Gateway level — caches identical request
+      // bodies for 24h. Stacks with Anthropic's prompt-cache markers on
+      // the system prompt; the gateway cache wins on identical requests
+      // (e.g. demo replays), Anthropic cache wins on partial-prefix
+      // hits. Free win, 1 LoC.
+      caching: "auto" as const,
     },
   };
 }
 
+// Synthesis chain: Opus 4.7 (top quality, 1M ctx GA) → Sonnet 4.6
+// (default working horse) → Haiku 4.5 (degraded but coherent) → GPT-4o
+// (off-Anthropic island). The Gateway routes the next provider on rate
+// limit / 5xx without code changes; each fallback is strictly weaker
+// but ensures the cron survives Anthropic outages.
 const SYNTH_FALLBACK_MODELS: string[] = [
   "anthropic/claude-haiku-4-5",
   "openai/gpt-4o",

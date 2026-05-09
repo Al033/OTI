@@ -37,12 +37,18 @@ And get a one-page brief that:
 - **Numeric paraphrase guard.** Every prose field is post-processed: digit-runs that aren't whitelisted (years, indices, sample-sizes) get scrubbed. The asset-move table is rendered deterministically from the corpus; the LLM never invents stats.
 - **`narrativeAtTime` ≠ `outcomeInHindsight`.** Every event stores point-in-time consensus separately from what actually happened. Embeddings are computed only over the point-in-time text — no leak at the cosine-similarity step.
 - **Hybrid retrieval with macro fusion + multi-query expansion + cross-encoder rerank.** Jaccard over the controlled regime-tag vocabulary, plus cosine over [voyage-4-large](https://blog.voyageai.com/2026/01/15/voyage-4/) 1024d text embeddings *concatenated with the standardised macro-state z-vector* (the [History Rhymes](https://arxiv.org/abs/2511.09754) pattern, α=0.5). User queries are expanded into 2-3 paraphrases via Haiku and retrieval is RRF-fused across all parallel rankings; region is a hard filter; a [Voyage rerank-2.5](https://blog.voyageai.com/2025/10/22/the-case-against-llms-as-rerankers/) cross-encoder pass shortens top-15 → top-10. Every score published per candidate.
-- **Empirical @1m range across N=3 analogues** — labeled honestly as min/median/max, not as calibrated coverage. Three datapoints have zero statistical power; saying so is the point.
-- **FRED + Stooq programmatic asset-move refresh.** `pnpm refresh-prices` pulls canonical numbers from St. Louis Fed + Stooq into a sidecar; UI badges every asset row "FRED" / "Stooq" / "approx" so readers can distinguish hand-curated approximations from refreshed values.
-- **OTI Daily** — a self-publishing daily research artifact. Each weekday at 5pm ET a Vercel Cron runs Mahalanobis k-NN against today's macro fingerprint, picks 3 historical regimes that rhyme + 1 *negative analogue* that looked similar but resolved oppositely (the [IntRec](https://arxiv.org/abs/2602.17639) shape), generates the brief, posts to Bluesky + emails the digest at 6am ET.
-- **Streaming UI.** The brief streams in progressively — headline first, then each analogue card, then the cross-event synthesis. No 20-second blank-screen wait.
-- **Show your work.** Every brief reveals all 10 retrieved candidates with Jaccard / cosine / rerank / combined scores, the LLM's tag rationale, the embedding source, whether rerank ran, whether macro fusion was active, and the multi-query count.
-- **Sharable permalinks.** Generated briefs are persisted with stable hash-IDs at `/b/:id`; daily briefs at `/today/<date>`. Each gets a custom 1200×675 OG card.
+- **Self-Verifier on every brief** — 7 deterministic invariant checks (candidate consistency, direction coherence, fit-confidence sanity, attribution integrity, whereThisMightNotFit non-triviality, …). Tone-coded badge in the brief header.
+- **Negative-analogue retrieval on every brief.** Phase A picks an optional 4th candidate that scored high on macro similarity but whose t=0 reaction was OPPOSITE to the chosen-3 majority — operationalises [CHR (arXiv:2604.04593)](https://arxiv.org/abs/2604.04593). Tells you what almost matched but went the other way.
+- **Calibrated 80% intervals on @1m asset returns.** Leave-one-out walk-forward conformal calibration over the corpus. Logit-free path inspired by [LofreeCP](https://arxiv.org/abs/2403.01216) + [ACSE](https://arxiv.org/abs/2605.04295). Run `pnpm conformal` to generate the sidecar; UI shows calibrated coverage alongside the empirical N=3 range.
+- **FRED + Stooq programmatic asset-move refresh.** `pnpm refresh-prices` pulls canonical numbers from St. Louis Fed + Stooq into a sidecar; UI badges every asset row "FRED" / "Stooq" / "approx".
+- **OTI Daily** — self-publishing daily research artifact. Vercel Cron at 5pm ET runs Mahalanobis k-NN against today's macro fingerprint, picks 3 rhyming regimes + 1 negative analogue, posts to Bluesky + emails the digest at 6am ET.
+- **Stacked-breakpoint prompt caching** (1h TTL, ~70% input-cost reduction on synthesis), **AI Gateway model fallback chains** (Sonnet→Haiku→GPT-4o on outage), **Edge Config hot-path reads** (sub-5ms TodayStrip globally).
+- **Streaming UI** progressively renders the brief — headline first, then each analogue card, then the cross-event synthesis.
+- **Show your work.** Every brief reveals all 10 retrieved candidates with Jaccard / cosine / rerank / combined scores, the LLM's tag rationale, the embedding source, whether rerank ran, whether macro fusion was active, the multi-query count, and the Self-Verifier audit.
+- **Sharable permalinks** at `/b/:id`; daily briefs at `/today/<date>`; each gets a custom 1200×675 OG card.
+- **MCP server** at `/api/mcp` — connect once at claude.ai/settings/integrations, every conversation can search analogues / fetch events / list the corpus.
+- **Long-form research at [`/research`](src/app/research/page.tsx)** — methodology essays + Citrini-pattern reverse-Show-HN regime essays. Markdown source in `/content/research/`, cross-published on Substack.
+- **Community PR pipeline** for new events — JSON Schema, validation script, hindsight-leakage heuristic, GitHub Action gate, 8-point provenance checklist. First 20 high-quality regime cards merged get a permanent contributor cite + lifetime API access.
 - **Multi-provider via Vercel AI Gateway.** Switch between Claude (Sonnet/Haiku/Opus), OpenAI, Google Gemini, Mistral. One key, plain `provider/model` strings.
 - **Observability.** [Langfuse](https://langfuse.com) Cloud free-tier auto-instruments every AI SDK call. Public `/stats` page surfaces aggregate corpus + brief volume metrics.
 
@@ -143,13 +149,25 @@ pnpm install
 cp .env.example .env.local
 
 # 3. (recommended) Set up the database for embeddings + permalink persistence
-pnpm db:push       # apply Drizzle migrations (events + briefs tables)
-pnpm seed          # insert the 30 events
-pnpm embeddings    # populate voyage-3-large 1024d embeddings into Postgres
-                   # OR: pnpm embeddings --json   (also write data/embeddings.json sidecar)
+pnpm db:push           # apply Drizzle migrations (events + briefs + regime tables)
+pnpm seed              # insert the 39 corpus events
+pnpm embeddings        # populate voyage-4-large 1024d embeddings into Postgres
+                       # OR: pnpm embeddings --json   (also write data/embeddings.json sidecar)
+pnpm regime:centroids  # populate per-event regime z-vectors (8-dim) for OTI Daily k-NN
+pnpm refresh-prices    # programmatically refresh asset moves from FRED + Stooq
+pnpm conformal         # build conformal-quantile sidecar for calibrated 80% intervals
 
 # 4. Dev
 pnpm dev
+```
+
+### Validation + community contribution
+
+```bash
+pnpm test              # corpus integrity + retrieval gold-set CI (recall@3 ≥ 0.80, precision@1 ≥ 0.50)
+pnpm validate-event    # zod schema + integrity + hindsight-leakage heuristic on the corpus
+pnpm schema:export     # regenerate /schema/historical-event.schema.json
+pnpm mcp:submission-pack   # generate the directory submission pack for /out/mcp-submission/
 ```
 
 The app degrades gracefully:
@@ -196,6 +214,52 @@ vercel deploy --prod
 - `RESEND_API_KEY` + `RESEND_FROM` + `RESEND_AUDIENCE_ID` — enables the daily email digest.
 
 **Vercel plan**: the cron schedules in [`vercel.ts`](vercel.ts) require Vercel **Pro** ($20/mo) — the Hobby tier's ±59min jitter is unacceptable for a market-state snapshot tied to close. Enable **Fluid Compute** on the project so the snapshot route can run for up to 5min when generating a fresh brief.
+
+## Research — long-form essays (v0.5)
+
+`oti.app/research` is the long-form publishing surface. Each essay
+lives at a stable permalink with its own 1200×675 OG card and is
+cross-published on [oti.substack.com](https://oti.substack.com) via
+copy-paste. Two seed essays live in [`/content/research/`](content/research/):
+
+- **W1 methodology** — *Memory, not prediction: how OTI's retrieval
+  actually works* (~9 min). The deliberate walk-through of the
+  pipeline and the five load-bearing decisions (corpus knowledge
+  prime, two-phase synthesis, History Rhymes macro fusion, negative-
+  analogue retrieval, logit-free conformal coverage).
+
+- **W4 reverse-Show-HN** — *The closest analogue to the May 2026
+  Treasury curve isn't 1973. It's September 1998.* (~22 min, featured).
+  Citrini-pattern thought experiment with the OTI engine as supporting
+  evidence — six tells, four falsifiable conditions, one neologism
+  ("the resteepening compression").
+
+Add a research post: drop a markdown file in `/content/research/<date>-<slug>.md`
+with YAML frontmatter (`slug`, `title`, `description`, `publishedAt`,
+`substackUrl`, `tags`, `readingMinutes`, optional `featured: true`).
+The route renders it; the OG card auto-generates; nav picks it up.
+
+## Community contribution
+
+The corpus is the moat — the codebase is 20% of the value.
+
+```bash
+pnpm validate-event       # zod schema + integrity + hindsight-leakage heuristic
+pnpm schema:export        # regenerate /schema/historical-event.schema.json
+```
+
+A GitHub Action gates every PR that touches `data/events.ts` on
+`pnpm validate-event` plus a separate schema-sync job that fails
+when the JSON Schema drifts from `src/lib/types.ts`. The
+PR template at [`.github/PULL_REQUEST_TEMPLATE/new-event.md`](.github/PULL_REQUEST_TEMPLATE/new-event.md)
+walks contributors through an 8-point provenance checklist.
+
+**The 20-event bounty:** the first 20 high-quality regime cards
+merged after May 2026 get a permanent contributor cite on the
+methodology page + lifetime API access. See [CONTRIBUTING.md](CONTRIBUTING.md)
+for the wishlist (1944 Bretton Woods, 1956 Suez, 1986 oil collapse,
+1989 Nikkei peak, 2003 Iraq war start, 2010 Greek bailout #1,
+2017 XIV pre-warning, …).
 
 ## OTI Daily — the regime flywheel (v0.3)
 

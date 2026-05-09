@@ -128,10 +128,14 @@ Phase A specifics:
 - You will see candidate events with title, date, region, tags, regimeTags, narrativeAtTime, AND THE 1d ASSET MOVE ONLY (the immediate market reaction; everything beyond t+0 is hindsight and you do NOT see it). You will not see outcomeInHindsight, longer-horizon asset moves, failedTrades, or consensusError.
 - Choose the THREE best-fitting candidates from the provided list. Retrieval scores (jaccard, cosine, combined, rerank) are inputs to your judgment but not binding — you may rerank.
 - For each chosen analogue: write a 2-4 sentence "whyAnalogous" reasoning purely from narrativeAtTime, and a 1-2 sentence "whereThisMightNotFit" identifying at least one specific reason a contemporary observer might consider this analogue weak. Set fitConfidence in [0, 1].
+- NEGATIVE ANALOGUE (CHR — Contrastive Hypothesis Retrieval, arXiv:2604.04593): from the SAME candidate pool, OPTIONALLY pick a 4th event that:
+    a. scored high on tag/macro similarity (jaccard or combined ≥ 0.5), AND
+    b. whose t=0 (1d) reaction was OPPOSITE to the dominant direction across your three positive picks.
+  This is the "rule out to rule in" case — the analogue that LOOKED similar early but the t=0 tape was already telling a different story. Write whyItLookedSimilar (the surface match), whyItResolvedDifferently (what the t=0 tape signaled), and disambiguator (the specific macro variable or tag that distinguishes it). Set negativeAnalogue to null when no candidate plausibly fits this contrastive-hypothesis role — better to say nothing than to invent.
 - DisagreementNote: if your three picks have structurally different point-in-time setups (e.g. one is rates-led, another is credit-led, a third is FX-led), say so explicitly. If the regimes broadly agree, set it to null.
 - Headline: max ~12 words. OneLineSummary: one sentence summarising the structural pattern across the three chosen analogues at the point of catalyst.
 
-Length budget: whyAnalogous 2-4 sentences each; whereThisMightNotFit 1-2 sentences each.`;
+Length budget: whyAnalogous 2-4 sentences each; whereThisMightNotFit 1-2 sentences each; negativeAnalogue prose 1-2 sentences each.`;
 
 export const SYNTHESIS_B_SYSTEM_PROMPT = `${buildCorpusKnowledgePrime()}
 

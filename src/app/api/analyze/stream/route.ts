@@ -267,6 +267,10 @@ export async function POST(req: NextRequest) {
           headline: phaseAFinal.headline,
           oneLineSummary: phaseAFinal.oneLineSummary,
           analogues: phaseAFinal.analogues as AnalogueOutput[],
+          negativeAnalogue:
+            (phaseAFinal as PhaseAObject & {
+              negativeAnalogue: BriefOutput["negativeAnalogue"];
+            }).negativeAnalogue ?? null,
           disagreementNote: phaseAFinal.disagreementNote,
           failedTradesPattern: phaseBFinal.failedTradesPattern,
           consensusError: phaseBFinal.consensusError,

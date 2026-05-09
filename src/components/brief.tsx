@@ -51,6 +51,13 @@ export function Brief({ result, events }: BriefProps) {
 
       <AnalogueGrid analogueEvents={analogueEvents} />
 
+      {result.brief.negativeAnalogue && (
+        <NegativeAnalogueSection
+          negative={result.brief.negativeAnalogue}
+          event={events.get(result.brief.negativeAnalogue.eventId) ?? null}
+        />
+      )}
+
       <AssetMovesSection analogueEvents={analogueEvents} calibratedIntervals={result.calibratedIntervals} />
 
       <PatternSection
@@ -140,6 +147,63 @@ function DisagreementBanner({ note }: { note: string }) {
         </p>
       </div>
     </div>
+  );
+}
+
+function NegativeAnalogueSection({
+  negative,
+  event,
+}: {
+  negative: NonNullable<PipelineResult["brief"]["negativeAnalogue"]>;
+  event: HistoricalEvent | null;
+}) {
+  if (!event) return null;
+  return (
+    <section className="space-y-4">
+      <div className="flex items-center gap-2">
+        <SectionLabel>The near-miss — looked similar, resolved oppositely</SectionLabel>
+        <Badge variant="outline" className="font-mono text-[9px]">
+          contrastive
+        </Badge>
+      </div>
+      <Card className="border-[var(--color-warning-subtle)]">
+        <CardContent className="space-y-4 p-5">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h3 className="text-lg font-semibold tracking-tight">{event.title}</h3>
+            <span className="mono text-[10px] text-[var(--color-muted-foreground)]">
+              {formatDate(event.date)} · {event.region}
+            </span>
+          </div>
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="space-y-1">
+              <p className="text-[10px] font-medium uppercase tracking-wider text-[var(--color-muted-foreground)]">
+                Why it looked similar
+              </p>
+              <p className="text-sm leading-relaxed">{negative.whyItLookedSimilar}</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-[10px] font-medium uppercase tracking-wider text-[var(--color-muted-foreground)]">
+                Why it resolved differently
+              </p>
+              <p className="text-sm leading-relaxed">{negative.whyItResolvedDifferently}</p>
+            </div>
+          </div>
+          <div className="rounded-md border border-[var(--color-warning-subtle)]/60 bg-[color-mix(in_oklch,var(--color-warning)_5%,transparent)] p-3">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="h-3.5 w-3.5 text-[var(--color-warning)] shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <p className="text-[10px] font-medium uppercase tracking-wider text-[var(--color-warning)]">
+                  Disambiguator
+                </p>
+                <p className="text-xs leading-relaxed text-[var(--color-foreground)]/85">
+                  {negative.disambiguator}
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </section>
   );
 }
 

@@ -126,10 +126,34 @@ export const AnalogueOutputSchema = z.object({
 });
 export type AnalogueOutput = z.infer<typeof AnalogueOutputSchema>;
 
+/**
+ * The negative-analogue surface — the case that scored high on macro-
+ * state similarity but resolved with the OPPOSITE asset-direction.
+ * Operationalises CHR (Contrastive Hypothesis Retrieval, arXiv:
+ * 2604.04593) — explicit "rule-out to rule in" framing.
+ *
+ * `disambiguator` identifies the specific dimension that distinguishes
+ * the user's setup from the near-miss — e.g. "today's HY OAS is
+ * compressed where 2007's was already widening; that's the structural
+ * tell that this is a different setup."
+ */
+export const NegativeAnalogueOutputSchema = z.object({
+  eventId: z.string(),
+  whyItLookedSimilar: z.string().min(30),
+  whyItResolvedDifferently: z.string().min(30),
+  disambiguator: z.string().min(20),
+});
+export type NegativeAnalogueOutput = z.infer<typeof NegativeAnalogueOutputSchema>;
+
 export const BriefOutputSchema = z.object({
   headline: z.string().min(10).max(160),
   oneLineSummary: z.string().min(20).max(300),
   analogues: z.array(AnalogueOutputSchema).length(3),
+  /** Optional contrastive analogue: looks similar in setup, resolved
+   *  oppositely in outcome. Surfaced as the "near-miss" card. May be
+   *  null when the candidate pool doesn't contain a credible inverted
+   *  analogue. */
+  negativeAnalogue: NegativeAnalogueOutputSchema.nullable().optional(),
   disagreementNote: z.string().nullable().describe(
     "Set if the three analogues' likely paths conflict; null otherwise.",
   ),

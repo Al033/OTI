@@ -143,7 +143,9 @@ export async function tagQuery(args: {
 /**
  * Phase-A schema. The eventId is restricted at runtime to the actual
  * candidate IDs so the model literally cannot pick a corpus member that
- * wasn't surfaced by retrieval.
+ * wasn't surfaced by retrieval. v0.5 adds the optional negative
+ * analogue (CHR: Contrastive Hypothesis Retrieval, arXiv:2604.04593) —
+ * "rule out to rule in." Same id-enum constraint applies.
  */
 function buildPhaseASchema(allowedIds: readonly string[]) {
   if (allowedIds.length === 0) {
@@ -164,6 +166,18 @@ function buildPhaseASchema(allowedIds: readonly string[]) {
         }),
       )
       .length(3),
+    /** A 4th candidate that scored high on macro-state similarity but
+     *  whose direction resolved opposite to the chosen-3 majority.
+     *  Operationalises CHR. May be null when the candidate pool has no
+     *  credible inversion. */
+    negativeAnalogue: z
+      .object({
+        eventId: idEnum,
+        whyItLookedSimilar: z.string().min(30),
+        whyItResolvedDifferently: z.string().min(30),
+        disambiguator: z.string().min(20),
+      })
+      .nullable(),
     disagreementNote: z.string().nullable(),
   });
 }
@@ -442,6 +456,7 @@ export async function synthesizeBrief(args: {
     headline: a.headline,
     oneLineSummary: a.oneLineSummary,
     analogues: a.analogues as AnalogueOutput[],
+    negativeAnalogue: a.negativeAnalogue ?? null,
     disagreementNote: a.disagreementNote,
     failedTradesPattern: b.failedTradesPattern,
     consensusError: b.consensusError,

@@ -29,6 +29,12 @@ export function Header() {
               Today
             </Link>
             <Link
+              href="/research"
+              className="hover:text-[var(--color-foreground)] transition-colors"
+            >
+              Research
+            </Link>
+            <Link
               href="/methodology"
               className="hover:text-[var(--color-foreground)] transition-colors"
             >

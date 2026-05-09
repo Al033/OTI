@@ -18,6 +18,11 @@ export function Footer() {
             </p>
             <ul className="mt-3 space-y-2 text-xs">
               <li>
+                <Link href="/research" className="hover:text-[var(--color-foreground)] text-[var(--color-muted-foreground)] transition-colors">
+                  Research
+                </Link>
+              </li>
+              <li>
                 <Link href="/methodology" className="hover:text-[var(--color-foreground)] text-[var(--color-muted-foreground)] transition-colors">
                   Methodology
                 </Link>

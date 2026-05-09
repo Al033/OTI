@@ -60,6 +60,50 @@ The app works without API keys (demo examples) and without a database (Jaccard-o
 - Backtesting infrastructure. OTI is a memory tool; backtests have a different epistemic standard and a different surface area.
 - New chart types beyond Tufte-style sparklines and small-multiples without a strong UX rationale. The visual register is deliberate.
 
+## Validation pipeline
+
+```bash
+pnpm validate-event           # zod schema + integrity invariants + leakage heuristic
+pnpm schema:export            # regenerate /schema/historical-event.schema.json
+pnpm test                     # corpus integrity + retrieval gold-set CI
+pnpm refresh-prices --event=<id>   # canonicalise asset moves via FRED + Stooq
+```
+
+GitHub Actions runs `pnpm validate-event` on every PR that touches
+`data/events.ts`. The schema-export job verifies the JSON Schema is in
+sync; if you've edited `src/lib/types.ts` and not regenerated, CI
+fails.
+
+The PR template at `.github/PULL_REQUEST_TEMPLATE/new-event.md` walks
+contributors through the provenance checklist. Apply it via
+`?template=new-event.md` on the GitHub PR URL.
+
+## The 20-event bounty
+
+The first 20 high-quality regime cards merged after May 2026 get a
+permanent contributor cite on the methodology page and lifetime API
+access (rate-limited free tier upgraded to unlimited). "High quality"
+means: FRED/Stooq-verified asset moves, source-URL'd failed-trade
+quotes, point-in-time narrative that survives the leakage heuristic.
+
+Cards we'd love right now (pre-1971 + EM gaps):
+
+  - 1944 Bretton Woods agreement
+  - 1956 Suez sterling crisis
+  - 1980 Hunt brothers silver corner peak (we have a stub — needs depth)
+  - 1986 oil collapse to $10
+  - 1989 Nikkei peak / 1990 Japan asset deflation
+  - 1995 Mexico tequila aftershock (separate from Dec 1994)
+  - 1999 dot-com vs LTCM tail
+  - 2003 Iraq war start
+  - 2005 Greenspan "conundrum"
+  - 2010 Greek bailout #1
+  - 2012 LIBOR scandal
+  - 2017 Volcano (XIV's first warning)
+  - 2018 Turkey lira crisis (we have a stub — needs depth)
+  - 2022 Sri Lanka default
+  - 2023 First Republic / regional-bank-2
+
 ## Style
 
 - TypeScript everywhere. Strict mode.

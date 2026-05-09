@@ -18,6 +18,8 @@
     "regime:centroids": "tsx scripts/build-regime-centroids.ts",
     "refresh-prices": "tsx scripts/refresh-prices.ts",
     "conformal": "tsx scripts/build-conformal-quantiles.ts",
+    "schema:export": "tsx scripts/export-event-schema.ts",
+    "validate-event": "tsx scripts/validate-event.ts",
     "test": "node --import tsx --test --test-reporter=spec tests/**/*.test.ts",
     "eval": "node --import tsx --test --test-reporter=spec tests/eval/*.test.ts -- --report",
     "format": "prettier --write \"**/*.{ts,tsx,md,json,css}\""

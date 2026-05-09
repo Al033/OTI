@@ -24,10 +24,37 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm test
+      - run: pnpm validate-event
       - run: pnpm build
         env:
           # Build doesn't need keys, but this stops Next from warning that
           # they're absent.
           AI_GATEWAY_API_KEY: ci-stub
-          OTI_EMBEDDING_MODEL: voyage/voyage-3-large
+          OTI_EMBEDDING_MODEL: voyage/voyage-4-large
           OTI_EMBEDDING_DIMENSIONS: "1024"
+
+  schema:
+    # Light job that runs only when /data/events.ts or /schema/ changes
+    # (a contributor's "did I get the schema right" gate). The full test
+    # job above already covers everything; this surfaces faster feedback.
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'pull_request' &&
+      contains(github.event.pull_request.changed_files, 'data/events.ts')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm validate-event
+      - run: pnpm schema:export
+      - run: |
+          if ! git diff --quiet schema/historical-event.schema.json; then
+            echo "::error::schema/historical-event.schema.json is out of date — run 'pnpm schema:export' and commit"
+            exit 1
+          fi

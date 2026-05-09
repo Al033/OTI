@@ -26,17 +26,18 @@ lands on a real-shaped page from minute one rather than a stub.
 
 ### Corpus depth
 
-- **+15 ARISE trajectories** — 1973-opec-embargo, 1979-volcker-shock,
-  1985-plaza-accord, 1987-black-monday, 1992-black-wednesday,
-  1994-greenspan-hike, 2000-dotcom-peak, 2012-whatever-it-takes,
+- **+20 ARISE trajectories** — 1973-opec-embargo, 1979-volcker-shock,
+  1985-plaza-accord, 1987-black-monday, 1990-iraq-kuwait,
+  1992-black-wednesday, 1994-greenspan-hike, 1997-thai-baht,
+  2000-dotcom-peak, 2001-911, 2010-flash-crash, 2012-whatever-it-takes,
   2013-taper-tantrum, 2015-china-deval, 2016-brexit, 2018-volmageddon,
-  2022-russia-ukraine, 2022-uk-gilt-crisis, 2023-svb-collapse. Total
-  now 20 of 39 events — over half the corpus. The gilt-crisis
-  trajectory anchors the LDI/forced-seller pattern that the W4
-  Treasury-curve essay relies on; the 1979 Volcker, 1985 Plaza,
-  2012 Draghi, 2015 China-deval entries each anchor a distinct
-  policy-regime-change biases pattern. Target N=39 for v0.7 via
-  community PRs.
+  2022-russia-ukraine, 2022-uk-gilt-crisis, 2023-svb-collapse,
+  2024-yen-carry-unwind. Total now **25 of 39 events** — 64% corpus
+  coverage. Highest-retrieval-leverage anchors filled across the major
+  bias families: coercive-bargaining-precedent (1990, 2022), tiger-
+  model (1997), microstructure-stability (2010), demand-destruction
+  (2001), carry-as-stable (2024). Target N=39 for v0.7 via community
+  PRs.
 
 ### Code hygiene
 

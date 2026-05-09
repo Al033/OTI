@@ -417,6 +417,111 @@ export const TRAJECTORIES: Record<string, AnalyticalTrajectory> = {
       "Read the option-skew structure across commodities and EUR-funding markets as a leading indicator of the tail-pricing discrepancy, treated the US public-intelligence releases as actionable, sized commodity exposure for a multi-quarter dislocation rather than an event-spike. Long energy and metals from mid-February, long USD vs EUR from late February, lengthened duration in DM safe-havens (US, German bunds) into the initial flight-to-quality. The trade that broke: long Russia-exposed European banks on the 'sanctions will be partial' thesis — the SWIFT exclusion + CBR freeze was a discontinuous regime change those models hadn't priced.",
   },
 
+  "1990-iraq-kuwait": {
+    priorBeliefs:
+      "Going into Aug 2, 1990, the consensus framing of Saddam's troop buildup along the Kuwaiti border was as a coercive-bargaining play to settle disputes over OPEC quota cheating + Rumaila oilfield slant-drilling. Most regional-affairs experts and oil strategists assumed a partial border incursion at most; very few priced full-scale annexation. Equity markets treated the geopolitical premium as transient.",
+    marginalDataPoints: [
+      "Iraqi troop deployments along the Kuwaiti border had reached >100,000 by late July 1990 — well above what a coercive-bargaining display would require, but framed by most desk analysts as 'maximalist negotiating posture'",
+      "Brent had risen from $16/bbl in early July to ~$21 by Aug 1 on the buildup; option-implied vol had risen but spot pricing reflected the consensus 'limited action' base case",
+      "Saddam's late-July 1990 meeting with US ambassador April Glaspie included ambiguous US-policy language; this was read as 'US won't object to limited action' by Baghdad and as 'routine diplomatic encounter' in Washington — different priors",
+      "The Iraqi Republican Guard mobilization pattern visible in commercial-satellite imagery by late July showed offensive (not defensive) configuration — a tell for analysts willing to trust open-source intelligence over diplomatic readouts",
+    ],
+    decisionPoints: [
+      "Aug 2, 1990 (Iraqi forces enter Kuwait, full annexation announced): the analyst had to read this as either 'border-skirmish-with-quick-resolution' or 'sustained occupation requiring military response'",
+      "Aug 6-7, 1990 (UN sanctions vote + Operation Desert Shield US deployment to Saudi): the moment when the Western military response became visible — the question shifted to 'how long until US forces are positioned to act?'",
+      "Jan 17, 1991 (Operation Desert Storm coalition airstrikes begin): the day the conflict transitioned from sanctions-and-buildup to active combat — equities BOTTOMED on the strike news, the canonical 'tail-risk premium peaks before the conflict' setup",
+      "Late Feb 1991 (ground campaign + 100-hour war): the speed of the resolution validated the equity rally; oil collapsed back to pre-invasion levels by March-April",
+    ],
+    dominantBias:
+      "Coercive-bargaining-precedent bias — analysts anchored on prior border-skirmish episodes (Iran-Iraq border friction, intra-Arab disputes) and missed that Saddam was operating under a 'reunification' framing for Kuwait that pointed to occupation rather than negotiation. Compounded by Western intelligence's well-documented late-July 1990 internal disagreement that wasn't visible to outside analysts; many missed the high-confidence offensive read.",
+    whatGoodAnalystsDid:
+      "Watched commercial-satellite mobilization data and Republican Guard configuration as the leading-indicator gauge over diplomatic communiqués, treated the late-July build-up scale as evidence of an offensive intent regardless of bargaining theatrics, recognized the canonical 'buy when the bombs drop' template once US military deployment was committed. Long oil + USD into early August, took risk off equities through August-October, sized for a buyable equity bottom around the Jan 17 strike date. The trade that broke: long oil through Q1 1991 — the demand-destruction component of the conflict was underweighted in pure-supply-shock models, oil collapsed back to pre-invasion levels much faster than expected.",
+  },
+
+  "1997-thai-baht": {
+    priorBeliefs:
+      "Through early summer 1997 the consensus framing of the Thai baht peg was that the Bank of Thailand would defend the band as it had done through 1996, supported by what were publicly disclosed as ample reserves. Asian growth was framed as the 'tiger model' — high-savings, export-led, structurally sound — and most strategists ranked Thailand in the second-tier of vulnerability behind weaker EMs.",
+    marginalDataPoints: [
+      "BoT reserve drawdown through April-June 1997 was visible to anyone reading the weekly central-bank data — the 'ample reserves' headline number masked that net forwards (the off-balance-sheet hedge book) had committed most of those reserves already",
+      "Bangkok Bank of Commerce had been quietly resolved in early 1997 with what was described as a 'one-off rescue'; the loan-portfolio-quality issue across Thai banks was visible in the BIS quarterly data for those tracking it",
+      "Thai property prices in Bangkok had peaked Q4 1996 and were rolling over visibly through Q1-Q2 1997; the property-developer sector's USD-denominated debt service was the leading pressure point on bank balance sheets",
+      "1m baht NDF (non-deliverable forward) rates traded persistently below spot through May-June — the offshore-onshore market gap was the cleanest signal that pressure on the band was building beyond what onshore quotations admitted",
+    ],
+    decisionPoints: [
+      "Jul 2, 1997 (BoT abandons the peg, baht floats): the analyst had to read this as either 'an isolated small-EM event' or 'the first domino in regional Asian-currency-board breakdown'",
+      "Jul-Aug 1997 (Philippines, Malaysia, Indonesia all face escalating pressure on their pegs): the contagion-pattern question — was this 1994 Tequila redux (regional, contained) or something structurally different?",
+      "Oct 23-27, 1997 (HK $ peg defended via aggressive rate hike, HSI -23% in five sessions; 'Asian flu' enters the global equity vocabulary): the moment when the regional EM event became a developed-market vol event",
+      "Aug 14, 1998 onward (Russian crisis follows the same playbook on a different currency board): the analyst had to recognize that this was a multi-step contagion where the 'isolated EM' narrative had been wrong all year",
+    ],
+    dominantBias:
+      "Tiger-model-as-structurally-sound bias — Asian growth was framed by sell-side consensus as exceptional and largely de-coupled from EM-vulnerability indicators. Compounded by reserves-headline bias: announced reserves were treated as defensive ammunition without netting out off-balance-sheet forward commitments, which in BoT's case had pre-committed much of the war chest.",
+    whatGoodAnalystsDid:
+      "Watched NDF/onshore basis as the cleanest pressure gauge, netted reserves against forward commitments rather than reading the headline figure, tracked Thai property-developer USD debt service as the bank-stress trigger, recognized that the regional currency-board architecture meant contagion was a connectivity question not a fundamentals question. Shorted ASEAN currencies through summer 1997, lengthened USD exposure into the contagion path, faded the early Q4 'this is contained' rallies. The trade that broke: long Hong Kong equities post-October — the rate-hike defense of the peg held but at a real-economic cost that played out through 1998.",
+  },
+
+  "2001-911": {
+    priorBeliefs:
+      "Going into Sep 11, 2001, consensus framed the US economy as already in a mild recession (the Mar 2001 recession start had been recognized late) but with policy room: the Fed had been easing aggressively (50bps cuts had been the standard increment), and most strategists expected the bottom in equities to coincide with the Q4 earnings clearing. The geopolitical-tail-risk premium in equities was minimal; war-on-terror was not in any base-case scenario.",
+    marginalDataPoints: [
+      "Tech-sector earnings warnings had accelerated through Q3 2001 (Cisco's 'lengthening lead times' had become 'inventory adjustment' had become 'demand contraction'); the equity tape was already weakening into early September",
+      "Treasury 10y yields had broken below 5% in late August 2001 as the macro-deterioration narrative gathered, but the yield level was still high enough that monetary policy had ammunition",
+      "The CBOE put-call ratio had been elevated through August-early September 2001 — equity investors were already buying protection, but mostly for sector-rotation reasons, not for tail-event reasons",
+    ],
+    decisionPoints: [
+      "Sep 11, 2001 morning (attacks unfold; markets close mid-session, NYSE remains shut for 4 trading days): the analyst had to immediately decide between 'this is a tail risk to size for fundamentally' and 'the Fed/Treasury/policy backstop will be unprecedented'",
+      "Sep 17, 2001 (NYSE re-opens; Fed had cut 50bps inter-meeting, Treasury had announced extensive backstops): the 're-open day' decision — was the down-move a buyable dislocation or the start of a sustained bear leg?",
+      "Oct-Nov 2001 (equity recovery to pre-attack levels by mid-October on the policy-response bet, despite continued US recession): the bottoming pattern that distinguished demand-destruction shocks from credit-cascade shocks",
+      "Mar 2002 onward (the 'war on terror' regime + Enron + accounting scandals): the second-leg-down recognition that the recovery was real but the multi-year regime had shifted",
+    ],
+    dominantBias:
+      "Recency bias on demand-destruction shocks — analysts modeled 9/11 as a discrete event with policy-response-driven recovery (template: 1990 Iraq invasion → 1991 ground-war bottom). The base case under-weighted the multi-year geopolitical-regime-shift component (Patriot Act, prolonged military commitment, energy-sector reorientation). Compounded by 'Fed has it' reflex — the historical pattern of equity-bottoming-on-decisive-cut was applied without noting the structural difference between cyclical-easing and tail-event-easing.",
+    whatGoodAnalystsDid:
+      "Sized for a 5-week round-trip pattern (the canonical sudden-shock-to-Western-economy template), recognized the decisive Fed/Treasury response as a policy-credibility signal, watched the demand-destruction component in oil specifically (collapsed alongside equities despite the geopolitical premium most expected to hold). Long quality-megacap into the Sep 17 re-open, covered on the November rally, repositioned long USTs and short USD through Q4 2001. The trade that broke: long airlines + insurers — sector-specific structural damage was deeper than the generalized equity-rebound thesis allowed for.",
+  },
+
+  "2010-flash-crash": {
+    priorBeliefs:
+      "Through May 6, 2010 the consensus framing of US equity-market microstructure post-Reg-NMS (2007) was that fragmentation across exchanges + high-frequency-market-making had produced tighter spreads + deeper liquidity. The May 2010 macro backdrop was Greek-debt-crisis-driven risk-off, but US trading systems were viewed as resilient. Microstructure risk wasn't in most macro-strategists' models.",
+    marginalDataPoints: [
+      "Greek 2y yields had spiked through 10% by early May 2010; the eurozone-fragmentation tail was visibly being priced into peripheral spreads",
+      "Equity-market depth (top-of-book liquidity provision per ECN) had been declining through Q1 2010 as proprietary HFT firms scaled back during EU-stress days — visible in NYSE OHLC depth data",
+      "VIX had risen from ~17 in early April 2010 to >35 by May 6 morning — a meaningful spike that was being absorbed but not fully discounted by liquidity providers",
+      "Waddell & Reed's algorithmic E-mini S&P sale on May 6 afternoon used a participate-of-volume algo without a price-band override — visible in CFTC post-mortem data; the size relative to that day's volume was material but not exceptional in itself",
+    ],
+    decisionPoints: [
+      "May 6, 2010 14:42-14:45 ET (the 'flash crash' interval — Dow drops ~9% in minutes on cascading liquidity withdrawal): the live decision was structurally impossible — most participants had no actionable read-and-respond capability faster than the price move",
+      "May 6, 2010 14:45-14:55 ET (recovery interval — most stocks re-rate back within ~10 minutes): the post-crash decision was whether to take advantage of canceled-order processes (busted trades), reposition for systemic-risk follow-through, or treat as one-off",
+      "May 6 close + May 7 open (broker-dealers, exchanges, regulators absorb the post-mortem; equity markets continue lower over the day on residual systemic concerns): the 'is this a microstructure event or a Greece-leg-down trigger' read",
+      "Sep 2010 (CFTC + SEC joint report identifies the Waddell algo + HFT liquidity withdrawal cascade as the proximate cause): the moment when retail + institutional confidence in microstructure stability became reasoned-from rather than assumed",
+    ],
+    dominantBias:
+      "Microstructure-as-stable bias — macro-strategists modeled equity markets as fundamentally-driven price-discovery venues without explicitly accounting for the conditional probability of liquidity withdrawal under stress. Compounded by the 'fragmentation-improves-resilience' bias common in regulatory analysis post-Reg-NMS, which assumed multiple venues would always provide redundant liquidity.",
+    whatGoodAnalystsDid:
+      "Recognized that VIX > 35 with declining HFT depth was a state-conditional fragility setup, treated the May 6 event as a distinct microstructure-failure category not a macro-event-type, scaled position sizes accordingly when subsequent intraday vol regimes met similar conditions. The post-event corpus contributions: market-stop circuit-breakers across single-name + indexed instruments, the 'limit up / limit down' regime that became standard, the consolidated audit trail. The trade that broke: betting on a sustained microstructure tail post-May 2010 — the regulatory response was decisive and credible enough that the 2010 setup did not recur in the same form.",
+  },
+
+  "2024-yen-carry-unwind": {
+    priorBeliefs:
+      "Through July 2024 the consensus framing of the JPY-funded carry trade was that it would persist through year-end given the BoJ's stated commitment to gradual normalization and the persistence of the US yield advantage. USD/JPY at 161 on Jul 11 was framed as concerning-but-stable; intervention risk was priced in, but at levels that wouldn't break the carry trade. Most allocators ran the JPY-funded long-EM-and-tech basket as a structural position.",
+    marginalDataPoints: [
+      "MoF intervention on Apr 29 + May 1 2024 had pushed USD/JPY from 160 to 152 then bounced back to 161; the intervention pattern was clearly tactical but the BoJ's tolerance level was visibly above 160 — a tell that intervention was a damping mechanism, not a defense level",
+      "JPY 1m vol skew had widened through July 2024 — option markets were pricing tail-yen-strength scenarios more aggressively than spot suggested, visible in vol-surface data",
+      "BoJ communication through Q2 2024 had repeatedly used 'data-dependent' language that left open the door for an accelerated normalization; markets discounted the possibility because Ueda's prior moves had been gradual",
+      "CFTC speculator JPY net-short positioning had reached multi-decade extremes by mid-July 2024 — a positioning gauge that hardly any model could ignore but most allocators continued running the carry through",
+      "Ahead of the Jul 31 BoJ meeting, the US economic data flow had begun rolling over (slower payrolls, weaker ISM); the conditional probability of a Fed pivot + BoJ hike combination was rising mechanically",
+    ],
+    decisionPoints: [
+      "Jul 31, 2024 (BoJ hikes 15bps + announces JGB-purchase taper, with hawkish forward guidance): the analyst had to read this as either 'modest tightening within the gradualism frame' or 'regime change in BoJ reaction function'",
+      "Aug 1-2, 2024 (US ISM Manufacturing miss + payrolls miss + Sahm rule triggers): the moment when both legs of the carry broke simultaneously — Japan-side strengthening on policy, US-side weakening on recession data — the convexity scenario",
+      "Aug 5, 2024 (Nikkei -12.4%, USD/JPY breaks 142, VIX spikes to 65 intraday): the day the carry-unwind expressed itself as cross-asset vol — the question was whether this was a one-day clearing event or a persistent regime change",
+      "Aug 7, 2024 onward (BoJ Uchida's 'won't hike during instability' communication; positioning resets): the moment when the carry-unwind found a floor — those who had survived Aug 5 had to decide between re-establishing the carry (worked tactically) and treating the regime as broken (worked over Q4 2024)",
+    ],
+    dominantBias:
+      "Carry-as-stable-rate-differential bias — analysts modeled the JPY carry as a slow-bleed positive-expected-return strategy without weighting the conditional convexity that emerges when both legs of the carry break simultaneously. Compounded by intervention-as-defense bias: prior MoF interventions were read as a Japanese authorities defending USD/JPY ceilings rather than as a damping mechanism that left structural pressure in place.",
+    whatGoodAnalystsDid:
+      "Read JPY vol skew + speculator positioning together as the conditional-fragility gauge, recognized that the simultaneous-breakage path (BoJ hike + Fed pivot signal + recession data) was the convexity scenario, sized for a multi-day cascade rather than a single-day spike. Took JPY-funded carry off through mid-July, lengthened JPY exposure ahead of Jul 31, faded the Aug 5 panic to re-establish risk in different asset mixes. The trade that broke: short Nikkei into the panic — the Aug 5 selloff was sharp but the 50-day mean-reversion pattern that followed caught most who chased the move.",
+  },
+
   "2023-svb-collapse": {
     priorBeliefs:
       "Through early March 2023, the consensus framing of US regional banks was 'post-Dodd-Frank de-risked, profitability under pressure from inverted curve, but solvency unimpaired.' SVB specifically was viewed as a high-quality franchise with concentrated tech-startup deposit exposure but a strong asset book. Most credit analysts ranked SVB in the top quartile of regional-bank credit quality entering 2023.",

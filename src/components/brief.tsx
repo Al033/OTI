@@ -300,6 +300,20 @@ function AnalogueCard({
           </p>
         </div>
 
+        {(event as unknown as { analyticalTrajectory?: { dominantBias: string; whatGoodAnalystsDid: string } })
+          .analyticalTrajectory && (
+          <TrajectoryPeek
+            event={
+              event as unknown as {
+                analyticalTrajectory?: {
+                  dominantBias: string;
+                  whatGoodAnalystsDid: string;
+                };
+              }
+            }
+          />
+        )}
+
         <div className="flex flex-wrap gap-1">
           {event.regimeTags.slice(0, 6).map((tag) => (
             <Badge key={tag} variant="outline" className="font-mono text-[9px]">
@@ -309,6 +323,37 @@ function AnalogueCard({
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+function TrajectoryPeek({
+  event,
+}: {
+  event: {
+    analyticalTrajectory?: {
+      dominantBias: string;
+      whatGoodAnalystsDid: string;
+    };
+  };
+}) {
+  const t = event.analyticalTrajectory;
+  if (!t) return null;
+  return (
+    <div className="space-y-2 rounded-md border border-[var(--color-accent-subtle)]/60 bg-[color-mix(in_oklch,var(--color-accent)_5%,transparent)] p-3">
+      <p className="text-[10px] font-medium uppercase tracking-wider text-[var(--color-accent)]">
+        How analysts got it right
+      </p>
+      <div className="space-y-1.5 text-xs leading-relaxed text-[var(--color-foreground)]/85">
+        <p>
+          <span className="text-[var(--color-muted-foreground)] mono text-[10px] uppercase tracking-wider">Dominant bias →</span>{" "}
+          {t.dominantBias}
+        </p>
+        <p>
+          <span className="text-[var(--color-muted-foreground)] mono text-[10px] uppercase tracking-wider">What worked →</span>{" "}
+          {t.whatGoodAnalystsDid}
+        </p>
+      </div>
+    </div>
   );
 }
 

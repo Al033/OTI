@@ -73,6 +73,47 @@ export const SourceSchema = z.object({
 export type Source = z.infer<typeof SourceSchema>;
 
 /**
+ * Analytical trajectory — structured reasoning trace per event,
+ * inspired by ARISE (arXiv:2605.03242, May 5 2026). Where
+ * narrativeAtTime captures the prose mood, the trajectory captures
+ * the analytical operations: what consensus believed, what data should
+ * have updated those priors, where the decision points were, what
+ * dominant bias led most analysts astray, what the analysts who got
+ * it right actually did.
+ *
+ * Optional for backwards compatibility — v0.5 events without
+ * trajectories still validate. New contributions in v0.6+ should
+ * populate it. The synthesis pipeline injects the trajectory as a
+ * cognitive scaffold alongside the narrativeAtTime when available,
+ * making the brief reason over *how to think* about the regime, not
+ * just what happened in it.
+ */
+export const AnalyticalTrajectorySchema = z.object({
+  /** What consensus actually believed in the days before — typically a
+   *  one-sentence summary of the dominant frame held by sell-side
+   *  research, the financial press, and the median Fed-watcher. */
+  priorBeliefs: z.string().min(20),
+  /** The data points that, in retrospect, should have been updating
+   *  consensus's priors. Each is a single specific signal an analyst
+   *  could have looked at — not "they should have known" but "this
+   *  specific gauge was telling them." */
+  marginalDataPoints: z.array(z.string().min(15)).min(2).max(6),
+  /** The 1-3 inflection days where the analyst had to choose: stay
+   *  with consensus, or update. Each entry is a date + the signal
+   *  available that morning. */
+  decisionPoints: z.array(z.string().min(15)).min(1).max(4),
+  /** The single dominant cognitive bias that misled most analysts.
+   *  e.g. "anchoring on the prior cycle's playbook", "discount-rate
+   *  myopia", "policy-credibility bias", "EMH-on-rates". */
+  dominantBias: z.string().min(15),
+  /** What the analysts who got it right actually did differently —
+   *  the operationalisable lesson, not vibes. e.g. "watched the
+   *  cross-currency basis, not the spot fix". */
+  whatGoodAnalystsDid: z.string().min(20),
+});
+export type AnalyticalTrajectory = z.infer<typeof AnalyticalTrajectorySchema>;
+
+/**
  * The curated event record. The narrativeAtTime / outcomeInHindsight split
  * is the core defence against look-ahead bias: synthesis prompts only see
  * narrativeAtTime when reasoning about analogousness.
@@ -98,6 +139,8 @@ export const HistoricalEventSchema = z.object({
   lessons: z.array(z.string().min(8)).min(1),
   sources: z.array(SourceSchema).min(1),
   embedding: z.array(z.number()).optional(),
+  /** ARISE trajectory — optional structured reasoning trace. */
+  analyticalTrajectory: AnalyticalTrajectorySchema.optional(),
 });
 export type HistoricalEvent = z.infer<typeof HistoricalEventSchema>;
 

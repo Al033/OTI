@@ -233,6 +233,25 @@ function formatCandidateForPrompt(
     // Phase A: point-in-time view. Only the t=0 (1-day) market reaction is
     // visible — that is information available within hours of the event
     // and so is part of "what was known then". Anything beyond is hindsight.
+    //
+    // Analytical trajectory (ARISE pattern, arXiv:2605.03242) is included
+    // when populated for this event — it scaffolds *how to think* about
+    // the regime, which dominant biases tripped consensus, what the
+    // analysts who got it right actually did. This is point-in-time
+    // SAFE: priorBeliefs / decisionPoints / dominantBias all describe
+    // what was knowable at the time, not the resolution.
+    const trajectoryBlock = e.analyticalTrajectory
+      ? `
+
+analyticalTrajectory (cognitive scaffold — describes how good analysts thought through the regime AT THE TIME, not what happened next):
+- priorBeliefs: ${e.analyticalTrajectory.priorBeliefs}
+- marginalDataPoints (gauges that should have been updating priors):
+${e.analyticalTrajectory.marginalDataPoints.map((p) => `    • ${p}`).join("\n")}
+- decisionPoints (dated inflections):
+${e.analyticalTrajectory.decisionPoints.map((p) => `    • ${p}`).join("\n")}
+- dominantBias: ${e.analyticalTrajectory.dominantBias}
+- whatGoodAnalystsDid: ${e.analyticalTrajectory.whatGoodAnalystsDid}`
+      : "";
     return `[${idx + 1}] eventId: ${e.id}
 title: ${e.title}
 date: ${e.date}
@@ -249,7 +268,7 @@ narrativeAtTime (USE THIS for analogousness reasoning):
 ${e.narrativeAtTime}
 
 t=0 market reaction (1-day moves only — anything beyond is hindsight):
-- S&P 500: ${fmt(e.assetMoves.sp500.d1)}    10y UST: ${fmt(e.assetMoves.ust10y.d1)} bp    DXY: ${fmt(e.assetMoves.dxy.d1)}    Gold: ${fmt(e.assetMoves.gold.d1)}    Oil: ${fmt(e.assetMoves.oil.d1)}    VIX: ${fmt(e.assetMoves.vix.d1)}`;
+- S&P 500: ${fmt(e.assetMoves.sp500.d1)}    10y UST: ${fmt(e.assetMoves.ust10y.d1)} bp    DXY: ${fmt(e.assetMoves.dxy.d1)}    Gold: ${fmt(e.assetMoves.gold.d1)}    Oil: ${fmt(e.assetMoves.oil.d1)}    VIX: ${fmt(e.assetMoves.vix.d1)}${trajectoryBlock}`;
   }
 
   // (Unused by current callers — kept for API symmetry.)

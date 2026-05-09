@@ -8,6 +8,7 @@
  */
 
 import { EVENTS as RAW_EVENTS } from "../../data/events";
+import { TRAJECTORIES } from "../../data/trajectories";
 import { HistoricalEventSchema, type HistoricalEvent } from "./types";
 import {
   applyAssetMovesSidecar,
@@ -30,17 +31,20 @@ if (!parsed.success) {
 }
 
 // Apply asset-moves sidecar (FRED/Stooq-canonical numbers from
-// `pnpm refresh-prices`). When the sidecar is missing, the hand-curated
-// approximate values stay in place and provenance defaults to
-// "approximate".
+// `pnpm refresh-prices`) AND the analyticalTrajectory sidecar (ARISE
+// pattern from data/trajectories.ts). When sidecars are missing, the
+// hand-curated approximate values stay in place and the trajectory
+// field is undefined.
 const merged = parsed.data.map((e) => {
   const { assetMoves, provenance, asOf } = applyAssetMovesSidecar(
     e as unknown as { id: string; assetMoves: Record<Asset, Record<string, number | null>> },
   );
+  const trajectory = TRAJECTORIES[e.id];
   return Object.assign({}, e, {
     assetMoves: assetMoves as HistoricalEvent["assetMoves"],
     assetMovesProvenance: provenance,
     assetMovesAsOf: asOf,
+    ...(trajectory ? { analyticalTrajectory: trajectory } : {}),
   });
 });
 

@@ -8,6 +8,8 @@ import {
   GetEventInputSchema,
   ListEventsInputSchema,
 } from "@/lib/mcp/tools";
+import { MCP_RESOURCES, readResourceContent } from "@/lib/mcp/resources";
+import { MCP_PROMPTS, buildPromptMessages } from "@/lib/mcp/prompts";
 import {
   consumeRateLimitToken,
   rateLimitKey,
@@ -85,7 +87,9 @@ export async function GET() {
     protocol: PROTOCOL_VERSION,
     transport: "json-rpc-over-http",
     tools: MCP_TOOLS.map((t) => ({ name: t.name, description: t.description })),
-    docs: "Send JSON-RPC 2.0 over POST. Implements: initialize, tools/list, tools/call, ping.",
+    resources: MCP_RESOURCES.map((r) => ({ uri: r.uri, name: r.name, mimeType: r.mimeType })),
+    prompts: MCP_PROMPTS.map((p) => ({ name: p.name, description: p.description })),
+    docs: "Send JSON-RPC 2.0 over POST. Implements: initialize, tools/list, tools/call, resources/list, resources/read, prompts/list, prompts/get, ping.",
   });
 }
 
@@ -145,11 +149,20 @@ async function dispatch(raw: unknown) {
           protocolVersion: negotiated,
           capabilities: {
             tools: { listChanged: false },
+            resources: { subscribe: false, listChanged: false },
+            prompts: { listChanged: false },
             logging: {},
           },
           serverInfo: SERVER_INFO,
           instructions:
-            "OTI exposes a curated 30-event historical-macro-analogue corpus. Use search_analogues for free-text queries, get_event for a specific event by id (point-in-time view by default to avoid look-ahead leakage), and list_events for discovery. The corpus is licensed MIT and versioned — `corpusVersion` in tool responses changes when events are added/edited.",
+            "OTI exposes a curated 39-event historical-macro-analogue corpus. " +
+            "Use search_analogues for free-text queries, get_event for a specific event by id " +
+            "(point-in-time view by default to avoid look-ahead leakage), and list_events for discovery. " +
+            "Resources surface the full corpus + JSON Schema for read-only context. " +
+            "Server-defined Prompts (compare-regimes, rank-by-fit, negative-analogue) are one-click " +
+            "templates Claude.ai users can invoke directly. " +
+            "The corpus is MIT-licensed and versioned — `corpusVersion` in tool responses changes when " +
+            "events are added/edited.",
         });
       }
       case "ping": {
@@ -164,6 +177,26 @@ async function dispatch(raw: unknown) {
           return rpc(id, undefined, { code: -32602, message: "tool name required" });
         }
         return await callTool(id, p.name, p.arguments ?? {});
+      }
+      case "resources/list": {
+        return rpc(id, { resources: MCP_RESOURCES });
+      }
+      case "resources/read": {
+        const p = params as { uri?: string } | undefined;
+        if (!p?.uri) {
+          return rpc(id, undefined, { code: -32602, message: "uri required" });
+        }
+        return await readResource(id, p.uri);
+      }
+      case "prompts/list": {
+        return rpc(id, { prompts: MCP_PROMPTS });
+      }
+      case "prompts/get": {
+        const p = params as { name?: string; arguments?: Record<string, unknown> } | undefined;
+        if (!p?.name) {
+          return rpc(id, undefined, { code: -32602, message: "prompt name required" });
+        }
+        return await getPrompt(id, p.name, p.arguments ?? {});
       }
       case "notifications/initialized":
       case "notifications/cancelled":
@@ -254,4 +287,35 @@ function toolResult(
     structuredContent: payload,
     isError: false,
   });
+}
+
+async function readResource(
+  id: string | number | null | undefined,
+  uri: string,
+) {
+  const content = readResourceContent(uri);
+  if (!content) {
+    return rpc(id, undefined, {
+      code: -32602,
+      message: `unknown resource uri: ${uri}`,
+    });
+  }
+  return rpc(id, {
+    contents: [content],
+  });
+}
+
+async function getPrompt(
+  id: string | number | null | undefined,
+  name: string,
+  args: Record<string, unknown>,
+) {
+  const built = buildPromptMessages(name, args);
+  if (!built) {
+    return rpc(id, undefined, {
+      code: -32602,
+      message: `unknown or unavailable prompt: ${name}`,
+    });
+  }
+  return rpc(id, built);
 }

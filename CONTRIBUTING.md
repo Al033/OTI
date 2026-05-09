@@ -66,14 +66,23 @@ validate-event` runs the same hindsight-leakage heuristic on
 trajectory text that it runs on `narrativeAtTime` — it'll flag obvious
 leaks like "as it turned out" or "in retrospect".
 
-5 anchor trajectories ship in v0.6 (1971-nixon-shock, 1998-russia-ltcm,
-2007-bnp-paribas, 2008-lehman, 2020-covid-crash). Target N=39 (one per
-event) by v0.7 — the trajectory pass for an event you know well takes
-~30 minutes and is among the highest-leverage corpus contributions.
+**v0.6.1 status:** all 39 corpus events now carry trajectories — the
+v0.7 N=39 milestone landed early. Future trajectory contributions
+should focus on:
 
-The 20-event bounty applies: first 20 high-quality trajectories
-merged get the same permanent contributor cite + lifetime API access
-as the corpus-card bounty.
+  - Refining existing trajectories with primary-source citations
+    (Bloomberg headline timestamps, FOMC transcript excerpts, BIS
+    publication dates) to upgrade `marginalDataPoints` from "this was
+    visible" to "this specific source published it on this date".
+  - Adding trajectories for new corpus events as they're added past
+    the current 39 baseline.
+  - Cross-checking dominant-bias claims against contemporaneous
+    research notes, sell-side reports, and FOMC discussions.
+
+The 20-event bounty applies to the trajectory-PR depth-of-citation
+work going forward: PRs that add 5+ primary-source citations to an
+existing trajectory get the same permanent contributor cite +
+lifetime API access as the original corpus-card bounty.
 
 ## Tag rules
 

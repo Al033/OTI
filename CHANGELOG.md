@@ -26,21 +26,38 @@ lands on a real-shaped page from minute one rather than a stub.
 
 ### Corpus depth
 
-- **+25 ARISE trajectories** — 1962-cuban-missile-crisis,
-  1973-opec-embargo, 1979-volcker-shock, 1985-plaza-accord,
-  1987-black-monday, 1990-iraq-kuwait, 1992-black-wednesday,
-  1994-greenspan-hike, 1997-thai-baht, 2000-dotcom-peak, 2001-911,
-  2010-flash-crash, 2011-us-downgrade, 2012-whatever-it-takes,
-  2013-taper-tantrum, 2015-china-deval, 2016-brexit,
+- **+34 ARISE trajectories — full N=39 coverage shipped early.** The
+  v0.7 milestone (one trajectory per corpus event) lands in v0.6.1
+  rather than Q3 2026. Coverage: 1929-black-tuesday, 1962-cuban-
+  missile-crisis, 1970-penn-central, 1973-opec-embargo, 1979-volcker-
+  shock, 1980-hunt-silver, 1985-plaza-accord, 1987-black-monday,
+  1990-iraq-kuwait, 1992-black-wednesday, 1994-greenspan-hike,
+  1994-tequila-crisis, 1997-thai-baht, 1998-indonesia-suharto,
+  2000-dotcom-peak, 2001-911, 2002-argentina-default, 2010-flash-
+  crash, 2011-us-downgrade, 2012-whatever-it-takes, 2013-taper-
+  tantrum, 2015-china-deval, 2016-brexit, 2016-trump-election,
   2018-powell-pivot-eve, 2018-turkey-lira, 2018-volmageddon,
-  2022-russia-ukraine, 2022-uk-gilt-crisis, 2023-svb-collapse,
-  2024-yen-carry-unwind, 2025-trump-liberation-day. Total now **30 of
-  39 events** — 77% corpus coverage. Bias families now anchored:
-  binary-existential-tail (1962), coercive-bargaining-precedent (1990,
-  2022), tiger-model (1997), demand-destruction-recency (2001), AAA-
-  as-load-bearing (2011), microstructure-stability (2010), Fed-as-rule-
-  bound (2018-pivot), carry-as-stable (2024), 2018-template-
-  extrapolation (2025). Target N=39 for v0.7 via community PRs.
+  2022-lme-nickel, 2022-russia-ukraine, 2022-uk-gilt-crisis,
+  2023-credit-suisse-ubs, 2023-svb-collapse, 2024-yen-carry-unwind,
+  2025-trump-liberation-day (plus the 5 v0.6 anchor trajectories:
+  1971-nixon-shock, 1998-russia-ltcm, 2007-bnp-paribas, 2008-lehman,
+  2020-covid-crash). Bias-family coverage spans:
+  permanently-high-plateau (1929), background-Cold-War (1962),
+  implicit-government-guarantee (1970), recency-bias-on-prior-cycle
+  (1973, 1994, 2018-pivot), smooth-policy-extrapolation (1979),
+  speculator-as-noise-trader (1980), FX-intervention-doesn't-work
+  (1985), portfolio-insurance-as-protection (1987), coercive-
+  bargaining-precedent (1990, 2022), reform-story-as-permanent (1994-
+  tequila), tiger-model (1997), Suharto-as-stability-anchor (1998),
+  productivity-paradigm-shift (2000), demand-destruction-recency
+  (2001), convertibility-as-binding (2002), microstructure-as-stable
+  (2010), AAA-as-load-bearing (2011), mandate-constraint (2012),
+  Fed-communication-stable (2013), policy-credibility-as-fixed (2015),
+  betting-market-priors-as-truth (2016), polling-aggregator-as-truth
+  (2016-trump), volume-of-information (2023-svb), exchange-mechanism-
+  as-neutral (2022-lme), G-SIB-resolution-takes-quarters (2023-cs),
+  carry-as-stable (2024), 2018-template-extrapolation (2025). Phase A
+  now injects trajectory data into every retrieval context.
 
 ### Code hygiene
 

@@ -630,6 +630,195 @@ export const TRAJECTORIES: Record<string, AnalyticalTrajectory> = {
       "Tracked back-channel diplomacy signals (the Robert Kennedy / Anatoly Dobrynin meetings + the 'two letters' framing) as the actionable resolution-pathway gauge rather than relying on public rhetoric, sized for asymmetric outcomes (small upside from de-escalation, catastrophic loss from escalation) without taking aggressive risk-on positions, recognized that the US Treasury market was carrying NO premium for the binary-existential-tail and was therefore not a useful signal. Held risk-off through the Oct 22-28 window, faded the early-October pre-crisis equity range, lengthened duration on the Oct 28 resolution. The trade that broke even amongst the careful: short equities INTO Oct 28 — the resolution rally was sharp enough that overlap with the cover trade was operationally hard to time.",
   },
 
+  "1929-black-tuesday": {
+    priorBeliefs:
+      "Through summer 1929 the consensus framing among most Wall Street firms and economic commentators was that equity valuations reflected a 'permanently high plateau' driven by mass-production economy gains, expanding margin lending, and steady industrial output. By September the market had pulled back from highs but the framing remained 'healthy correction in a structural bull market.' Few participants had a model where the Federal Reserve's tightening into a slowing economy could compound a margin-call cascade.",
+    marginalDataPoints: [
+      "Margin debt at NYSE member firms had grown to ~$8.5bn by late summer 1929 — historically unprecedented as a share of market capitalization, visible in monthly broker-dealer reports",
+      "Industrial production had begun rolling over as early as June 1929 (visible in monthly Federal Reserve data); the divergence between the equity tape and underlying production was the leading indicator most analysts dismissed",
+      "Fed had raised the discount rate from 5% to 6% in August 1929 — a tightening into an already-slowing economy, framed as 'leaning against speculation' but with operationally restrictive consequences for margin financing",
+      "British central-bank tightening (Bank Rate to 6.5% on Sep 26, 1929) had compounded sterling-dollar dynamics and pulled gold flows toward London — the international dimension of the 1929 setup that most US-focused analysts ignored",
+    ],
+    decisionPoints: [
+      "Sep 5, 1929 (the 'Babson Break' — Roger Babson's published warning of 'crash coming, and it may be terrific'; Dow drops 3% on the news): the analyst had to decide whether to take a single bearish forecast as a signal or as noise — the consensus dismissed it as one alarmist's opinion",
+      "Oct 24, 1929 ('Black Thursday' — Dow opens deeply down, recovers on bank-syndicate buying mid-day): the moment the underlying liquidity-and-leverage fragility became visible; the question was whether the support operation was a circuit-breaker or a delaying action",
+      "Oct 28-29, 1929 ('Black Monday' + 'Black Tuesday' — Dow down 12.8% + 11.7% in two sessions; volume sets multi-decade record): the cascading-margin-call confirmation; the question was whether to treat this as event-bottom or as the start of a multi-year regime",
+      "Nov 1929 - early 1930 (Dow recovers ~50% of the October-November drop): the dead-cat-bounce setup that misled most participants into 'buying the dip' before the multi-year bear market resumed in 1930",
+    ],
+    dominantBias:
+      "Permanently-high-plateau bias — the explicit name given to the framing where structural productivity gains were assumed to have re-rated equilibrium valuations. Compounded by margin-as-routine bias: margin lending was treated as a feature of efficient markets without weighting the convexity that reverses violently when prices fall through margin-call thresholds. Compounded again by 'Fed-policy-not-binding' bias — discount-rate increases were framed as tactical anti-speculation, missing their effect as a slowing-economy compound shock.",
+    whatGoodAnalystsDid:
+      "Tracked margin debt as a structural-fragility gauge (not just a positioning gauge), watched industrial-production data as the underlying-economy signal that the equity tape had decoupled from, recognized the September Fed + Bank-of-England tightening pair as a coordinated international-policy compounding factor. Reduced equity exposure through summer 1929, lengthened bond duration into Q4 1929, faded the late-1929/early-1930 recovery rally. The trade that broke even amongst the careful: cash through 1930-1932 — the magnitude of the deflation made even nominal-cash holdings lose purchasing-power-relative-to-real-assets in unusual ways.",
+  },
+
+  "1970-penn-central": {
+    priorBeliefs:
+      "Going into June 1970 the consensus framing of US commercial-paper markets was that they were a stable funding venue for high-grade corporates — particularly large-cap industrials with established credit standing. Penn Central, despite well-documented operating troubles through 1969-1970, was viewed as 'too important to fail' given its rail-transportation role + government strategic interest. Most credit analysts ranked Penn Central commercial paper as investment grade through the spring.",
+    marginalDataPoints: [
+      "Penn Central's quarterly earnings warnings through Q1 1970 had been escalating in language; the Apr 1970 management-change announcement was a clean 'company-in-crisis' tell most CP buyers were slow to respond to",
+      "Penn Central commercial paper issuance had grown to ~$200m outstanding by Q2 1970 — sufficient size that a default would create a measurable shock to CP market depth, but framed as 'manageable'",
+      "Other railroad credits had begun trading wider through Q1-Q2 1970 — the sector-correlation tell that wasn't being applied to non-rail-corporate CP demand",
+      "Fed and Treasury internal discussions through May-June 1970 about contingency planning for a Penn Central failure leaked enough that financial-press attention escalated the week before the bankruptcy filing",
+    ],
+    decisionPoints: [
+      "Jun 21, 1970 (Penn Central files for bankruptcy reorganization, defaulting on commercial paper for the first time in a major US issuer): the analyst had to read this as either 'idiosyncratic large-corporate failure' or 'commercial-paper market structural confidence event'",
+      "Late June - July 1970 (CP market issuance volume drops sharply; corporate-treasury withdrawals visible across high-grade names): the contagion-pattern question — was this a Penn-Central-specific event or a generalized loss of CP investor confidence?",
+      "Jun 22 onward (Fed's direct discount-window access for commercial banks to absorb CP-market redemptions; emergency liquidity provision visible the day after the bankruptcy): the policy-response intervention that capped the spillover",
+      "Aug 1970 (Fed's quarterly Senior Loan Officer Survey shows accelerated tightening of credit standards across investment-grade corporates): the validation that the Penn Central event had structurally repriced credit-quality assumptions",
+    ],
+    dominantBias:
+      "Implicit-government-guarantee bias — Penn Central's rail-transportation and strategic-importance role was assumed to imply policy backstop without operational verification. Compounded by 'CP-as-cash-equivalent' bias: the commercial paper market was treated as a near-cash venue without weighting its actual credit-risk distribution, which was masked by the historical absence of high-grade defaults.",
+    whatGoodAnalystsDid:
+      "Tracked Penn Central's quarterly earnings language as the leading-indicator deterioration gauge, recognized the strategic-importance argument as untested rather than reliable, watched CP-market issuance patterns post-default as the contagion-pattern gauge. Took CP exposure off through Q1-Q2 1970, lengthened high-quality bond positions through the June-July dislocation, recognized the Fed's discount-window response as the credible backstop mechanism. The trade that broke: long railroads broadly on the 'Penn Central is idiosyncratic' thesis — the sector-correlation reading was structurally important and the sector underperformed through Q3-Q4 1970.",
+  },
+
+  "1980-hunt-silver": {
+    priorBeliefs:
+      "Going into early 1980 the consensus framing of the silver market was that the Hunt brothers (Nelson Bunker + William Herbert) were operating large but legitimate long-silver positions in a tight-supply environment. Silver had risen from ~$6/oz in early 1979 to over $48/oz by Jan 17, 1980 — a 700% move attributed by most commodity desks to a combination of fundamental tightness and speculative momentum. Few participants explicitly modeled the Hunt position as the binding price-formation factor.",
+    marginalDataPoints: [
+      "Hunt-affiliated entity COMEX silver positions had grown beyond conventional 'large speculator' thresholds through 1979 — visible in CFTC weekly Commitments-of-Traders reports if read with adjustments for related-party aggregation",
+      "Silver-coin-melt premiums had collapsed by early 1980 — physical-market arbitrage was actively responding to the price; the supply elasticity was higher than the spot-market move suggested",
+      "COMEX margin requirements were raised through January 1980 (multiple steps from $1,000 to $30,000+ per contract) — visible operational signal that the exchange was attempting to constrain the Hunt position size before a forced-unwind path was taken",
+      "Hunt-affiliated borrowing from First National Bank of Chicago + Bache Halsey Stuart Shields was reaching unprecedented sizes; counterparty-credit concentration risk was building visibly to anyone tracking the lender disclosures",
+    ],
+    decisionPoints: [
+      "Jan 7, 1980 (CBOT raises silver futures margin requirements to $30,000; COMEX subsequently follows): the moment when the exchange operating mechanism was being explicitly used to constrain the Hunt position — the analyst had to read this as 'forced-unwind path being prepared'",
+      "Jan 17, 1980 (silver peaks at $50.35/oz intraday): the highest-water-mark date that, in retrospect, marked the inflection — the question was whether to take profits or continue with the momentum thesis",
+      "Mar 27, 1980 ('Silver Thursday' — Hunt brothers receive a margin call they cannot meet on Bache; silver collapses to $10.80 in a session): the cascading-forced-liquidation event that resolved the regime",
+      "Late March - April 1980 (Bache and other lender-prime-broker support arrangements; eventual Hunt bailout structure brokered through the Federal Reserve): the resolution path that contained the lender-creditor-default contagion but at significant counterparty cost",
+    ],
+    dominantBias:
+      "Speculator-as-noise-trader bias — large concentrated positions were modeled as adding momentum without weighting their potential to BE the marginal price-formation participant. Compounded by exchange-margin-as-friction bias: margin increases were treated as routine market-management when they were operationally a force against the dominant participant. Compounded again by 'silver-as-monetary-metal' bias which conflated monetary-asset narrative justifications with operational supply-demand realities.",
+    whatGoodAnalystsDid:
+      "Read CFTC large-trader data with related-party aggregation, watched coin-melt premiums as the physical-supply-elasticity gauge, treated CBOT/COMEX margin increases as the leading-indicator force-against-position signal. Took silver long exposure off through January-February 1980, sized for the cascading-margin-call resolution rather than a smooth peak, faded the brief post-Mar 27 stabilization rally. The trade that broke: short Bache equity and bonds — the Federal Reserve broker-up rescue mechanism contained the counterparty fallout faster than the credit-implosion thesis allowed for.",
+  },
+
+  "1994-tequila-crisis": {
+    priorBeliefs:
+      "Through November 1994 the consensus framing of Mexico was as a successful EM reform story: NAFTA was operative, capital inflows were strong, the peso was managed within an explicit band that had held through 1994 despite political turbulence (Colosio assassination, Chiapas uprising). Most strategists viewed Mexican external accounts as 'managed' even as the current-account deficit had widened to ~7% of GDP, financed by short-dated tesobonos.",
+    marginalDataPoints: [
+      "Mexican FX reserves had drawn down materially through 1994 — from ~$30bn in February to ~$10bn by mid-December — visible in BoP-Mexico monthly publications but framed as 'managed adjustment'",
+      "Tesobono issuance (USD-indexed short-term Mexican government paper) had grown to ~$30bn outstanding by late 1994; the implicit roll-risk was structurally elevated against a $10bn reserve base",
+      "Banamex CDS-equivalent pricing (proxied through deliverable-bond spreads) had widened through Q3-Q4 1994 — wholesale credit markets were repricing Mexican bank credit before the FX event materialized",
+      "The Dec 1994 Mexican federal budget release had failed to address the external-imbalance question; political pressure on the new Zedillo administration was driving FX reserve depletion to defend the band",
+    ],
+    decisionPoints: [
+      "Dec 20, 1994 (Mexican government announces a 15% devaluation of the upper band; PESO/USD breaks immediately on the announcement): the analyst had to read this as either 'managed depreciation within a credible band' or 'a band defense that's already failing'",
+      "Dec 22, 1994 (Mexican government abandons the band entirely, peso floats and collapses ~50% in days): the regime-change resolution that vindicated the 'band-defense-failing' read",
+      "Jan 1995 (Mexico requests $50bn international rescue package; US Treasury Exchange Stabilization Fund brokered facility announced Feb): the policy-response sufficiency read — was the package big enough to stabilize, or were follow-on EM contagion pathways already in motion?",
+      "Q1 1995 (Argentine + Brazilian sovereign spreads widening as 'tequila contagion' propagates; eventually contained by IMF programs and US Treasury support): the contagion-pathway resolution that constrained the regional spillover",
+    ],
+    dominantBias:
+      "Reform-story-as-permanent bias — Mexican NAFTA-era credibility was treated as having reset structural-vulnerability assessments without weighting that reform was conditional on continued capital-inflow continuity. Compounded by tesobono-as-protected-instrument bias: USD-indexation was treated as eliminating peso-devaluation risk for foreign holders, missing that it created a sharp policy-tradeoff for Mexico itself between rolling tesobonos and defending reserves.",
+    whatGoodAnalystsDid:
+      "Tracked monthly reserve drawdown as the leading-indicator gauge, netted reserves against tesobono outstanding to derive the actionable 'days of cover' measure, recognized the Banamex-credit widening as the wholesale-funding-stress tell. Shorted MXN through Q4 1994, took EM equity exposure off across the region in late December, lengthened US duration into the Mexican rescue package as flight-to-quality flows. The trade that broke: short Mexican equities — the rescue package stabilized faster than expected and the equity bottom in early 1995 caught short-positioning offside.",
+  },
+
+  "1998-indonesia-suharto": {
+    priorBeliefs:
+      "Going into late 1997 the consensus framing of Indonesia was as a pegged-currency EM in the Asian-financial-crisis cohort but with stronger fundamentals than Thailand or Malaysia — larger reserves, more diversified export base, longer track record. Suharto's 30-year political tenure was viewed as a stability anchor. The IMF program signed in November 1997 was framed as a credible stabilization mechanism. Few participants modeled the political-regime-change tail risk explicitly.",
+    marginalDataPoints: [
+      "IDR had broken from ~2,400 against USD in early November 1997 to ~16,000 by January 1998 — magnitude well beyond what comparable EM crises had produced; the FX move was already pricing a regime-change tail before politics fully expressed it",
+      "Banking-sector NPLs were estimated at >40% of system assets by early 1998 — a level that historically required either nationalization or structural reform; the IMF program was attempting both but execution was politically constrained",
+      "Suharto's repeated public disagreements with IMF reform conditions through Q1 1998 (specifically subsidies, monopolies, and family-business divestitures) signaled that the political execution was breaking down even as the policy framework existed on paper",
+      "Indonesian student protests through April 1998 had escalated to multiple-city demonstrations; the political-stability anchor was visibly eroding while most EM-strategists framed it as 'background noise'",
+    ],
+    decisionPoints: [
+      "May 12-15, 1998 (Trisakti University shootings → Jakarta riots → looting/arson; political situation deteriorates rapidly): the moment the political-regime-change tail moved from theoretical to imminent",
+      "May 21, 1998 (Suharto resigns, Habibie becomes acting President): the regime-change resolution that, despite the apparent worst-case outcome, allowed for transition-without-collapse",
+      "Q3 1998 (further political turbulence including the Russia/LTCM cross-asset event compounding regional pressure): the moment when the 1998 Indonesia event became part of a broader cross-regional crisis-cluster",
+      "1999 (eventual IMF program continuation with Habibie + Wahid administrations; political stability gradually re-established): the resolution arc that vindicated 'transition-not-collapse' framing for those who held through the May-September stress",
+    ],
+    dominantBias:
+      "Suharto-as-stability-anchor bias — long political tenure was treated as evidence of resilience without weighting the brittleness of personalist regimes under economic stress. Compounded by IMF-program-as-execution bias: the existence of an agreement was treated as equivalent to its execution, missing that political constraints could prevent the program's specific reforms even when the framework was nominally accepted.",
+    whatGoodAnalystsDid:
+      "Read the Suharto-IMF disagreements through Q1 1998 as the leading-indicator execution-failure gauge, tracked banking-NPL estimates as the structural-vulnerability measure, treated student protests + military-political dynamics as primary inputs (not background noise). Took IDR exposure off in late 1997, sized for political-regime-change tail outcomes through Q1-Q2 1998, lengthened cash + US duration into the May 1998 events. The trade that broke: short Indonesian sovereign credit through 1999 — the eventual IMF-program continuation under successor administrations stabilized faster than the political-collapse thesis allowed for.",
+  },
+
+  "2002-argentina-default": {
+    priorBeliefs:
+      "Through 2001 the consensus framing of Argentina was that the convertibility regime (1:1 peso-dollar peg via currency board) was a structural reform with very high political and economic exit costs. Despite repeated stress events through Q2-Q4 2001 (deposit flight, sovereign-yield blowout to 30%+, IMF program suspensions), most external-debt analysts assumed the political will to maintain the peg + secure follow-on IMF support would prevail. Argentine equities and sovereign debt traded at distressed levels but the default base case was 'restructuring not repudiation'.",
+    marginalDataPoints: [
+      "Argentine bank-deposit outflow had accelerated through October-November 2001 — the corralito (deposit freeze) imposed Dec 1, 2001 was the visible response to a run that was already in late-stage progression",
+      "Sovereign-CDS spreads had reached >5,000bp by late November 2001 — a level historically associated with imminent default rather than restructuring, but the consensus continued to expect orderly debt-exchange resolution",
+      "Provincial-government IOU issuance ('lecops', 'patacones') had begun circulating as quasi-currency in many provinces through 2001 — the operational sign that the de-facto monetary regime had already broken even before the formal default",
+      "Multilateral-creditor (IMF + World Bank) signaling through November 2001 had hardened against further support absent fiscal reforms; the political feasibility of those reforms was visibly breaking down by late November",
+    ],
+    decisionPoints: [
+      "Dec 1, 2001 (corralito announced — bank-deposit withdrawals capped at $1,000/month per depositor): the moment the convertibility-regime exit became operational; the analyst had to read this as either 'temporary stabilization' or 'precursor to currency-and-debt regime collapse'",
+      "Dec 19-21, 2001 (mass protests, casseroles cacerolazos; President de la Rúa resigns): the political-regime-change confirmation that the convertibility-regime exit had become inevitable",
+      "Dec 23, 2001 (interim President Rodríguez Saá announces sovereign-debt default during a congressional address — the largest sovereign default in history at that time): the formal default that the markets had effectively priced over the prior weeks",
+      "Jan 2002 (peso devaluation 1:1 → 1.4:1 → free float; convertibility regime formally ended; banking-system pesification launched): the regime-change resolution that came in pieces over weeks, with each piece deferring full mark-to-market reckoning",
+    ],
+    dominantBias:
+      "Convertibility-as-structurally-binding bias — the political and economic exit costs were treated as effectively prohibitive without weighting that political-feasibility constraints can shift abruptly under sustained economic stress. Compounded by IMF-as-backstop bias: continued multilateral support was assumed even as the conditionality requirements were becoming operationally infeasible to meet.",
+    whatGoodAnalystsDid:
+      "Read sovereign-CDS spread levels as a threshold measure (above 5,000bp historically signaled default, not restructuring), tracked deposit-outflow data as the run-velocity gauge, recognized provincial-IOU issuance as the de-facto monetary-regime-already-broken signal. Sized for currency-board exit through Q4 2001, lengthened cash + USTs into the December events, faded early-2002 'we're stabilizing' rallies. The trade that broke: short Argentine equities through Q1-Q2 2002 — the post-devaluation export-driven competitive-cost-base recovery delivered an equity rally that caught short-positioning offside.",
+  },
+
+  "2016-trump-election": {
+    priorBeliefs:
+      "Going into Nov 8, 2016 the consensus among polling aggregators (538: Clinton 71%, NYT Upshot: Clinton 85%, betting markets: Clinton ~75%) was that Hillary Clinton would win the presidential election. Most market positioning reflected this base case: short-USD, long-MXN, long-emerging-market equities, short-defense-and-energy. The 'Clinton-base-case-with-modest-tail' framing dominated investment-committee minutes through the week before the election.",
+    marginalDataPoints: [
+      "Polling tightening through October 2016 (after the FBI Comey letter, Oct 28) had visibly compressed the Clinton lead in key swing states — but aggregators continued to project high Clinton win probabilities because national-margin-based models were less sensitive to swing-state shifts",
+      "MXN/USD vol skew had widened materially through October-November 2016 — option markets were paying up for MXN-weakness scenarios more aggressively than spot suggested",
+      "Trump campaign's late-October 2016 polling-internal data leaked through media reporting suggested closer Wisconsin/Michigan/Pennsylvania readings than public polls — operational signal that ground-game data diverged from public-poll consensus",
+      "S&P 500 had been in a tightening volatility regime through early November 2016 — implied vol was elevated but realized vol had been muted, leaving option-market positioning structurally short-vol going into the binary event",
+    ],
+    decisionPoints: [
+      "Nov 8, 2016 evening / Nov 9 early hours (Florida + Ohio + North Carolina results break for Trump; betting-market odds shift from Clinton-favored to Trump-favored): the moment the election-night tape diverged from the consensus prior; futures markets traded sharply down (S&P futures -5%+ overnight) before partially recovering through the night",
+      "Nov 9, 2016 NY open (S&P opens up ~1%, recovers all overnight losses; the 'Trump trade' narrative emerges — long defense, long financials, long small-caps, short bonds, short EMs): the analyst had to decide whether to chase the recovery move or fade it as overshoot",
+      "Q4 2016 (Trump trade extends through year-end on tax-cut + deregulation thesis; USD strength + UST yield rise): the validation that the policy-mix repricing was multi-quarter, not a single-day event",
+      "Q1 2017 (Trump trade partially reverses as tax-cut timeline extends + executive-order policies create regulatory uncertainty): the moment when the strong-policy-execution thesis met implementation reality",
+    ],
+    dominantBias:
+      "Polling-aggregator-as-truth bias — even as individual polls tightened, aggregator confidence intervals stayed narrow because the aggregation methodology weighted national-popular-vote estimates that were less sensitive to swing-state swings. Compounded by 'modest-tail' bias: the binary outcome was modeled as a small-probability event without sizing for the discontinuous-policy-mix repricing that the alternative outcome implied.",
+    whatGoodAnalystsDid:
+      "Tracked MXN vol skew as a leading-indicator gauge of asymmetric outcome pricing, parsed swing-state-by-swing-state polling rather than the aggregate, recognized that even a 25% probability event with a 10%+ asset-price reaction warranted protective hedges. Sized for binary outcomes with explicit hedges (long MXN puts, long defense, long small-caps), faded the overnight Nov 8/9 panic to chase the policy-mix repricing through Q4 2016. The trade that broke: long EM equities through Q4 2016 — the dollar-strength + Trump-trade reversal of the carry-and-EM positioning was sharper than the consensus 'modest-pullback' allowed for.",
+  },
+
+  "2022-lme-nickel": {
+    priorBeliefs:
+      "Going into early March 2022 the consensus framing of LME nickel was that a price move tied to the Russia/Ukraine conflict was happening but within manageable bounds. Tsingshan's well-known short-position structure (Class 1 / Class 2 nickel mismatch on the LME contract) was viewed as concerning but contained. The LME's market-stabilization mechanisms were assumed to have margin + circuit-breaker tools sufficient to avoid extreme dislocations.",
+    marginalDataPoints: [
+      "LME nickel had risen from ~$25,000/t in early February 2022 to ~$50,000/t by Mar 7 — a doubling over five weeks driven by Russia-supply-disruption pricing + Tsingshan-short-squeeze speculation",
+      "Tsingshan Holding's known LME short position was estimated at >150,000 tonnes through specialty-press reporting; the size relative to actual Class 1 deliverable supply was the structural mismatch that few outside-of-the-trade analysts modeled explicitly",
+      "LME's daily price-move limits had not been triggered through early March; the exchange operating mechanism was visibly facing stress but had not yet acted decisively",
+      "Cross-asset margin-call channels through Tsingshan's prime-broker relationships (JPMorgan + others) had begun accelerating through early March 7-8 — the lender-counterparty-stress proxy was building",
+    ],
+    decisionPoints: [
+      "Mar 7, 2022 (LME nickel closes at ~$50,000/t; Tsingshan margin-call concerns escalate; trading hours resume Mar 8): the analyst had to decide whether to run the long thesis through what was visibly an exchange-stability-stress event",
+      "Mar 8, 2022 (LME nickel hits ~$100,000/t intraday +250% in hours on cascading short-cover; LME suspends trading mid-session and announces cancellation of Mar 8 trades back to a cutoff time): the moment when the exchange operating mechanism intervened unprecedentedly — the analyst had to read this as 'temporary protective measure' vs 'fundamental break in LME credibility'",
+      "Mar 9-15, 2022 (LME suspended trading multi-day; eventual reopening with new circuit breakers + position-limit framework): the policy-response intervention that contained the immediate crisis but at significant counterparty / institutional cost",
+      "Q2 2022 onward (LME-vs-CME nickel-volume migration; LME's institutional credibility as a price-formation venue persistently impaired): the reputation-damage resolution that the trade-cancellation decision had created",
+    ],
+    dominantBias:
+      "Exchange-mechanism-as-neutral bias — analysts modeled LME's operational tools (margins + limits + circuit-breakers) as neutral mechanisms that would constrain but not change market outcomes. The trade-cancellation decision was operationally a redistribution of P&L between participants and was unprecedented in modern LME history. Compounded by 'large-corporate-trades-are-stable' bias: Tsingshan's position was modeled as legitimate hedging without weighting that hedge sufficiency depends on Class 1 / Class 2 deliverable matching that was structurally inadequate.",
+    whatGoodAnalystsDid:
+      "Read the Tsingshan position size relative to LME Class 1 deliverable supply as the structural-mismatch gauge, tracked prime-broker counterparty-stress signals (basis pricing + bank-financing-cost data), recognized that LME's institutional credibility was a separate variable from nickel-price pricing. Took long-nickel exposure off ahead of Mar 7, sized for exchange-mechanism intervention rather than smooth price clearing, recognized the trade-cancellation decision as a reputation-impairment event for LME specifically. The trade that broke: long LME-listed metals broadly through Q2 2022 — the migration to CME-listed contracts impaired LME-specific-instrument basis pricing.",
+  },
+
+  "2023-credit-suisse-ubs": {
+    priorBeliefs:
+      "Through early March 2023 the consensus framing of Credit Suisse was as a struggling but solvent G-SIB undergoing multi-year restructuring under a relatively new CEO (Ulrich Körner). The October 2022 capital raise + restructuring announcement had been viewed as adequate. Most credit analysts ranked CS in the lower quartile of European-bank credit quality but solidly investment-grade. The SVB collapse the week prior (Mar 9-10) had introduced cross-Atlantic sector stress but had not been viewed as directly transmissible to a European G-SIB.",
+    marginalDataPoints: [
+      "CS deposit outflows in Q4 2022 had been a record ~CHF 110bn — visible in the Q4 2022 results release in early February 2023, but framed as restructuring-related rather than as franchise-impairment",
+      "CS senior unsecured CDS had widened from ~250bp to >450bp through Q1 2023 — pricing well above the rest of European-bank-CDS distribution; the cleanest tell that wholesale credit was repricing faster than equity",
+      "Saudi National Bank (CS's largest shareholder) Chairman's Mar 15, 2023 Bloomberg TV comment ('absolutely not' more capital) sparked a 30% intraday equity drop — the moment when the chair's comment broadcast a 'we cannot take more' signal that markets read as a confidence collapse",
+      "CS-internal Lex Greensill / Archegos events had cumulatively impaired the franchise's institutional-counterparty relationships through 2021-2022; the wealth-management business was relatively healthier but the IB was structurally damaged",
+    ],
+    decisionPoints: [
+      "Mar 15, 2023 (Saudi National Bank Chairman comment + CS equity -30% intraday): the moment when the franchise-confidence event became visible; the analyst had to read this as either 'one-day political-risk repricing' or 'an accelerated path to forced resolution'",
+      "Mar 15-16, 2023 evening (SNB / FINMA emergency liquidity facility for CS announced; CS draws ~CHF 50bn the next morning): the policy-response intervention that delayed rather than solved the franchise problem",
+      "Mar 19, 2023 evening (UBS-Credit Suisse forced-merger announcement at CHF 0.76/share — 60% below the Friday close; SNB / FINMA emergency-merger framework deployed): the regime-change resolution that, despite the forced nature, contained the systemic-spillover risk to the EU banking system",
+      "Mar 20, 2023 (CS AT1 bondholders fully written off, ~$17bn — equity holders received UBS shares above zero; this was specifically reversal of the conventional capital-stack hierarchy): the policy-side decision that materially impaired the global AT1 market liquidity and pricing",
+    ],
+    dominantBias:
+      "G-SIB-resolution-takes-quarters bias — analysts modeled European G-SIB resolution timelines based on the 2008-2012 European-bank-bailout playbook (TARP-style multi-month process). Compounded by 'capital-stack-hierarchy-binding' bias: the AT1-before-equity write-down expectation was treated as legally-binding when in fact Swiss resolution-authority discretion deviated. Compounded again by SVB-not-transmissible bias: the US-regional-banking event was framed as having no European G-SIB pathway when in fact franchise-confidence events propagate cross-jurisdictionally faster than bailouts.",
+    whatGoodAnalystsDid:
+      "Read CS senior CDS levels relative to European-bank distribution as the leading-indicator gauge, tracked deposit-outflow velocity through Q1 2023, recognized that SVB's franchise-confidence shock had repriced cross-Atlantic banking-sector tail risk. Took CS exposure off ahead of Mar 15, sized for accelerated-resolution rather than multi-quarter restructuring, recognized AT1 write-down risk as conditional on resolution-authority discretion rather than as equity-hierarchy-protected. The trade that broke: long European-bank AT1 broadly — the CS AT1 write-down operationally impaired the asset class's pricing across the broader European-bank universe through Q2 2023.",
+  },
+
   "2018-turkey-lira": {
     priorBeliefs:
       "Going into August 2018 the consensus framing of Turkey was as a high-yielding EM with manageable external imbalances — current-account deficit visible but funded, FX reserves declining but adequate, banking sector under stress but solvent. The political dimension (Erdogan's eldest-son-in-law as Finance Minister + Erdogan's public 'rates cause inflation' framing) was viewed as concerning but contained. The external trigger most strategists watched was Fed-driven dollar strength, not US-Turkey diplomatic friction.",

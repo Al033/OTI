@@ -65,6 +65,20 @@ export const events = pgTable(
       "hnsw",
       table.embedding.op("vector_cosine_ops"),
     ),
+    // GIN index on the JSONB regime_tags array. At v0.5's N=39 events,
+    // sequential scan is faster than indexed lookup — but the corpus
+    // grows (target N≈75 in v0.6, 100+ in v0.7), and the daily-cron
+    // tag-overlap filter, plus the conformal-calibration k-NN's
+    // hot-path Jaccard scoring, both benefit at N>200. Adding the
+    // index now is cheap (~ns/row at this size, no change to query
+    // cost path), avoids a future migration on a busy table.
+    regimeTagsIdx: index("events_regime_tags_idx").using(
+      "gin",
+      table.regimeTags,
+    ),
+    // Btree on date — supports the walk-forward filter "events with
+    // date < testDate" used in the leave-one-out conformal calibration.
+    dateIdx: index("events_date_idx").on(table.date),
   }),
 );
 

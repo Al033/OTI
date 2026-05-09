@@ -1865,5 +1865,560 @@ export const EVENTS: HistoricalEvent[] = [
       },
     ],
   },
+
+  // === v0.4 corpus expansion — pre-1971, EM, post-2022 ===
+
+  {
+    id: "1929-black-tuesday",
+    title: "Black Tuesday — 1929 crash",
+    date: "1929-10-29",
+    region: "US",
+    triggerType: "bubble_burst",
+    regimeTags: [
+      "bubble_burst",
+      "bubble_late_stage",
+      "equities_bear",
+      "vol_spiking",
+      "leverage_high",
+      "deflation_risk",
+      "risk_off",
+    ],
+    surpriseFactor: 4,
+    description:
+      "The defining equity crash of the 20th century. After a 30% rally through summer 1929 on margin-financed retail enthusiasm, the Dow fell ~12% on Oct 28 and a further ~12% on Oct 29 (Black Tuesday) as forced margin liquidation cascaded through the call-loan market.",
+    catalyst:
+      "Margin-call cascade triggered by mid-October weakness; broker call-loan rates spiked above 20% as banks pulled funding. The Federal Reserve had been tightening since Aug 1929 to deflate stock-market speculation.",
+    narrativeAtTime:
+      "Wall Street consensus held that the Sept 3 1929 highs reflected a 'permanent plateau' (Irving Fisher's phrase, Oct 17). Margin debt was at record share of GDP but seen as benign because brokers required 25-50% margins. The Fed's tightening was framed as cooling speculation, not threatening the real economy.",
+    outcomeInHindsight:
+      "The Dow fell ~89% peak-to-trough by July 1932. Bank failures cascaded for three years; M2 contracted ~30%. The Smoot-Hawley tariff (1930) and Fed inaction transformed a market crash into the Great Depression. Equities did not regain 1929 highs until 1954.",
+    assetMoves: {
+      // Approximate from Dow Jones / NYT contemporary records. UST 10y proxy is
+      // the long Treasury yield series. No VIX/HY OAS pre-1990/1996.
+      sp500: { d1: -12.0, d5: -23.0, m1: -19.0, m3: -17.0, m6: -25.0 },
+      ust10y: { d1: -8, d5: -15, m1: -25, m3: -40, m6: -60 },
+      dxy: { d1: null, d5: null, m1: null, m3: null, m6: null },
+      gold: { d1: 0, d5: 0, m1: 0, m3: 0, m6: 0 },
+      oil: { d1: -1.0, d5: -2.0, m1: -3.0, m3: -8.0, m6: -15.0 },
+      creditHY: { d1: null, d5: null, m1: null, m3: null, m6: null },
+      vix: { d1: null, d5: null, m1: null, m3: null, m6: null },
+    },
+    flowPatterns:
+      "Call-loan funding evaporated as NY banks withdrew. Margin debt collapsed from ~$8.5B to ~$1B over six months. Foreign capital fled equities into gold and Treasuries. Money-centre banks absorbed the run while interior banks faced sequential failures.",
+    failedTrades: [
+      {
+        quote:
+          "Buying-the-dip at the late-October lows — the canonical 1929 mistake. Equities continued lower for nearly three years; institutional 'value' allocators were repeatedly margined out as call-loan rates spiked.",
+        attribution: "Contemporary brokerage commentary, Q4 1929",
+        provenance: "paraphrase_no_source",
+      },
+    ],
+    consensusError:
+      "Consensus framed Oct 1929 as a margin-cleansing correction, not a regime-change. The Fed's failure to expand the monetary base in 1930-1932 (Friedman-Schwartz) and the Smoot-Hawley protectionist response transformed a speculative blow-off into a debt-deflation spiral.",
+    lessons: [
+      "Leverage cycles end with a forced-selling cascade, not gradual mean-reversion.",
+      "Central-bank tightening into a fragile credit structure can break the structure rather than cool it.",
+      "Protectionist responses to financial-system stress amplify rather than relieve.",
+      "60/40 portfolios fail when both equities AND short-dated bonds re-price (the 1929 long-bond rally is the partial offset, not a full one).",
+    ],
+    sources: [
+      {
+        title: "Federal Reserve History — Stock Market Crash of 1929",
+        url: "https://www.federalreservehistory.org/essays/stock-market-crash-of-1929",
+      },
+      {
+        title: "NBER — A Monetary History of the United States, Chap 7 (Friedman-Schwartz)",
+        url: "https://www.nber.org/books-and-chapters/monetary-history-united-states-1867-1960",
+      },
+    ],
+  },
+
+  {
+    id: "1962-cuban-missile-crisis",
+    title: "Cuban Missile Crisis",
+    date: "1962-10-22",
+    region: "US",
+    triggerType: "geopolitical",
+    regimeTags: [
+      "geopolitical_tail",
+      "war_risk",
+      "vol_spiking",
+      "flight_to_quality",
+      "policy_uncertainty",
+      "risk_off",
+    ],
+    surpriseFactor: 5,
+    description:
+      "Kennedy disclosed Soviet nuclear missiles in Cuba in an Oct 22 1962 televised address, declaring a naval quarantine. Markets faced the first explicit nuclear-confrontation risk premium of the Cold War. The crisis resolved 13 days later (Oct 28) when Khrushchev agreed to withdraw missiles.",
+    catalyst:
+      "U-2 photographs Oct 14-16 confirmed Soviet medium-range missiles being deployed. Kennedy's quarantine speech Oct 22 made the standoff public.",
+    narrativeAtTime:
+      "Markets had been weak through 1962 (the 'Kennedy Slide' had taken the S&P down ~22% by June). Equities had recovered ~8% into October, but the missile disclosure introduced a binary tail-risk markets had no template for. Most strategists framed the standoff as too dangerous for either side to escalate; some argued for selling everything.",
+    outcomeInHindsight:
+      "The S&P fell only ~7% peak-to-trough during the 13-day standoff and recovered fully within five weeks. The 'buy when the bombs (don't) drop' template was forged: tail-risk premia in major-power crises peak in the days BEFORE binary resolution, not during. The crisis catalysed the 1963 hotline and 1964 nuclear-test-ban treaty.",
+    assetMoves: {
+      sp500: { d1: -2.7, d5: -5.5, m1: 4.5, m3: 12.0, m6: 14.0 },
+      ust10y: { d1: -10, d5: -15, m1: 5, m3: 12, m6: 18 },
+      dxy: { d1: null, d5: null, m1: null, m3: null, m6: null },
+      gold: { d1: 0.5, d5: 1.2, m1: 0, m3: -0.5, m6: -0.5 },
+      oil: { d1: 0, d5: 0, m1: 0, m3: 0, m6: 0 },
+      creditHY: { d1: null, d5: null, m1: null, m3: null, m6: null },
+      vix: { d1: null, d5: null, m1: null, m3: null, m6: null },
+    },
+    flowPatterns:
+      "Sharp flight-to-quality into short Treasuries; gold bid was muted because the Bretton-Woods $35 peg held. Equity selling was concentrated in the first 48 hours of the standoff; passive cash buildup peaked Oct 24-25 and unwound rapidly post-resolution.",
+    failedTrades: [
+      {
+        quote:
+          "Selling equities on the missile disclosure and staying short through the standoff — a thesis that lost ~10% as resolution catalysed a sharp recovery rally into year-end and 1963.",
+        attribution: "Contemporary investment commentary, late October 1962",
+        provenance: "paraphrase_no_source",
+      },
+    ],
+    consensusError:
+      "Consensus priced the crisis as an open-ended tail risk; in fact major-power binary standoffs price the tail premium in the 48-72 hours before resolution and decay sharply after. The trade was buying the standoff, not selling the disclosure.",
+    lessons: [
+      "Binary geopolitical tail risks peak before resolution, not during conflict.",
+      "Flight-to-quality regimes that preserve the existing FX/peg framework see muted gold and EM-FX moves.",
+      "13-day tactical horizons should not be extrapolated into structural regime changes.",
+    ],
+    sources: [
+      {
+        title: "Federal Reserve History — The Cuban Missile Crisis and the Kennedy Tax Cut",
+        url: "https://www.federalreservehistory.org/essays/cuban-missile-crisis",
+      },
+      {
+        title: "NSA / Office of the Historian — Cuban Missile Crisis 1962",
+        url: "https://history.state.gov/milestones/1961-1968/cuban-missile-crisis",
+      },
+    ],
+  },
+
+  {
+    id: "1970-penn-central",
+    title: "Penn Central bankruptcy — first commercial-paper crisis",
+    date: "1970-06-21",
+    region: "US",
+    triggerType: "credit_event",
+    regimeTags: [
+      "credit_widening",
+      "liquidity_squeeze",
+      "bank_stress",
+      "vol_spiking",
+      "fed_surprise_dovish",
+      "risk_off",
+    ],
+    surpriseFactor: 5,
+    description:
+      "Penn Central Transportation Company filed for bankruptcy June 21 1970 with $200M of outstanding commercial paper unable to roll. The largest US railroad held a vast unsecured CP book; failure shocked the previously-AAA-treated CP market and triggered the first modern run on short-term funding.",
+    catalyst:
+      "Penn Central had been bleeding cash for 18 months; a Nixon Treasury rescue effort failed late June after the Fed declined to circumvent banking-act constraints. Filing followed within days.",
+    narrativeAtTime:
+      "Commercial paper had been the 1960s growth funding instrument — outstanding tripled 1965-1970. Markets believed CP issuers were de-facto bank-quality risks. The post-bankruptcy run was unprecedented; in three weeks ~$3B of CP went un-rolled across the market.",
+    outcomeInHindsight:
+      "Burns's Fed opened the discount window unconditionally to commercial banks taking up the slack, suspended Reg Q ceilings on time deposits, and provided ~$2B of CP refinancing through the banking system within 10 days. The crisis was contained but commercial paper subsequently traded with explicit issuer-quality tiering. Established the template every modern Fed liquidity backstop has followed.",
+    assetMoves: {
+      sp500: { d1: -1.5, d5: -3.5, m1: -3.0, m3: 5.5, m6: 14.0 },
+      ust10y: { d1: -8, d5: -22, m1: -45, m3: -80, m6: -110 },
+      dxy: { d1: null, d5: null, m1: null, m3: null, m6: null },
+      gold: { d1: 0.8, d5: 2.0, m1: 1.5, m3: -1.0, m6: -3.0 },
+      oil: { d1: 0, d5: 0, m1: 0, m3: 0, m6: 0 },
+      creditHY: { d1: null, d5: null, m1: null, m3: null, m6: null },
+      vix: { d1: null, d5: null, m1: null, m3: null, m6: null },
+    },
+    flowPatterns:
+      "CP outflows were concentrated in industrial and finco-issuer paper; bank-issued paper saw modest inflows. The Fed's discount-window and Reg-Q-suspension actions catalysed deposit growth at money-centre banks. Equity-fund redemptions peaked the week of the filing and reversed within a month.",
+    failedTrades: [
+      {
+        quote:
+          "Holding low-rated industrial commercial paper assuming the issuer-tier was de-facto AAA — the canonical 1970 mistake. Several finco issuers' paper traded to deep discounts as the run propagated.",
+        attribution: "Contemporary fixed-income commentary, June-July 1970",
+        provenance: "paraphrase_no_source",
+      },
+    ],
+    consensusError:
+      "Consensus had treated commercial paper as a homogeneous AAA-equivalent funding market. Penn Central exposed that AAA was a marketing label, not a credit assessment, in the unsecured-paper market. The lesson — that Fed liquidity facilities can stabilise the funding market without preventing the underlying credit selectivity — became foundational.",
+    lessons: [
+      "Funding-market runs propagate fastest when the asset class lacks tiering or differentiation.",
+      "Fed discount-window expansion + reserve-requirement easing is the proven first response to CP-market stress.",
+      "Penn Central is the closest pre-2008 analogue for any 'AAA-by-marketing-not-by-analysis' funding-market crisis (see also: 2008 SIV / ABCP unwind).",
+    ],
+    sources: [
+      {
+        title: "Federal Reserve History — Penn Central Failure",
+        url: "https://www.federalreservehistory.org/essays/penn-central-railroad-collapse",
+      },
+      {
+        title: "Brimmer — Bank-Holding Companies and the Penn Central Crisis (1973)",
+        url: "https://www.federalreserve.gov/monetarypolicy/files/FOMC19700623meeting.pdf",
+      },
+    ],
+  },
+
+  {
+    id: "1980-hunt-silver",
+    title: "Hunt Brothers silver corner peak",
+    date: "1980-01-21",
+    region: "US",
+    triggerType: "commodity_event",
+    regimeTags: [
+      "leverage_high",
+      "positioning_extreme_long",
+      "vol_spiking",
+      "liquidity_squeeze",
+      "inflation_high",
+    ],
+    surpriseFactor: 4,
+    description:
+      "Silver futures spiked from ~$6/oz in early 1979 to ~$50/oz on Jan 21 1980 as the Hunt Brothers and allied traders accumulated ~200M oz of silver and silver futures. CME and COMEX raised margin requirements and restricted long-side trading; silver collapsed ~80% over the next two months ('Silver Thursday', March 27).",
+    catalyst:
+      "CME's 'Silver Rule 7' raised margins and limited long positions Jan 21 1980. By Mar 27 the Hunts faced a $100M margin call and collapsed; brokerage Bache nearly failed.",
+    narrativeAtTime:
+      "Silver had been positioned as the inflation-hedge of choice in the late-1970s stagflation regime. The Hunt accumulation was an open secret by mid-1979; the Volcker rate hikes had already started but markets believed inflation would re-accelerate. Most analysts framed the corner as plausibly-stable until exchange action.",
+    outcomeInHindsight:
+      "Silver fell to ~$11/oz by April 1980. The Hunts lost ~$1.7B and were eventually convicted of conspiring to corner the market. Established the modern margin-and-position-limit framework. The episode foreshadowed every subsequent commodity-cornering attempt (2022 LME nickel being the most direct contemporary echo).",
+    assetMoves: {
+      sp500: { d1: 0.3, d5: -0.5, m1: -3.5, m3: -8.0, m6: 4.0 },
+      ust10y: { d1: 5, d5: 15, m1: 30, m3: -50, m6: -100 },
+      dxy: { d1: null, d5: null, m1: null, m3: null, m6: null },
+      gold: { d1: -2.5, d5: -5.0, m1: -8.0, m3: -22.0, m6: -28.0 },
+      oil: { d1: 0.5, d5: 1.5, m1: 2.5, m3: 1.0, m6: -2.0 },
+      creditHY: { d1: null, d5: null, m1: null, m3: null, m6: null },
+      vix: { d1: null, d5: null, m1: null, m3: null, m6: null },
+    },
+    flowPatterns:
+      "Silver-ETP-equivalents (silver coin sales) saw retail outflows for the next 18 months. Gold-silver ratio normalised from ~14 at peak to >40 by mid-1980. CME-CFTC coordination on position limits intensified across all soft commodities.",
+    failedTrades: [
+      {
+        quote:
+          "Following the Hunts long silver into late January — a thesis that lost ~80% in the eight weeks following CME's margin action.",
+        attribution: "Contemporary commodity commentary, Q1-Q2 1980",
+        provenance: "paraphrase_no_source",
+      },
+    ],
+    consensusError:
+      "Consensus underestimated how quickly an exchange can break a corner via margin and position-limit rules. The structural lesson — that any long-only commodity trade depending on continued accumulation is exposed to exchange action — became foundational and is the closest pre-2022 template for the LME nickel halt.",
+    lessons: [
+      "Commodity corners end abruptly when the exchange acts; entry doesn't require the same trigger as exit.",
+      "Position-limit changes are first-order risk on any concentrated commodity exposure.",
+      "Inflation-hedge logic doesn't override exchange microstructure when a single-name leverage build is the actual setup.",
+    ],
+    sources: [
+      {
+        title: "CFTC — Report on the Silver Crisis 1980",
+        url: "https://www.cftc.gov/sites/default/files/idc/groups/public/@aboutcftc/documents/file/silvercrisis.pdf",
+      },
+      {
+        title: "Federal Reserve History — Volcker's Announcement of Anti-Inflation Measures",
+        url: "https://www.federalreservehistory.org/essays/anti-inflation-measures",
+      },
+    ],
+  },
+
+  {
+    id: "1998-indonesia-suharto",
+    title: "Indonesia capital flight + Suharto resignation",
+    date: "1998-05-21",
+    region: "EM",
+    triggerType: "currency_event",
+    regimeTags: [
+      "currency_devaluation",
+      "em_fx_stress",
+      "regime_change",
+      "policy_uncertainty",
+      "sovereign_stress",
+      "risk_off",
+    ],
+    surpriseFactor: 4,
+    description:
+      "The Indonesian rupiah collapsed from ~2,400/USD in mid-1997 to >16,000/USD by January 1998 as the Asian crisis spread from Thailand. After May 1998 riots in Jakarta, President Suharto resigned May 21 ending 31 years of authoritarian rule. The economy contracted ~14% in 1998.",
+    catalyst:
+      "IMF programme conditions clashed with Suharto's family-business interests; rupiah resumed selling in April-May 1998 despite IMF support. May 12-15 student protests escalated into riots after security forces killed four students; Suharto resigned May 21.",
+    narrativeAtTime:
+      "Late-1997 consensus held that Indonesia would follow the Thai-Korean stabilisation template — IMF programme, rupiah floor, recovery within 12-18 months. The currency-board proposal of February 1998 (Hanke-Schuler) was rejected by the IMF; markets read the rejection as the IMF acknowledging the Suharto regime was unsalvageable. Most strategists positioned for further depreciation but underweighted the political-economy collapse path.",
+    outcomeInHindsight:
+      "Rupiah continued to ~17,000/USD before stabilising late-1998. The contagion intensified in Russia (August 1998 default) and pulled US Treasury yields ~150bp lower as flight-to-quality dominated. Indonesia's banking system was effectively nationalised; recovery took five years.",
+    assetMoves: {
+      sp500: { d1: -1.0, d5: 1.5, m1: 4.0, m3: -10.0, m6: 6.0 },
+      ust10y: { d1: -3, d5: -8, m1: -20, m3: -75, m6: -85 },
+      dxy: { d1: 0.5, d5: 1.0, m1: 2.5, m3: 4.0, m6: 1.0 },
+      gold: { d1: 0.3, d5: 1.0, m1: 1.5, m3: 4.0, m6: 1.0 },
+      oil: { d1: -0.5, d5: -1.5, m1: -3.0, m3: -8.0, m6: -25.0 },
+      creditHY: { d1: null, d5: 5, m1: 25, m3: 200, m6: 80 },
+      vix: { d1: 1.5, d5: 2.5, m1: 3.0, m3: 18.0, m6: 5.0 },
+    },
+    flowPatterns:
+      "Equity outflows from EM Asia ETFs were heaviest in the May 1998 weeks; positioning surveys showed cash overweight in the BAML FMS reaching multi-year highs. Energy was the heaviest underperformer as Asia-demand recession risk priced in.",
+    failedTrades: [
+      {
+        quote:
+          "Long EM ex-China after the IMF programme — a thesis that lost ~40% as the Suharto-era contagion spread through Russia and into LatAm by year-end.",
+        attribution: "Contemporary EM macro commentary, Q2 1998",
+        provenance: "paraphrase_no_source",
+      },
+    ],
+    consensusError:
+      "Consensus framed Indonesia as a financial crisis manageable via IMF technocracy; in fact it was a political-regime crisis where the IMF programme accelerated rather than arrested the collapse. The structural lesson — that political legitimacy gates currency stabilisation — applies to every modern EM crisis.",
+    lessons: [
+      "EM currency crises with regime-change vectors don't follow the Thai-Korean stabilisation template.",
+      "Cross-border contagion in the Asian crisis was concentrated in late stages (Russia/LTCM), not at initiation.",
+      "Long EM ex-China bets in May-July 1998 were the canonical 'fighting the cascade' mistake.",
+    ],
+    sources: [
+      {
+        title: "IMF — Indonesia: Selected Issues 1998",
+        url: "https://www.imf.org/external/pubs/cat/longres.aspx?sk=2700.0",
+      },
+      {
+        title: "Federal Reserve History — Asian Financial Crisis",
+        url: "https://www.federalreservehistory.org/essays/asian-financial-crisis",
+      },
+    ],
+  },
+
+  {
+    id: "2002-argentina-default",
+    title: "Argentina convertibility break + sovereign default",
+    date: "2002-01-06",
+    region: "EM",
+    triggerType: "currency_event",
+    regimeTags: [
+      "peg_break",
+      "currency_devaluation",
+      "sovereign_default",
+      "sovereign_stress",
+      "policy_uncertainty",
+      "risk_off",
+    ],
+    surpriseFactor: 4,
+    description:
+      "Argentina abandoned the 1:1 peso-USD currency board (in place since 1991) and defaulted on $93B of sovereign debt — at the time the largest sovereign default in history. The official rate moved to 1.4:1 then floated; the unofficial rate exceeded 4:1 by mid-2002.",
+    catalyst:
+      "December 2001 bank-run; Dec 5 IMF disbursement halt over fiscal-target misses; Dec 19-20 riots ('cacerolazo') forced President de la Rúa's resignation. New President Duhalde signed the convertibility-end law Jan 6 2002.",
+    narrativeAtTime:
+      "Late-2001 consensus held that the convertibility regime might be devalued but not abandoned outright. The 'corralito' deposit freeze of December 2001 was framed as defensive of the regime. Most strategists priced in a 30-40% devaluation; few priced in a complete legal-framework rupture with retroactive pesification of dollar deposits.",
+    outcomeInHindsight:
+      "Peso fell ~75% peak-to-trough; GDP contracted ~10.9% in 2002. The sovereign-default restructuring took until 2005 (with holdouts continuing to litigate through 2016). Bank-deposit pesification at 1.4 (vs market rate >3) wiped out roughly half of dollar-denominated middle-class wealth. Recovery began Q3 2002 as commodity tailwinds + competitive devaluation lifted exports.",
+    assetMoves: {
+      sp500: { d1: 0.2, d5: -2.5, m1: -1.5, m3: -1.0, m6: -10.0 },
+      ust10y: { d1: -5, d5: -10, m1: -20, m3: 5, m6: -50 },
+      dxy: { d1: 0.3, d5: 0.5, m1: 0.8, m3: -1.5, m6: -4.0 },
+      gold: { d1: 0.8, d5: 2.0, m1: 4.0, m3: 6.0, m6: 12.0 },
+      oil: { d1: 0.5, d5: 1.0, m1: 5.0, m3: 12.0, m6: 22.0 },
+      creditHY: { d1: 5, d5: 20, m1: 35, m3: 60, m6: 200 },
+      vix: { d1: 0.5, d5: 1.5, m1: 2.0, m3: 3.5, m6: 12.0 },
+    },
+    flowPatterns:
+      "EMBI Argentina spreads gapped from ~1,500bp to ~7,000bp at default. Contagion to Brazilian real (which fell ~50% from May to October 2002) was the dominant cross-border transmission. Argentine corporate hard-currency debt traded at recovery values <30c on the dollar through 2003.",
+    failedTrades: [
+      {
+        quote:
+          "Long Argentine sovereign debt at 30-40c assuming the convertibility regime would hold — a thesis that lost most of its value in the post-default restructuring through 2005.",
+        attribution: "Contemporary EM-debt commentary, Q4 2001 - Q1 2002",
+        provenance: "paraphrase_no_source",
+      },
+    ],
+    consensusError:
+      "Consensus underestimated how a currency-board collapse can cascade into wholesale legal-framework rupture (deposit pesification) when fiscal credibility evaporates. The structural lesson — that hard-peg exits are step-changes, not adjustments — is foundational for any modern fixed-FX risk assessment.",
+    lessons: [
+      "Hard FX pegs end abruptly with retroactive legal changes, not gradual devaluation.",
+      "Sovereign defaults at decade-record scale tend to seed contagion in regional EM currency crosses (Brazil 2002, Russia 2014 from EM more broadly).",
+      "The 'corralito' precedent is the canonical template for any modern bank-deposit-freeze response to bank runs.",
+    ],
+    sources: [
+      {
+        title: "IMF — Argentina Crisis Lessons (Mussa 2002)",
+        url: "https://www.imf.org/external/pubs/ft/argentina/2002/lessons.htm",
+      },
+      {
+        title: "BIS — Sovereign Defaults: Lessons from Argentina",
+        url: "https://www.bis.org/publ/work382.htm",
+      },
+    ],
+  },
+
+  {
+    id: "2018-turkey-lira",
+    title: "Turkey lira crisis + Erdogan-Trump tariff escalation",
+    date: "2018-08-10",
+    region: "EM",
+    triggerType: "currency_event",
+    regimeTags: [
+      "currency_devaluation",
+      "em_fx_stress",
+      "policy_uncertainty",
+      "tariff_war",
+      "vol_spiking",
+      "risk_off",
+    ],
+    surpriseFactor: 4,
+    description:
+      "The Turkish lira fell ~20% in a single day Aug 10 2018 after Trump doubled steel/aluminium tariffs on Turkey amid the Brunson detention dispute. Cumulative 2018 lira depreciation exceeded 40% as the central bank's unorthodox stance (resisting hikes) compounded the FX stress.",
+    catalyst:
+      "Trump's Aug 10 tweet doubling Section 232 tariffs on Turkey was the proximate trigger; underlying vulnerabilities included a $200B+ external-debt rollover need, current-account deficit ~5% of GDP, and an inflation print breaching 15%.",
+    narrativeAtTime:
+      "Markets had already been concerned about Erdogan's pressure on the central bank to resist rate hikes; an emergency ~125bp hike in May 2018 was viewed as insufficient. The Brunson case appeared resolvable. The Aug 10 escalation broke that assumption and triggered a one-day capitulation.",
+    outcomeInHindsight:
+      "The CBRT eventually hiked 625bp on Sep 13 2018 stabilising the lira ~6.0/USD before resuming weakness in 2019-2020 as Erdogan replaced central-bank governors who hiked. Spillover to other EM currencies (Argentine peso, South African rand) was significant in the Aug-Sep period. Remains the canonical 'central-bank-independence-risk-priced-in-FX' template.",
+    assetMoves: {
+      sp500: { d1: -0.7, d5: -0.3, m1: 3.0, m3: -7.0, m6: 0.0 },
+      ust10y: { d1: -8, d5: -10, m1: 5, m3: 15, m6: -30 },
+      dxy: { d1: 0.8, d5: 1.0, m1: 1.0, m3: -1.5, m6: -2.0 },
+      gold: { d1: 0.5, d5: -1.5, m1: -2.0, m3: 0.5, m6: 2.0 },
+      oil: { d1: -1.5, d5: -2.5, m1: 4.0, m3: -22.0, m6: -12.0 },
+      creditHY: { d1: 5, d5: 12, m1: 5, m3: 90, m6: 30 },
+      vix: { d1: 2.0, d5: 1.5, m1: -1.5, m3: 9.0, m6: 6.0 },
+    },
+    flowPatterns:
+      "EM-FX-fund outflows accelerated through Q3 2018; Turkey ETF (TUR) saw record weekly outflows. Cross-EM contagion was concentrated in twin-deficit currencies (Argentina, South Africa, Brazil); Asian EM was relatively insulated.",
+    failedTrades: [
+      {
+        quote:
+          "Long lira post-emergency-hike on the assumption that orthodox response had begun — a thesis that lost ~25% as Erdogan publicly opposed further tightening through August.",
+        attribution: "Contemporary EM-FX commentary, Aug 2018",
+        provenance: "paraphrase_no_source",
+      },
+    ],
+    consensusError:
+      "Consensus underestimated how political risk to central-bank independence can dominate textbook-orthodox stabilisation. When the head of state actively opposes the central bank's tools, FX cannot stabilise via rate hikes alone. The structural lesson generalises to any country where central-bank independence is contested.",
+    lessons: [
+      "Central-bank independence risk is FX-priced before it's institutionally measured.",
+      "Twin-deficit EM currencies are the highest-beta amplifiers of dollar-cycle stress.",
+      "EM-FX crises driven by external-debt rollover needs unwind on a different timeline than commodity-driven ones.",
+    ],
+    sources: [
+      {
+        title: "BIS Quarterly Review September 2018 — EM FX Pressures",
+        url: "https://www.bis.org/publ/qtrpdf/r_qt1809a.htm",
+      },
+      {
+        title: "Federal Reserve Bank of Dallas — Turkey's Currency Crisis",
+        url: "https://www.dallasfed.org/research/economics/2018/0918",
+      },
+    ],
+  },
+
+  {
+    id: "2022-lme-nickel",
+    title: "LME nickel halt + trade cancellation",
+    date: "2022-03-08",
+    region: "GLOBAL",
+    triggerType: "structural_event",
+    regimeTags: [
+      "vol_spiking",
+      "leverage_high",
+      "positioning_extreme_short",
+      "liquidity_squeeze",
+      "energy_shock",
+      "policy_uncertainty",
+    ],
+    surpriseFactor: 5,
+    description:
+      "LME 3-month nickel doubled from ~$48k/t to >$100k/t in two days Mar 7-8 2022 as Russia-related sanctions risk collided with a large short position held by China's Tsingshan. The LME suspended trading Mar 8 and unprecedentedly cancelled all trades executed that day, a market-structure intervention without contemporary precedent.",
+    catalyst:
+      "Russian invasion of Ukraine Feb 24 raised nickel-supply risk (Russia ~9% of global supply). Tsingshan's ~150kt short position faced margin calls; squeeze cascaded as algorithmic and trend-following longs piled in.",
+    narrativeAtTime:
+      "Markets had priced commodity-supply shocks since Feb 24, but nickel's extreme spike reflected the specific Tsingshan short rather than fundamentals. The pre-halt consensus held that price discovery would continue with intervention by Tsingshan's lenders; few priced in retroactive trade cancellation.",
+    outcomeInHindsight:
+      "LME's trade-cancellation triggered London-court litigation (Elliott v LME) and a multi-year reputational crisis for the exchange. Nickel re-opened with daily price limits and traded back to ~$30k/t by mid-2023. Established a contemporary template for CCP/clearing intervention risk that LME-rule changes (2023) have not fully resolved.",
+    assetMoves: {
+      sp500: { d1: -0.7, d5: 1.5, m1: -1.0, m3: -8.0, m6: -7.0 },
+      ust10y: { d1: 5, d5: 25, m1: 50, m3: 80, m6: 110 },
+      dxy: { d1: 0.5, d5: 1.5, m1: 1.5, m3: 4.0, m6: 7.0 },
+      gold: { d1: 1.5, d5: 0, m1: -1.0, m3: -10.0, m6: -9.0 },
+      oil: { d1: 4.0, d5: -8.0, m1: 4.0, m3: -1.0, m6: -22.0 },
+      creditHY: { d1: 10, d5: 5, m1: 15, m3: 80, m6: 70 },
+      vix: { d1: 1.0, d5: -3.0, m1: -8.0, m3: 0, m6: 2.0 },
+    },
+    flowPatterns:
+      "Commodity-trading houses re-priced base-metals exposure broadly; Tsingshan's bank syndicate (>$1B unrealised loss) absorbed the position via off-exchange settlement. CCP-clearing-risk premia widened across all base metals through Q2 2022.",
+    failedTrades: [
+      {
+        quote:
+          "Long base-metals on Russia-supply-shock thesis through the LME halt — a position whose realised P&L was determined by exchange action rather than market action.",
+        attribution: "Contemporary commodity-fund commentary, Q1 2022",
+        provenance: "paraphrase_no_source",
+      },
+    ],
+    consensusError:
+      "Consensus had treated CCP-cleared markets as fundamentally orderly; LME's retroactive trade-cancellation revealed that exchange-rule changes during stress are first-order risks even on cleared instruments. The structural lesson — that intervention risk is highest at CCPs facing single-counterparty default-cascade scenarios — applies to any modern margined market.",
+    lessons: [
+      "CCP/clearing-intervention risk is real and concentrated at single-counterparty stress moments.",
+      "Trade-cancellation precedent (LME 2022) means 'closed' P&L on cleared trades isn't necessarily realised.",
+      "Commodity squeezes driven by single-counterparty short concentration follow Hunt-1980 dynamics — they end when the exchange acts, not when the fundamentals shift.",
+    ],
+    sources: [
+      {
+        title: "OFR — Central Clearing and Trade Cancellation: The 2022 LME Nickel Crisis",
+        url: "https://www.financialresearch.gov/working-papers/files/OFRwp-24-09_central-clearing-and-trade-cancellation.pdf",
+      },
+      {
+        title: "Bank of England — March 2022 LME Nickel Market Disruption",
+        url: "https://www.bankofengland.co.uk/financial-stability-report/2022/july-2022",
+      },
+    ],
+  },
+
+  {
+    id: "2023-credit-suisse-ubs",
+    title: "Credit Suisse — UBS forced merger",
+    date: "2023-03-19",
+    region: "EU",
+    triggerType: "credit_event",
+    regimeTags: [
+      "bank_failure",
+      "bank_stress",
+      "credit_widening",
+      "vol_spiking",
+      "flight_to_quality",
+      "policy_uncertainty",
+    ],
+    surpriseFactor: 4,
+    description:
+      "Swiss authorities (FINMA + SNB) forced UBS to acquire Credit Suisse for CHF 3B over the weekend of Mar 18-19 2023 after a 10-day deposit run. Critically, $17B of Credit Suisse AT1 (CoCo) debt was written down to zero while equity holders received some value — inverting standard creditor seniority and reshaping the AT1 market.",
+    catalyst:
+      "Mar 9 SVB collapse + Mar 12 Signature Bank failure shifted markets focus to the next-weakest balance sheets; CS's October 2022 going-concern disclosures resurfaced. Mar 14-17 deposit outflows accelerated to ~CHF 10B/day; Saudi National Bank's Mar 15 'absolutely not' comment on additional capital catalysed the final run.",
+    narrativeAtTime:
+      "Markets had been positioning for a CS distressed event since Q4 2022. Most strategists believed any resolution would either preserve the group via state-backed merger or trigger SRB resolution — neither scenario priced in AT1-zero-equity-positive treatment. The Saudi-comment-then-emergency-merger sequence compressed expected timelines from quarters to a weekend.",
+    outcomeInHindsight:
+      "AT1 markets globally seized for ~6 weeks with new issuance halted. The European Central Bank, Bank of England, and other regulators issued statements clarifying their resolution frameworks would respect equity-AT1 hierarchy — but the precedent damage to Swiss AT1 was permanent. UBS's integrated balance sheet exceeded 200% of Swiss GDP. The episode showed targeted Fed-style facilities (BTFP — see 2023-svb-collapse) prevent contagion better than forced mergers.",
+    assetMoves: {
+      sp500: { d1: 0.9, d5: 1.5, m1: 3.5, m3: 7.0, m6: 9.0 },
+      ust10y: { d1: -25, d5: -30, m1: 5, m3: 0, m6: 35 },
+      dxy: { d1: -0.3, d5: -1.5, m1: -3.0, m3: -3.0, m6: -1.0 },
+      gold: { d1: 0.9, d5: 4.0, m1: 5.5, m3: 5.0, m6: 0.0 },
+      oil: { d1: -0.3, d5: -0.5, m1: -2.0, m3: -10.0, m6: -8.0 },
+      creditHY: { d1: 10, d5: -5, m1: -25, m3: -55, m6: -50 },
+      vix: { d1: -0.7, d5: -2.0, m1: -8.0, m3: -10.0, m6: -10.0 },
+    },
+    flowPatterns:
+      "European bank-equity ETFs saw sharp Mar 19-22 outflows that reversed within four weeks. AT1-fund outflows persisted through April 2023. SNB swap-line drawing reached ~CHF 100B at peak. Mega-cap-tech leadership (the same dynamic as SVB) absorbed equity-flow rotation.",
+    failedTrades: [
+      {
+        quote:
+          "Long CS AT1 debt at distressed yields assuming standard creditor-hierarchy treatment in any resolution — a thesis that lost the entire principal in the Mar 19 weekend deal.",
+        attribution: "Contemporary credit-fund commentary, Mar-Apr 2023",
+        provenance: "paraphrase_no_source",
+      },
+    ],
+    consensusError:
+      "Consensus assumed AT1-equity-AT2 creditor hierarchy was a settled framework after the 2014-onwards CoCo standardisation. The Swiss FINMA decision proved that crisis-management discretion can override seniority when the regulator believes equity-positive treatment preserves systemic stability. The structural lesson is that AT1 instruments in jurisdiction-specific resolution frameworks carry Swiss-or-similar tail risk.",
+    lessons: [
+      "AT1 instruments carry jurisdiction-specific resolution tail risk that BIS standardisation does not eliminate.",
+      "Targeted Fed-style facilities (BTFP) prevent contagion better than forced mergers.",
+      "Deposit-run cascades in modern wholesale-funding banks complete in days, not weeks.",
+      "Same proximate cause as SVB (deposit run) but European resolution framework produced a fundamentally different outcome path.",
+    ],
+    sources: [
+      {
+        title: "FINMA — Decision on Credit Suisse AT1 Write-Down (March 2023)",
+        url: "https://www.finma.ch/en/news/2023/03/20230323-mm-cs-at1/",
+      },
+      {
+        title: "Bank for International Settlements — Quarterly Review June 2023",
+        url: "https://www.bis.org/publ/qtrpdf/r_qt2306b.htm",
+      },
+    ],
+  },
 ];
 

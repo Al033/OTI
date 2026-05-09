@@ -315,6 +315,108 @@ export const TRAJECTORIES: Record<string, AnalyticalTrajectory> = {
       "Hedged GBP/USD downside via OTM puts using the risk-reversal skew as the pricing signal (cheap protection given the visible pricing dislocation), used regional-turnout heuristics rather than aggregate poll numbers, sized exposures for a binary outcome rather than a base-case-with-tails model. Held a long FTSE 100 / short FTSE 250 pair into the result. The trade that broke: long European banks, where the UK-domiciled exposure was greater than the headline FTSE classification suggested.",
   },
 
+  "1979-volcker-shock": {
+    priorBeliefs:
+      "Going into Oct 6, 1979 (the 'Saturday night special'), the consensus framing of the Fed under Volcker was that policy would tighten gradually with continued targeting of the federal funds rate, even as inflation expectations had become unanchored. The 'inflation is transitory' narrative had been discredited by 1979 but the operational shift in monetary policy mechanics was widely under-priced.",
+    marginalDataPoints: [
+      "Volcker's Aug 1979 confirmation hearings had emphasized 'the integrity of money' as a multi-year theme — operational signal of intent that markets discounted because incremental policy hadn't shifted",
+      "M1 growth had drifted above the FOMC's stated upper target through Q3 1979 — the gap between target and outcome was the disciplinary trigger, visible in the weekly H.6 report",
+      "Gold had run from $300/oz in mid-1979 to $400+ by early October — a clean inflation-expectations gauge moving on a sustained basis, not a one-off geopolitical jump",
+      "Long-bond yields had broken out of the 8.5-9.5% range that had held through summer 1979, into double-digits by early October — duration positioning was crowded short on the wrong side",
+    ],
+    decisionPoints: [
+      "Oct 6, 1979 (Saturday FOMC meeting; announcement of operational shift to non-borrowed reserves targeting + 1pp discount-rate hike): the analyst had to read this as either 'tactical adjustment' or 'regime change in the unit of policy'",
+      "Mar 14, 1980 (announcement of credit-controls package): the moment when the disinflationary effort visibly broadened beyond rates into administrative controls — short-term impact was a sharp recession warning",
+      "Apr-May 1980 (rates unwound sharply on credit-control-driven slowdown; fed funds collapsed from 17% to 9%): the analyst had to choose between 'the Volcker pivot is here' (wrong) and 'the pivot is tactical, regime is unchanged' (right)",
+      "Aug 1980 (Volcker re-tightens to defend the disinflation regime): the re-acceleration of the squeeze, validating the 'tactical, not strategic' interpretation",
+    ],
+    dominantBias:
+      "Smooth-policy-extrapolation bias — analysts modeled rates path as a continuation of the Burns/Miller gradualist style and underweighted the possibility of a discontinuous regime change in policy mechanics. Compounded by recency bias on the 1973-74 recession: analysts who saw the early disinflation pain assumed the Fed would relent quickly, missing that Volcker's commitment was multi-year.",
+    whatGoodAnalystsDid:
+      "Tracked M1 vs FOMC target as the actionable trigger gauge, watched gold and long-bond yields together as the inflation-expectations cross-check, sized for a multi-year disinflation regime rather than a single-year shock. Shortened duration drastically through Q4 1979, ran short curve flatteners through the Volcker tightening, lengthened duration into the 1981 high-rate peak. The trade that broke: short equities into the 1980 mini-recession — the equity market started discounting the disinflation-success thesis early.",
+  },
+
+  "1985-plaza-accord": {
+    priorBeliefs:
+      "Through summer 1985, the consensus framed the strong dollar as a structural feature of US capital-account dynamics — the policy mix of tight monetary + loose fiscal under Volcker/Reagan was viewed as quasi-permanent. Most strategists saw managed FX intervention as ineffective historically and did not credit a coordinated G5 announcement with the ability to break a multi-year trend.",
+    marginalDataPoints: [
+      "US trade-deficit prints had widened materially through Q1-Q2 1985 — the political cost of the strong dollar was visibly mounting in Treasury and Commerce Department public statements",
+      "Baker had replaced Regan as Treasury Secretary in Feb 1985 — a personnel change that Treasury-watchers correctly read as a shift toward willingness to coordinate FX intervention; markets gave it minimal weight",
+      "BoJ governor Sumita's late-summer 1985 speeches had begun referencing 'imbalances' explicitly — a pre-positioning by Japan that signaled willingness to participate in coordinated intervention",
+      "USD/DEM had begun rolling over in early September 1985 from its February peak, with rising volume on down-days — a leading indicator the FX market was already pre-positioning for an event",
+    ],
+    decisionPoints: [
+      "Sep 22, 1985 (Plaza Hotel meeting communiqué releases Sunday afternoon): the analyst had to decide on Monday morning whether to chase the announcement-driven move or wait for confirmation",
+      "First two weeks of October 1985 (USD continues weakening on coordinated intervention): the 'this is durable' vs 'this is one-off announcement effect' read",
+      "Feb 1987 (Louvre Accord attempting to stabilize the now-weakened dollar): the moment of regime exhaustion — the analyst who had ridden the Plaza-driven dollar weakness had to decide whether to pivot back or extend",
+    ],
+    dominantBias:
+      "FX-intervention-doesn't-work bias — analysts anchored on prior failed attempts at coordinated FX management (e.g. failed 1978 dollar defense) and missed that the political coordination at Plaza was qualitatively different (G5 alignment with explicit current-account targets, not a unilateral defense). Compounded by US-policy-mix-as-permanent bias — assuming the Volcker/Reagan combination would persist regardless of political pressure.",
+    whatGoodAnalystsDid:
+      "Read the Treasury personnel change as the leading policy-shift signal, watched BoJ and Bundesbank communications for participation cues, treated the Plaza announcement as the start of a multi-quarter regime, not an event spike. Shorted USD/DEM and USD/JPY through early October, lengthened duration in DEM and JPY assets, faded the early-1986 USD-stabilization rally. The trade that broke: long Japanese equities through 1986 — the move worked spectacularly but the 1989 peak setup the analyst had to manage exit on was the harder problem.",
+  },
+
+  "2012-whatever-it-takes": {
+    priorBeliefs:
+      "Through July 2012, the consensus on the European sovereign crisis was that the EUR would either fragment or require a full-scale fiscal union, with the ECB's mandate constraining its ability to act as lender of last resort. Spanish and Italian sovereign yields had widened to existential levels (Spanish 10y above 7%, Italian 10y near 6.5%); peripheral-bank deposit flight was visible weekly in TARGET2 imbalances.",
+    marginalDataPoints: [
+      "TARGET2 imbalances had grown to €1.0tn by mid-2012 — the visible measure of capital flight from periphery to core that most non-ECB-watcher commentary missed",
+      "Spanish 10y had crossed 7.5% intraday on July 24, 2012 — the level historically associated with bailout triggers (Greece, Ireland, Portugal had all required bailouts at or above 7%)",
+      "ECB's late-July signaling — repeated 'within our mandate' language from Coeuré and Constâncio — was a deliberate pre-positioning for a policy shift, but markets discounted it as routine rhetoric",
+      "EUR/USD basis swap pricing (3m EUR/USD basis was at -50bp by late July) showed cross-currency funding stress similar to 2011 but with the policy response window closing",
+    ],
+    decisionPoints: [
+      "Jul 26, 2012 (Draghi's London speech: 'the ECB is ready to do whatever it takes to preserve the euro'): the analyst had to decide whether this was rhetorical commitment or operational pre-announcement of a forthcoming policy tool",
+      "Aug 2, 2012 (ECB press conference: Draghi confirms backstop framework taking shape): the second confirmation that the rhetoric was being operationalized",
+      "Sep 6, 2012 (OMT — Outright Monetary Transactions — formally announced): the technical operationalization of the speech, conditional on country requests for ESM support",
+    ],
+    dominantBias:
+      "Mandate-constraint bias — analysts anchored on the ECB's narrow inflation-targeting mandate and missed that institutional language ('preservation of the euro') had been deliberately repositioned to allow a much broader policy response. Compounded by 'we've heard this before' fatigue from 2010-2011 EU summits that produced communiqués without operational follow-through.",
+    whatGoodAnalystsDid:
+      "Read Draghi's speech word-by-word against prior ECB language for shifts in operational mandate framing, tracked TARGET2 imbalances as the leading-indicator gauge of the capital flight pressure forcing the policy response, recognized the political alignment behind the OMT announcement (Merkel's tacit acceptance via Schäuble silence). Bought Spanish and Italian govies in late July, sold periphery-bank CDS protection through August, lengthened EUR-denominated risk into the OMT announcement. The trade that broke: short EUR — the policy-credibility shift turned a fragmenting-currency thesis into a stabilizing-currency outcome over Q4 2012.",
+  },
+
+  "2015-china-deval": {
+    priorBeliefs:
+      "Through summer 2015, consensus on the CNY framework was that the PBOC's 'managed float' would gradually allow a more flexible exchange rate but with extensive jawboning, intervention smoothing, and predictable bands. The Aug 2015 IMF SDR-inclusion timeline was viewed as the political gate that constrained any abrupt CNY move. Capital outflows were visible but framed as 'managed adjustment' rather than 'incipient devaluation pressure'.",
+    marginalDataPoints: [
+      "PBOC FX reserves had drawn down ~$300bn from June 2014 peak through July 2015 — the visible measure of the cost of defending the band, ignored or framed as 'still ample' by many commentators",
+      "CNH-CNY basis had widened to >150 pips by early August 2015 — the offshore-onshore gap was the cleanest signal of pressure on the band that policy could no longer fully sustain",
+      "PBOC Q2 2015 monetary-policy report had introduced 'reform of the central-parity mechanism' language — operational pre-positioning for a regime change in how the daily fix was set",
+      "Shanghai Composite peak-to-trough (June-Aug 2015) saw a 30% drawdown alongside policy responses (margin-rule changes, IPO suspensions); the equity-market intervention regime had visibly stretched, signaling broader policy-tool fatigue",
+    ],
+    decisionPoints: [
+      "Aug 11, 2015 (PBOC announces 'reform' of daily fix mechanism + 1.9% CNY devaluation in single session): the analyst had to read this as either 'reform-driven one-off adjustment' (PBOC's framing) or 'shift in the policy reaction function' (subsequent reality)",
+      "Aug 24, 2015 (S&P -3.9%, the 'Black Monday' US session triggered by China-deval contagion): the moment when the China-policy event was visibly transmitted into a global risk-off; question was whether to fade the panic or trade the new regime",
+      "Q3-Q4 2015 (continued reserve drawdown, capital-controls tightening): the persistent pressure on the new band that revealed the Aug 11 move was the start, not the end",
+    ],
+    dominantBias:
+      "Policy-credibility-as-fixed bias — analysts anchored on the PBOC's two-decade record of orderly band management and missed that the operational shift in the parity mechanism was a meaningful change in the policy reaction function. Compounded by SDR-inclusion-as-binding-constraint bias: assuming the IMF political timeline would prevent the PBOC from acting on FX pressures, when in fact the SDR objective was being reframed by the PBOC to require — rather than prevent — a 'market-determined' fix.",
+    whatGoodAnalystsDid:
+      "Tracked CNH-CNY basis as the cleanest tell of band stress, watched FX-reserve drawdown velocity rather than absolute levels, parsed PBOC monetary-policy-report language for shifts in reaction-function rhetoric. Shorted AUD, KRW, MYR as the EM-Asia FX proxy in early August, lengthened US duration into the August deval-driven flight to safety, faded the late-August equity rebound as the China-policy regime was visibly still in transition. The trade that broke: long China-A-shares post-August intervention — the policy backstop worked tactically but the structural regime had shifted.",
+  },
+
+  "2022-russia-ukraine": {
+    priorBeliefs:
+      "Through Feb 23, 2022, the consensus framing among most market participants — even after US intelligence had publicly warned of imminent invasion — was that Putin's troop buildup was a coercive-bargaining play rather than a precursor to full-scale war. Implied vol on commodities had risen but spot levels showed analysts pricing a partial-Donbas action, not a Kyiv-targeting invasion. Most strategists framed energy commodities as range-bound on the assumption of a quick diplomatic resolution.",
+    marginalDataPoints: [
+      "Brent had run from $80 in early Feb to ~$95 by Feb 23 on geopolitical premium, but the option-skew structure (rising 25-delta calls relative to puts) was already pricing tail outcomes more aggressively than the spot move suggested",
+      "Cross-currency basis (EUR/USD 3m basis went from -8bp to -18bp through mid-February) was widening alongside the conflict-escalation signal — early funding-stress tell",
+      "European TTF natural-gas forward curve had inverted (2022 contracts pricing well above 2023-2024 contracts) — a structural signal that the energy-supply-shock risk was being priced into the immediate term",
+      "Russian sovereign CDS had blown out from <100bp to 800+bp through February — a clean tell that protection-buying was discounting a base case worse than the headline diplomatic-resolution narrative",
+    ],
+    decisionPoints: [
+      "Feb 24, 2022 (full-scale invasion launches): the analyst had to make a same-session decision about whether to size for a quick-resolution path (Saddam '03 / Russo-Georgian '08 templates) or a multi-quarter sanctions and energy-restructuring path",
+      "Feb 26-28, 2022 (Western sanctions package + SWIFT exclusion + CBR reserve freeze): the moment when the sanctions architecture became visible; the analyst had to choose between 'these sanctions will be partial and reversible' and 'this is a multi-year financial-system decoupling'",
+      "Mar 8, 2022 (LME nickel halt + 250% intraday move on short squeeze tied to Russian commodity exposure): the moment when commodity-market plumbing visibly broke — exposed the cross-asset implications of forced-position-unwind dynamics",
+      "Apr-May 2022 (sustained Brent above $100, EUR/USD breaking parity-test through summer): the validation that the regime change was multi-quarter, not a quick-resolution event",
+    ],
+    dominantBias:
+      "Coercive-bargaining-precedent bias — analysts anchored on the 2014 Crimea episode (limited military action, sanctions, eventual market normalization within months) and missed that the 2022 buildup-scale, doctrine-shift, and Western-response coherence pointed to a structurally different scenario. Compounded by intelligence-discount bias: US public warnings were unprecedented in specificity but were discounted as performative diplomacy.",
+    whatGoodAnalystsDid:
+      "Read the option-skew structure across commodities and EUR-funding markets as a leading indicator of the tail-pricing discrepancy, treated the US public-intelligence releases as actionable, sized commodity exposure for a multi-quarter dislocation rather than an event-spike. Long energy and metals from mid-February, long USD vs EUR from late February, lengthened duration in DM safe-havens (US, German bunds) into the initial flight-to-quality. The trade that broke: long Russia-exposed European banks on the 'sanctions will be partial' thesis — the SWIFT exclusion + CBR freeze was a discontinuous regime change those models hadn't priced.",
+  },
+
   "2023-svb-collapse": {
     priorBeliefs:
       "Through early March 2023, the consensus framing of US regional banks was 'post-Dodd-Frank de-risked, profitability under pressure from inverted curve, but solvency unimpaired.' SVB specifically was viewed as a high-quality franchise with concentrated tech-startup deposit exposure but a strong asset book. Most credit analysts ranked SVB in the top quartile of regional-bank credit quality entering 2023.",

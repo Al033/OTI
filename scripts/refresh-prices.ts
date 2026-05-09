@@ -109,7 +109,6 @@ async function main() {
   let existing: SidecarShape | null = null;
   try {
     const path = join(process.cwd(), "data", "asset-moves.json");
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const fs = await import("node:fs");
     if (fs.existsSync(path)) {
       existing = JSON.parse(fs.readFileSync(path, "utf8")) as SidecarShape;

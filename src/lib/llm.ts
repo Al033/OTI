@@ -365,7 +365,7 @@ const NUMERIC_WHITELIST = [
   /\bN\s?=\s?\d+\b/g, // sample-size shorthand
 ];
 
-const PROSE_FIELDS = [
+const _PROSE_FIELDS = [
   "headline",
   "oneLineSummary",
   "disagreementNote",

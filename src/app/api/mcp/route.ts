@@ -63,7 +63,7 @@ interface JsonRpcRequest {
   params?: unknown;
 }
 
-function rpcResult(id: string | number | null | undefined, result: unknown) {
+function _rpcResult(id: string | number | null | undefined, result: unknown) {
   return NextResponse.json({ jsonrpc: "2.0", id: id ?? null, result });
 }
 

@@ -16,9 +16,33 @@ const TELEMETRY = (functionId: string) => ({
   functionId,
   metadata: {
     app: "oti",
-    version: "0.4",
+    version: "0.5",
   },
 });
+
+/**
+ * Anthropic prompt-cache marker. Applied to the system message in
+ * synthesis calls so the corpus-knowledge-prime + system instructions
+ * cache for 1h between requests. Cache reads are 0.1× input cost on
+ * Sonnet, ≈0.1× on Haiku — meaningful savings once a single request
+ * has warmed the cache.
+ *
+ * Claude minimums:
+ *   - Sonnet 4.6: 2,048 cached tokens
+ *   - Haiku 4.5:  4,096 cached tokens
+ *
+ * The system prompt with the corpus-knowledge-prime included clears
+ * both floors comfortably (~3,000+ tokens at the v0.5 corpus size).
+ *
+ * Within Voyage 4 / Anthropic 2026, the marker syntax is
+ * `providerOptions.anthropic.cacheControl: { type: 'ephemeral', ttl: '1h' }`.
+ * Vercel AI Gateway transparently passes this through.
+ */
+const CACHE_1H = {
+  anthropic: {
+    cacheControl: { type: "ephemeral", ttl: "1h" } as const,
+  },
+} as const;
 import {
   QueryTagsSchema,
   BriefOutputSchema,
@@ -133,12 +157,21 @@ export async function synthesisPhaseA(args: {
   const result = await generateObject({
     model: gateway(model),
     schema,
-    system: SYNTHESIS_A_SYSTEM_PROMPT,
-    prompt: buildSynthesisAUserPrompt({
-      userQuery: args.userQuery,
-      queryTags: args.queryTags,
-      candidates: args.candidates,
-    }),
+    messages: [
+      {
+        role: "system",
+        content: SYNTHESIS_A_SYSTEM_PROMPT,
+        providerOptions: CACHE_1H,
+      },
+      {
+        role: "user",
+        content: buildSynthesisAUserPrompt({
+          userQuery: args.userQuery,
+          queryTags: args.queryTags,
+          candidates: args.candidates,
+        }),
+      },
+    ],
     temperature: 0.4,
     experimental_telemetry: TELEMETRY("synthesis-phase-a"),
   });
@@ -156,12 +189,21 @@ export async function synthesisPhaseB(args: {
   const result = await generateObject({
     model: gateway(model),
     schema: PhaseBSchema,
-    system: SYNTHESIS_B_SYSTEM_PROMPT,
-    prompt: buildSynthesisBUserPrompt({
-      userQuery: args.userQuery,
-      queryTags: args.queryTags,
-      chosen: args.chosen,
-    }),
+    messages: [
+      {
+        role: "system",
+        content: SYNTHESIS_B_SYSTEM_PROMPT,
+        providerOptions: CACHE_1H,
+      },
+      {
+        role: "user",
+        content: buildSynthesisBUserPrompt({
+          userQuery: args.userQuery,
+          queryTags: args.queryTags,
+          chosen: args.chosen,
+        }),
+      },
+    ],
     temperature: 0.4,
     experimental_telemetry: TELEMETRY("synthesis-phase-b"),
   });
@@ -186,12 +228,21 @@ export function streamSynthesisPhaseA(args: {
   return streamObject({
     model: gateway(model),
     schema,
-    system: SYNTHESIS_A_SYSTEM_PROMPT,
-    prompt: buildSynthesisAUserPrompt({
-      userQuery: args.userQuery,
-      queryTags: args.queryTags,
-      candidates: args.candidates,
-    }),
+    messages: [
+      {
+        role: "system",
+        content: SYNTHESIS_A_SYSTEM_PROMPT,
+        providerOptions: CACHE_1H,
+      },
+      {
+        role: "user",
+        content: buildSynthesisAUserPrompt({
+          userQuery: args.userQuery,
+          queryTags: args.queryTags,
+          candidates: args.candidates,
+        }),
+      },
+    ],
     temperature: 0.4,
     experimental_telemetry: TELEMETRY("stream-synthesis-phase-a"),
   });
@@ -207,12 +258,21 @@ export function streamSynthesisPhaseB(args: {
   return streamObject({
     model: gateway(model),
     schema: PhaseBSchema,
-    system: SYNTHESIS_B_SYSTEM_PROMPT,
-    prompt: buildSynthesisBUserPrompt({
-      userQuery: args.userQuery,
-      queryTags: args.queryTags,
-      chosen: args.chosen,
-    }),
+    messages: [
+      {
+        role: "system",
+        content: SYNTHESIS_B_SYSTEM_PROMPT,
+        providerOptions: CACHE_1H,
+      },
+      {
+        role: "user",
+        content: buildSynthesisBUserPrompt({
+          userQuery: args.userQuery,
+          queryTags: args.queryTags,
+          chosen: args.chosen,
+        }),
+      },
+    ],
     temperature: 0.4,
     experimental_telemetry: TELEMETRY("stream-synthesis-phase-b"),
   });

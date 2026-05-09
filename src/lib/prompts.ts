@@ -1,5 +1,6 @@
 import type { HistoricalEvent, QueryTags, RetrievalCandidate } from "./types";
 import { REGIME_TAGS, TRIGGER_TYPES, REGIONS } from "./regime-tags";
+import { EVENTS, CORPUS_VERSION } from "./events";
 
 /**
  * Single source of truth for prompts. Synthesis happens in two phases so
@@ -75,7 +76,48 @@ Hard constraints — violations are bugs:
 
 You write for an audience that already understands markets. Use precise terminology (basis points, OAS, drawdown, vol surface, carry unwind) without explaining it.`;
 
-export const SYNTHESIS_A_SYSTEM_PROMPT = `You are OTI — a historical-analogue research engine for macro markets. This is Phase A: analogue selection and fit reasoning.
+/**
+ * Corpus knowledge prime — appended to every synthesis system prompt as
+ * a STATIC prefix so the prompt-caching breakpoint clears Sonnet's 2048-
+ * token floor and Haiku's 4096-token floor. Without this prefix the
+ * system prompt is ~700 tokens, well below either floor and so
+ * uncacheable. Folding the controlled vocab + the 39-event corpus
+ * manifest into the system prompt brings the cached prefix to ~3000+
+ * tokens; cache reads are then 0.1× input cost vs base.
+ *
+ * The prime busts the cache when the corpus changes (CORPUS_VERSION
+ * embedded in the text), which is the correct invalidation policy.
+ */
+function buildCorpusKnowledgePrime(): string {
+  const eventManifest = EVENTS.map(
+    (e) =>
+      `  ${e.id.padEnd(34)}  ${e.date}  ${e.region.padEnd(6)}  ${e.triggerType.padEnd(20)}  ${e.title}`,
+  ).join("\n");
+
+  return `Corpus knowledge prime (corpus version ${CORPUS_VERSION}):
+
+You operate against a curated 30-event-class macro-history corpus. Below are the controlled vocabularies and the full event manifest. You will receive specific candidates per request, but this manifest is your authoritative list of what exists in the corpus.
+
+Controlled vocabulary — triggerTypes (exactly one per event):
+  ${TRIGGER_TYPES.join(", ")}
+
+Controlled vocabulary — regimeTags (3-7 per event, drawn from this list):
+  ${REGIME_TAGS.join(", ")}
+
+Controlled vocabulary — regions (one per event):
+  ${REGIONS.join(", ")}
+
+surpriseFactor scale: 1 (priced in / expected) → 5 (extreme tail / out-of-consensus).
+
+Full corpus manifest (id, date, region, triggerType, title):
+${eventManifest}
+
+You will only ever return eventIds from this manifest. The schema enforces this at the structured-output layer. Do NOT invent eventIds, do NOT cite events you "remember" from training data outside this manifest.`;
+}
+
+export const SYNTHESIS_A_SYSTEM_PROMPT = `${buildCorpusKnowledgePrime()}
+
+You are OTI — a historical-analogue research engine for macro markets. This is Phase A: analogue selection and fit reasoning.
 
 Your purpose is MEMORY, not prediction. You do NOT forecast.
 
@@ -91,7 +133,9 @@ Phase A specifics:
 
 Length budget: whyAnalogous 2-4 sentences each; whereThisMightNotFit 1-2 sentences each.`;
 
-export const SYNTHESIS_B_SYSTEM_PROMPT = `You are OTI — Phase B. The three analogues have already been chosen. You now synthesise the cross-analogue patterns that require seeing what actually happened.
+export const SYNTHESIS_B_SYSTEM_PROMPT = `${buildCorpusKnowledgePrime()}
+
+You are OTI — Phase B. The three analogues have already been chosen. You now synthesise the cross-analogue patterns that require seeing what actually happened.
 
 ${COMMON_REGISTER}
 

@@ -251,6 +251,14 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
 Restart Claude Desktop. Now `search_analogues`, `get_event`, and `list_events` are tools any conversation can call. Same surface works for Cursor and any agent built on the official MCP SDK.
 
+The full server manifest is at [`mcp/manifest.json`](mcp/manifest.json) — keep it updated when tools change. Directory listings tracked at [`mcp/DIRECTORIES.md`](mcp/DIRECTORIES.md). To prep a manual-submission pack for the directories that don't auto-index, run `pnpm mcp:submission-pack` and commit `out/mcp-submission/`.
+
+Discovery URLs:
+
+- `GET /api/mcp` — JSON-RPC 2.0 server self-description (used by Claude Desktop / Cursor / OpenBB Workspace at runtime)
+- `GET /.well-known/mcp` — RFC well-known mirror of the manifest (used by Glama / PulseMCP / mcp.so directory crawlers)
+- `GET /api/openapi.json` — OpenAPI 3.1 spec for the public read-only surface
+
 ## Tests + eval
 
 ```bash

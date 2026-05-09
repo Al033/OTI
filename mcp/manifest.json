@@ -1,0 +1,78 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2025-11-25/mcp-manifest.json",
+  "name": "oti-historical-analogues",
+  "display_name": "OTI — Historical Macro Analogues",
+  "version": "0.5.0",
+  "description": "Curated 30+ event corpus of macro-history analogues, retrieved via two-stage hybrid (Jaccard tags + voyage-4-large + History Rhymes macro fusion + Voyage rerank). Memory, not prediction.",
+  "long_description": "OTI is a historical-analogue research engine for macro markets. Type a market event in plain English; the server returns the 3 best-fitting historical regimes from a curated 39-event corpus (1929–2025), with a 4th 'near-miss-resolved-oppositely' contrastive analogue, structural-look-ahead-defended synthesis, and conformal-calibrated 80% intervals on each asset's @1m return. The corpus is open-source and community-contributable.\n\nThis MCP server exposes three tools: `search_analogues` (top-K events for a free-text query), `get_event` (full payload by id, with point-in-time view option), and `list_events` (corpus discovery). search_analogues runs the full retrieval pipeline (tag → embed → fused cosine → rerank) but skips synthesis to stay sub-second inside an agent loop.",
+  "author": {
+    "name": "Al033",
+    "url": "https://github.com/Al033/OTI"
+  },
+  "homepage": "https://oti.app",
+  "documentation": "https://oti.app/api",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Al033/OTI"
+  },
+  "keywords": [
+    "finance",
+    "macro",
+    "markets",
+    "historical-analogues",
+    "memory-not-prediction",
+    "research",
+    "fred",
+    "voyage",
+    "anthropic"
+  ],
+  "categories": ["finance", "research", "data"],
+  "icon": "https://oti.app/icon-512.png",
+  "screenshots": [
+    {
+      "url": "https://oti.app/screenshots/today.png",
+      "caption": "OTI Daily — today's regime fingerprint with the 3 closest historical analogues + 1 contrastive near-miss"
+    },
+    {
+      "url": "https://oti.app/screenshots/brief.png",
+      "caption": "User-event brief with calibrated @1m intervals and 'show your work' retrieval audit"
+    }
+  ],
+  "server": {
+    "type": "http",
+    "url": "https://oti.app/api/mcp",
+    "auth": "none",
+    "discovery": "GET /api/mcp returns server self-description"
+  },
+  "client_compatibility": {
+    "claude_desktop": ">=0.8",
+    "claude_code": ">=0.5",
+    "cursor": ">=0.50",
+    "openbb_workspace": ">=2.0"
+  },
+  "tools": [
+    {
+      "name": "search_analogues",
+      "description": "Find historical macro events analogous to a user-described event. Returns top-K events with point-in-time narrative, t=0 market reaction, and retrieval scores. Schema-constrained to OTI's curated corpus."
+    },
+    {
+      "name": "get_event",
+      "description": "Return a single corpus event by id. Use includeHindsight=true for the full payload; default includeHindsight=false returns the point-in-time view safe for forward-looking reasoning."
+    },
+    {
+      "name": "list_events",
+      "description": "List every event in the corpus with id, title, date, region, triggerType, regimeTags. Discovery surface before search_analogues."
+    }
+  ],
+  "rate_limits": {
+    "requests_per_minute": 60,
+    "burst": 60
+  },
+  "data_provenance": "All asset moves are programmatically refreshed from FRED + Stooq (run `pnpm refresh-prices`); failed-trade quotes are flagged with provenance ∈ {verified, paraphrase_with_source, paraphrase_no_source}; corpus version hash returned on every tool response.",
+  "privacy": {
+    "data_retention": "none",
+    "logs_user_queries": false,
+    "logs_anonymous_telemetry": "Langfuse OTel spans, user-query content not retained"
+  }
+}

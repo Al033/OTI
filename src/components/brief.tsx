@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/collapsible";
 import { Sparkline } from "@/components/sparkline";
 import { cn, formatPct, formatBps, formatDate } from "@/lib/utils";
+import { bandsForEnsemble, type QuantileBand } from "@/lib/quantiles";
 import type {
   PipelineResult,
   HistoricalEvent,
@@ -261,6 +262,8 @@ function AssetMovesSection({
 }: {
   analogueEvents: Array<{ output: PipelineResult["brief"]["analogues"][number]; event: HistoricalEvent }>;
 }) {
+  const bands = bandsForEnsemble(analogueEvents.map((a) => a.event));
+
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between">
@@ -273,7 +276,7 @@ function AssetMovesSection({
       </div>
       <Card>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[640px] text-xs">
+          <table className="w-full min-w-[760px] text-xs">
             <thead className="border-b border-[var(--color-border-subtle)]">
               <tr className="text-left">
                 <th className="px-4 py-3 text-[10px] uppercase tracking-wider text-[var(--color-muted-foreground)] font-medium">
@@ -294,6 +297,12 @@ function AssetMovesSection({
                     </div>
                   </th>
                 ))}
+                <th className="px-4 py-3 text-[10px] uppercase tracking-wider text-[var(--color-muted-foreground)] font-medium border-l border-[var(--color-border-subtle)]">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-[var(--color-foreground)]">@1m range</span>
+                    <span className="mono text-[10px] text-[var(--color-muted-foreground)]">N=3</span>
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -322,12 +331,22 @@ function AssetMovesSection({
                       </td>
                     );
                   })}
+                  <td className="px-4 py-3 border-l border-[var(--color-border-subtle)]">
+                    <BandCell band={bands[asset.key].m1} unit={asset.unit} />
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </Card>
+      <p className="text-[11px] leading-relaxed text-[var(--color-muted-foreground)]">
+        @1m range is the empirical min / median / max across N=3 analogues —
+        not a calibrated forecast interval. Three datapoints have zero
+        statistical power; they describe history, not probability.
+        Conformal-calibrated coverage requires a calibration set of ≥30
+        events (planned for v0.5).
+      </p>
     </section>
   );
 }
@@ -392,6 +411,56 @@ function AssetCell({
         {m1 === null ? "—" : unit === "bps" ? formatBps(m1) : unit === "level" ? (m1 > 0 ? `+${m1.toFixed(1)}` : m1.toFixed(1)) : formatPct(m1)}
       </span>
       <ProvenanceChip provenance={provenance} />
+    </div>
+  );
+}
+
+function BandCell({
+  band,
+  unit,
+}: {
+  band: QuantileBand;
+  unit: "pct" | "bps" | "level";
+}) {
+  if (band.n === 0 || band.median === null) {
+    return <span className="mono text-[10px] text-[var(--color-muted-foreground)]">—</span>;
+  }
+  const fmt = (n: number | null) => {
+    if (n === null) return "—";
+    if (unit === "bps") return n > 0 ? `+${n.toFixed(0)}bp` : `${n.toFixed(0)}bp`;
+    if (unit === "level") return n > 0 ? `+${n.toFixed(1)}` : n.toFixed(1);
+    return n > 0 ? `+${n.toFixed(1)}%` : `${n.toFixed(1)}%`;
+  };
+  const tone =
+    band.median > 0
+      ? unit === "bps" || unit === "level"
+        ? "negative"
+        : "positive"
+      : band.median < 0
+        ? unit === "bps" || unit === "level"
+          ? "positive"
+          : "negative"
+        : "neutral";
+  return (
+    <div
+      className="flex flex-col gap-0.5 leading-tight"
+      title={`Empirical range across N=${band.n} analogues — not a calibrated forecast interval`}
+    >
+      <span
+        className={cn(
+          "mono text-xs font-medium whitespace-nowrap",
+          tone === "positive"
+            ? "text-[var(--color-positive)]"
+            : tone === "negative"
+              ? "text-[var(--color-negative)]"
+              : "text-[var(--color-muted-foreground)]",
+        )}
+      >
+        {fmt(band.median)}
+      </span>
+      <span className="mono text-[9px] text-[var(--color-muted-foreground)] whitespace-nowrap">
+        [{fmt(band.min)}, {fmt(band.max)}]
+      </span>
     </div>
   );
 }

@@ -38,6 +38,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/stats" className="hover:text-[var(--color-foreground)] text-[var(--color-muted-foreground)] transition-colors">
+                  Stats
+                </Link>
+              </li>
+              <li>
                 <a href="https://github.com/Al033/OTI" target="_blank" rel="noreferrer" className="hover:text-[var(--color-foreground)] text-[var(--color-muted-foreground)] transition-colors">
                   GitHub
                 </a>

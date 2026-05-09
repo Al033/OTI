@@ -1,5 +1,24 @@
 import { generateObject, streamObject } from "ai";
 import { gateway } from "@ai-sdk/gateway";
+
+/**
+ * Telemetry block passed to every AI SDK call. When LANGFUSE_PUBLIC_KEY
+ * is present the OTel SDK started in instrumentation.ts captures these
+ * spans; when absent, isEnabled is true but the spans go to a no-op
+ * exporter (negligible overhead).
+ *
+ * functionId tags each span so traces can be filtered by pipeline phase
+ * in the Langfuse UI. Metadata identifies the corpus version and model
+ * for cohort analysis.
+ */
+const TELEMETRY = (functionId: string) => ({
+  isEnabled: true,
+  functionId,
+  metadata: {
+    app: "oti",
+    version: "0.4",
+  },
+});
 import {
   QueryTagsSchema,
   BriefOutputSchema,
@@ -61,6 +80,7 @@ export async function tagQuery(args: {
     system: TAG_SYSTEM_PROMPT,
     prompt: buildTagUserPrompt(args.query),
     temperature: 0.1,
+    experimental_telemetry: TELEMETRY("tag-query"),
   });
   return result.object;
 }
@@ -120,6 +140,7 @@ export async function synthesisPhaseA(args: {
       candidates: args.candidates,
     }),
     temperature: 0.4,
+    experimental_telemetry: TELEMETRY("synthesis-phase-a"),
   });
   return result.object;
 }
@@ -142,6 +163,7 @@ export async function synthesisPhaseB(args: {
       chosen: args.chosen,
     }),
     temperature: 0.4,
+    experimental_telemetry: TELEMETRY("synthesis-phase-b"),
   });
   return result.object;
 }
@@ -171,6 +193,7 @@ export function streamSynthesisPhaseA(args: {
       candidates: args.candidates,
     }),
     temperature: 0.4,
+    experimental_telemetry: TELEMETRY("stream-synthesis-phase-a"),
   });
 }
 
@@ -191,6 +214,7 @@ export function streamSynthesisPhaseB(args: {
       chosen: args.chosen,
     }),
     temperature: 0.4,
+    experimental_telemetry: TELEMETRY("stream-synthesis-phase-b"),
   });
 }
 

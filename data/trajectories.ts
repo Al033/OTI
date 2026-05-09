@@ -231,4 +231,109 @@ export const TRAJECTORIES: Record<string, AnalyticalTrajectory> = {
     whatGoodAnalystsDid:
       "Tracked Italian/Iranian case curves daily from Feb 20, watched the cross-currency basis swap widening as the funding-stress proxy, sized for a non-V-shaped recovery. Long duration + USD + gold from late February, covered shorts at the Mar 23 unlimited-QE announcement, rotated long quality equity into the Mar 24 rally. The trade that broke: long oil into the OPEC+ break.",
   },
+
+  "1973-opec-embargo": {
+    priorBeliefs:
+      "Going into October 1973, the consensus among Western economists was that Arab oil producers would not risk a politically motivated supply cut because the resulting revenue loss would be self-defeating, and that any disruption would be brief — modeled on the 1967 Six-Day-War embargo, which had collapsed within months as producers competed for market share.",
+    marginalDataPoints: [
+      "Saudi oil minister Yamani had publicly threatened 'oil as a weapon' in April-May 1973 speeches; Western media treated this as rhetorical posturing, not policy preview",
+      "OPEC's Sep 1973 Tehran-Tripoli pricing demands (a >70% increase to ~$5/bbl) were unprecedented in scale and signaled a producer-cartel cohesion that hadn't existed in 1967",
+      "US oil imports had crossed 35% of consumption by 1973, up from <20% in 1970 — the elasticity of an embargo had structurally changed but most policy memos still cited 1967-era ratios",
+      "S&P had already started rolling over from its January 1973 peak through summer; the bear market was about to become a stagflation crisis but consensus framed it as a normal cyclical pullback",
+    ],
+    decisionPoints: [
+      "Oct 6, 1973 (Yom Kippur war begins): analysts had to decide whether to model the war as a regional military event or as the trigger for an OPEC supply response with Saudi Arabia at the wheel",
+      "Oct 17, 1973 (OPEC announces 5% monthly production cuts + selective embargo on US/Netherlands): the price-shock-vs-supply-shock distinction — was this a one-off price reset or the start of a sustained constraint?",
+      "Dec 23, 1973 (OPEC quadruples posted prices to $11.65/bbl): the 'this resolves quickly' frame became untenable; analysts who had positioned for transient now had to choose between catching up at higher prices or persisting in the wrong frame",
+    ],
+    dominantBias:
+      "Recency bias on 1967 — the prior embargo had failed to dent prices, so a substantial part of the analyst community modeled producer behavior on the prior episode and ignored that the cartel composition, market share, and Western import-dependence had all shifted materially in the intervening six years.",
+    whatGoodAnalystsDid:
+      "Tracked tanker-shipping rates and Aramco production allocations directly rather than relying on OPEC press communiqués, recognized that producer cohesion this time was held together by a political objective rather than a price target, lengthened oil-equity exposure and shortened duration on long-dated USTs into late October. The analytical frame that worked: treat this as a regime-change in the energy-trade structure, not a temporary price event.",
+  },
+
+  "1994-greenspan-hike": {
+    priorBeliefs:
+      "Going into Feb 4, 1994 the consensus assumed the Fed would telegraph the start of a tightening cycle the way Greenspan had built credibility for in prior moves — a small, well-flagged 25bp move with extensive forward guidance. Long-bond positioning was crowded; the carry trade in EM was extended; the perception was 'the Fed will not surprise.'",
+    marginalDataPoints: [
+      "ECI (Employment Cost Index) had ticked up to its highest reading since 1991 in the Q4 1993 release — a clean wage-pressure signal Greenspan was known to weight heavily",
+      "Long-bond futures positioning per CFTC data was at multi-year extreme nets; mortgage convexity hedging risk was sitting in primary-dealer balance sheets",
+      "The Mexican peso had begun trading rich to its band in Q4 1993 as US investors stretched for yield — a tell that EM carry dependence on US rates was structurally elevated",
+      "Greenspan's late-Jan 1994 Joint Economic Committee testimony deliberately introduced 'we may need to move pre-emptively' language; bond markets read this as conditional rather than as a starting gun",
+    ],
+    decisionPoints: [
+      "Feb 4, 1994 (Fed hikes 25bp without prior signaling — the 'no telegraph' bit was the surprise): the analyst had to decide whether this was a cycle of telegraphed quarter-point moves or a regime change in how the Fed would communicate",
+      "Mar 22 + Apr 18, 1994 (back-to-back hikes accelerating into 50bp moves): the duration-positioning unwind became forced selling; the question was whether to fade the move or run with it",
+      "Aug 16, 1994 (Fed hikes 50bp, total cycle so far 175bp): the cumulative damage to fixed-income strategies became the primary market story; orthotgonal carry trades (EM, MBS) were exposed as the same trade",
+    ],
+    dominantBias:
+      "Anchoring on the prior cycle's communication style — the assumption that Greenspan would stay maximally telegraphed because that's how he had built credibility, missing that pre-emption against inflation expectations sometimes requires NOT signaling. Compounded by carry-trade-as-uncorrelated-strategies bias: investors held US bonds, MBS, and EM debt as separate positions when in rate-shock terms they were the same trade.",
+    whatGoodAnalystsDid:
+      "Watched the convexity-hedging flow signals (mortgage-derivative price action gave a pre-print of the rates path), respected the ECI as a reasoned-from-Greenspan-priors gauge rather than a noisy lagging indicator, treated long-duration positioning extremes as a vol input not just a sentiment input. Cut duration in January, took off EM carry exposure mid-February, used the Apr-Aug window to lengthen duration into peak panic.",
+  },
+
+  "2000-dotcom-peak": {
+    priorBeliefs:
+      "Through Q1 2000 the operating consensus among growth-equity strategists was that internet-era productivity gains had structurally raised the equilibrium P/E of the market and that the Nasdaq's run-up was an early-cycle re-rating to a new normal. 'Click-through rates as the new earnings' framing was published in respected sell-side notes; the FOMO from missed exposure in 1998-1999 was driving allocator behavior.",
+    marginalDataPoints: [
+      "Insider selling at internet-era IPOs had hit record post-lockup velocity in Q1 2000 — a clean signal that those closest to the businesses didn't share the public-market thesis",
+      "Capex-to-revenue ratios at the high-flying optical-networking and telecom-equipment names were diverging from earnings — a leading indicator of the over-build that would later define 2001-2002",
+      "Y2K-driven IT-spending pull-forward had peaked Q4 1999 — a sustained IT-revenue tailwind for 1998-1999 was structurally about to roll off, but most models assumed it would persist",
+      "March 2000 saw the Nasdaq trade on >100% turnover in the megacap names; the dispersion between megacap and broad equal-weight equity began widening as the rally narrowed",
+      "Cisco's Q4 1999 earnings call had introduced 'lengthening lead times' phrasing — buyer behavior had inverted but the stock continued making highs through March",
+    ],
+    decisionPoints: [
+      "Mar 10, 2000 (Nasdaq peaks at 5,048): the date the chart printed the high; analysts had to decide on subsequent days whether the pullback was healthy consolidation or regime change",
+      "Apr 14, 2000 (Nasdaq -10% one-day session, biggest down day in years): the 'this is a buyable dip' vs 'this is the start of the unwind' read",
+      "Q3 2000 earnings season (multiple sequential warnings from optical/networking names — Lucent, JDSU, Cisco): the moment when the structural over-build became visible in P&Ls — analysts who had held through April for a bounce now had to rebase",
+      "Dec 2000 (Greenspan acknowledges 'softening' in Senate testimony): the Fed pivot signal, which arrived too late for most positioning",
+    ],
+    dominantBias:
+      "Productivity-paradigm-shift bias — the assumption that a structural change in technology adoption permanently re-rated equity valuations, suspending the historical mean-reversion in P/E. Compounded by the FOMO of 1998-1999 underexposure, which made allocators reluctant to take risk off even as marginal data turned. The behavioral heuristic 'this time is different' was named and dismissed in research notes — and then acted upon anyway.",
+    whatGoodAnalystsDid:
+      "Tracked insider selling and S-3 filings as a leading indicator, watched capex-to-revenue at infrastructure suppliers as the leading indicator of demand reversal, recognized Q4 1999 as the peak of the Y2K-spending tailwind. Trimmed Nasdaq exposure into the March-April 2000 distribution, paired short legs in optical/networking names with long megacap quality, lengthened duration into late 2000 as the disinflationary regime change became apparent. The trade that broke even amongst the careful: the equal-weight long that worked in 2000-2001 lost its edge in 2002 once the deflation scare took hold.",
+  },
+
+  "2016-brexit": {
+    priorBeliefs:
+      "Going into June 23, 2016, the consensus among UK markets, betting markets, and the major UK newspaper polls in the final 72 hours was that Remain would win by a 4-7 point margin. The Sterling rallied through the week of the referendum on tightening Remain odds; equity-market positioning was net-long; option-implied vol on GBP/USD reflected the betting-market skew not the polling skew.",
+    marginalDataPoints: [
+      "Regional-turnout indicators in early-counted Northeast England constituencies (Sunderland, in particular, had been a public bellwether) were running well above 2015 GE levels — a Leave-favorable signal that hit the wires around 11:30pm BST",
+      "GBP/USD risk-reversal skew had widened steadily through May 2016 — even as spot rallied, options markets were paying up for downside protection; this was visible in Bloomberg vol-surface data and largely ignored",
+      "YouGov's late-night re-poll on June 23 (released after polls closed) suggested Remain at only 52%; this was a deviation from the day-of consensus and arrived too late for most positioning adjustments",
+      "Postal-vote samples leaked through bookmakers' liquidity around 8pm BST showed a tighter race than betting odds reflected — bookmaker order flow had begun adjusting before screen-traded markets did",
+      "BoE governor Carney had pre-positioned a £250bn liquidity facility in mid-June — a clean 'we expect this could break' signal that risk markets discounted",
+    ],
+    decisionPoints: [
+      "Approx 12:30am BST June 24, 2016 (Sunderland declares Leave 61%, well above modeled): the moment the result-tape diverged from the consensus prior — analysts running the count had to decide whether to act on early constituencies or wait for the median",
+      "Approx 4:00am BST June 24 (Leave declared mathematically inevitable): the 'currency move is overshoot' vs 'currency move is regime change' read; GBP/USD bottomed near 1.32 from a 1.50 close, then re-tested",
+      "June 24 NY open (S&P -3.6%, Stoxx 50 -8.6%, GBP rebounding): the question was whether to chase the European-equity downside or fade it; the FTSE 100 (heavy international-revenue exposure) outperformed FTSE 250 (domestic) materially",
+    ],
+    dominantBias:
+      "Betting-market-priors-as-truth bias — analyst books leaned heavily on aggregated betting-market odds, which were themselves dominated by a small number of large concentrated stakes that under-represented the geographic distribution of voter sentiment. Compounded by an availability bias from 2014 Scottish independence and the 2015 UK general election, both of which had fits to the polling-and-betting consensus.",
+    whatGoodAnalystsDid:
+      "Hedged GBP/USD downside via OTM puts using the risk-reversal skew as the pricing signal (cheap protection given the visible pricing dislocation), used regional-turnout heuristics rather than aggregate poll numbers, sized exposures for a binary outcome rather than a base-case-with-tails model. Held a long FTSE 100 / short FTSE 250 pair into the result. The trade that broke: long European banks, where the UK-domiciled exposure was greater than the headline FTSE classification suggested.",
+  },
+
+  "2023-svb-collapse": {
+    priorBeliefs:
+      "Through early March 2023, the consensus framing of US regional banks was 'post-Dodd-Frank de-risked, profitability under pressure from inverted curve, but solvency unimpaired.' SVB specifically was viewed as a high-quality franchise with concentrated tech-startup deposit exposure but a strong asset book. Most credit analysts ranked SVB in the top quartile of regional-bank credit quality entering 2023.",
+    marginalDataPoints: [
+      "SVB's Q4 2022 10-K had disclosed unrealized AFS losses of $15bn against tangible common equity of ~$11bn — the duration mismatch was visible in plain English on page 38, but rarely cited in sell-side coverage",
+      "SVB's HTM-to-deposit ratio had grown from <30% to >55% over 2021-2022 as the bank invested deposit growth into long-duration USTs; HTM losses don't hit equity but do bind capital in a deposit-run scenario",
+      "Tech-startup deposit outflows at SVB were already running negative throughout Q4 2022 as VC funding rounds slowed — a leading indicator that the franchise's funding base was structurally eroding",
+      "Twitter mentions of 'bank run' on Mar 8 2023 (when SVB announced the $1.75bn capital raise after selling $21bn of AFS at a $1.8bn loss) saw exponential growth into Mar 9 close — the 'run velocity' was unprecedented because deposit transfers had become app-driven and group-coordinated",
+      "Pacific Western, Western Alliance, First Republic equity moves on Mar 9 were highly correlated with SVB's — a clean tell that the market was pricing this as a sector-funding event, not an idiosyncratic credit event",
+    ],
+    decisionPoints: [
+      "Mar 8, 2023 evening (SVB capital raise announcement): the analyst had to decide whether this was a routine capital-management event or a forced-seller-of-AFS signal that revealed a deeper duration-mismatch crisis",
+      "Mar 9, 2023 (SVB equity -60%, peer regionals -10 to -15%, depositor outflows accelerating): the 'this is contained to SVB' vs 'this is sector funding regime change' read",
+      "Mar 12, 2023 evening (Treasury/Fed/FDIC announce BTFP + uninsured-deposit guarantee): the moment the systemic-deposit-run risk was capped — but only for participants reading the announcement quickly enough to reposition before Mar 13 open",
+      "Mar 19, 2023 (UBS-Credit Suisse forced merger announced): the 'is this US-regional contagion or has it gone global' read; the answer turned on whether you believed CS issues were idiosyncratic or symptomatic",
+    ],
+    dominantBias:
+      "Post-DFA-de-risking bias — the assumption that regulatory reforms after 2008 had structurally eliminated the run-prone bank business model, missing that the reforms targeted SIFIs while leaving regional-bank depositor concentration and HTM accounting effectively unchanged. Compounded by velocity-of-information bias — most run-modeling assumed branch-driven withdrawal speeds, not coordinated app-driven transfers in tech-concentrated deposit bases.",
+    whatGoodAnalystsDid:
+      "Read the 10-K AFS/HTM unrealized-loss disclosures as the leading credit indicator (not the headline capital ratios), tracked deposit-outflow velocity in the FFIEC call reports rather than waiting for the next quarterly reporting cycle, recognized the deposit-base concentration in tech as a structural vulnerability rather than a quality marker. Shorted regional-bank index proxies after the Mar 8 capital-raise announcement, covered into the Mar 13 BTFP backstop, repositioned long quality-megabank into the deposit-flight-to-safety trade. The trade that broke even amongst the careful: short long-dated USTs into the Mar 9-10 panic — that move went the other way as the safe-haven bid swamped the issuance-supply concern.",
+  },
 };

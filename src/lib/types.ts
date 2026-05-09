@@ -171,6 +171,20 @@ export const RetrievalAuditSchema = z.object({
 });
 export type RetrievalAudit = z.infer<typeof RetrievalAuditSchema>;
 
+/**
+ * Self-Verifier audit — surfaced in the brief's audit panel. Inspired
+ * by FinAgent-RAG's Self-Verifier-with-Query-Refiner (arXiv:2605.05409).
+ * v0.5 implementation is verify-log-ship; v0.6 will close the loop with
+ * automatic re-synthesis on verification fail.
+ */
+export const VerifierAuditSchema = z.object({
+  passed: z.boolean(),
+  issues: z.array(z.object({ code: z.string(), message: z.string() })),
+  warnings: z.array(z.object({ code: z.string(), message: z.string() })),
+  summary: z.string(),
+});
+export type VerifierAudit = z.infer<typeof VerifierAuditSchema>;
+
 export const PipelineResultSchema = z.object({
   query: z.string(),
   queryTags: QueryTagsSchema,
@@ -183,5 +197,6 @@ export const PipelineResultSchema = z.object({
   isDemo: z.boolean(),
   corpusVersion: z.string(),
   retrievalAudit: RetrievalAuditSchema,
+  verifierAudit: VerifierAuditSchema.optional(),
 });
 export type PipelineResult = z.infer<typeof PipelineResultSchema>;

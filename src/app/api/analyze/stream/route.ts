@@ -6,6 +6,7 @@ import { retrieve, hydrate, getEmbeddingsSource } from "@/lib/retrieval";
 import { rerankCandidates } from "@/lib/rerank";
 import { fetchTodayMacroZ } from "@/lib/regime/today";
 import { FUSION_ALPHA } from "@/lib/regime/fuse";
+import { verifyBrief } from "@/lib/verifier";
 import { expandQuery, reciprocalRankFusion } from "@/lib/multi-query";
 import { sanitiseUserQuery } from "@/lib/prompts";
 import {
@@ -275,6 +276,15 @@ export async function POST(req: NextRequest) {
           console.warn("[analyze/stream] numeric-guard warnings:", warnings);
         }
 
+        const verifierAudit = verifyBrief({
+          brief,
+          candidates: finalCandidates,
+          numericGuardWarnings: warnings,
+        });
+        if (!verifierAudit.passed) {
+          console.warn("[analyze/stream] verifier issues:", verifierAudit.issues);
+        }
+
         const result: PipelineResult = {
           query,
           queryTags,
@@ -287,6 +297,7 @@ export async function POST(req: NextRequest) {
           isDemo: false,
           corpusVersion: CORPUS_VERSION,
           retrievalAudit,
+          verifierAudit,
         };
 
         const briefId = briefIdFor(

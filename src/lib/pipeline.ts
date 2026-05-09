@@ -11,6 +11,7 @@ import { CORPUS_VERSION } from "./events";
 import { fetchTodayMacroZ } from "./regime/today";
 import { FUSION_ALPHA } from "./regime/fuse";
 import { expandQuery, reciprocalRankFusion } from "./multi-query";
+import { verifyBrief } from "./verifier";
 import type {
   PipelineResult,
   RetrievalAudit,
@@ -124,6 +125,18 @@ export async function runPipeline(args: RunPipelineArgs): Promise<PipelineResult
     console.warn("[pipeline] numeric-guard warnings:", warnings);
   }
 
+  const verifierAudit = verifyBrief({
+    brief,
+    candidates: finalCandidates,
+    numericGuardWarnings: warnings,
+  });
+  if (!verifierAudit.passed) {
+    console.warn("[pipeline] verifier issues:", verifierAudit.issues);
+  }
+  if (verifierAudit.warnings.length > 0) {
+    console.info("[pipeline] verifier warnings:", verifierAudit.warnings);
+  }
+
   const fusedRetrieval = !!queryEmbedding && !!todayMacroZ;
   const retrievalAudit: RetrievalAudit = {
     embeddingsSource: getEmbeddingsSource() ?? "none",
@@ -149,5 +162,6 @@ export async function runPipeline(args: RunPipelineArgs): Promise<PipelineResult
     isDemo: false,
     corpusVersion: CORPUS_VERSION,
     retrievalAudit,
+    verifierAudit,
   };
 }

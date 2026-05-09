@@ -81,15 +81,35 @@ function BriefHeader({
   result: PipelineResult;
   analogueEvents: Array<{ output: PipelineResult["brief"]["analogues"][number]; event: HistoricalEvent }>;
 }) {
+  const v = result.verifierAudit;
   return (
     <header className="space-y-4">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <Badge variant="accent" className="font-mono">
           {result.isDemo ? "Demo · precomputed" : `${result.modelSynth}`}
         </Badge>
         <Badge variant="outline">
           {analogueEvents.length} analogues from {result.candidates.length} candidates
         </Badge>
+        {v && (
+          <span
+            title={v.summary + (v.warnings.length > 0 ? "\n\n" + v.warnings.map((w) => "• " + w.message).join("\n") : "")}
+            className={cn(
+              "mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded border whitespace-nowrap",
+              v.passed && v.warnings.length === 0
+                ? "border-[var(--color-positive-subtle)] text-[var(--color-positive)]"
+                : v.passed
+                  ? "border-[var(--color-warning-subtle)] text-[var(--color-warning)]"
+                  : "border-[var(--color-negative-subtle)] text-[var(--color-negative)]",
+            )}
+          >
+            {v.passed && v.warnings.length === 0
+              ? "Self-verified ✓"
+              : v.passed
+                ? `Verified · ${v.warnings.length} flag${v.warnings.length === 1 ? "" : "s"}`
+                : `Verifier failed · ${v.issues.length}`}
+          </span>
+        )}
         {!result.isDemo && (
           <span className="mono text-[10px] text-[var(--color-muted-foreground)]">
             {(result.durationMs / 1000).toFixed(1)}s

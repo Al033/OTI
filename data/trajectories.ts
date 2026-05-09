@@ -543,4 +543,111 @@ export const TRAJECTORIES: Record<string, AnalyticalTrajectory> = {
     whatGoodAnalystsDid:
       "Read the 10-K AFS/HTM unrealized-loss disclosures as the leading credit indicator (not the headline capital ratios), tracked deposit-outflow velocity in the FFIEC call reports rather than waiting for the next quarterly reporting cycle, recognized the deposit-base concentration in tech as a structural vulnerability rather than a quality marker. Shorted regional-bank index proxies after the Mar 8 capital-raise announcement, covered into the Mar 13 BTFP backstop, repositioned long quality-megabank into the deposit-flight-to-safety trade. The trade that broke even amongst the careful: short long-dated USTs into the Mar 9-10 panic — that move went the other way as the safe-haven bid swamped the issuance-supply concern.",
   },
+
+  "2011-us-downgrade": {
+    priorBeliefs:
+      "Going into Aug 5, 2011, the consensus was that S&P would not actually downgrade the United States despite the rhetorical threats during the debt-ceiling brinksmanship. The 'AAA-as-permanent' framing was deeply embedded in fixed-income mandates, sovereign-wealth allocation models, and risk-weighting frameworks; analysts couldn't easily price a counterfactual where USTs lost their AAA status.",
+    marginalDataPoints: [
+      "S&P had publicly warned in mid-July 2011 that a debt-ceiling resolution short of $4tn in deficit reduction would risk a downgrade — an explicit operational threshold most market participants discounted as posturing",
+      "1y UST CDS had widened from ~30bp to ~70bp through July as protection-buying accelerated; the cleanest tell that the AAA-as-permanent assumption was being unwound by sophisticated participants",
+      "Eurozone sovereign-spread widening through summer 2011 (Italian-German 10y spread moved from ~220bp to ~370bp) was creating a parallel sovereign-stress event that constrained UST flight-to-quality dynamics; the global supply of 'risk-free' assets was shrinking simultaneously",
+      "The Aug 2 debt-ceiling deal delivered ~$2.4tn in deficit reduction — well short of S&P's stated $4tn threshold; the announced outcome had visibly fallen below the rating-agency rubric the day of the deal",
+    ],
+    decisionPoints: [
+      "Aug 5, 2011 (S&P downgrades US to AA+ after market close): the analyst had to read the Monday-open response — was this a 'sell USTs on credit-quality' event or a 'buy USTs because nothing else has gotten safer' event?",
+      "Aug 8, 2011 (S&P -6.6%, USTs RALLY despite the downgrade): the market gave its answer — the flight-to-quality bid swamped the credit-quality concern, validating that AAA-as-rating-input was less load-bearing than the consensus expected",
+      "Aug 9, 2011 (Fed: rates on hold 'at least through mid-2013' — explicit calendar guidance, the first time): the policy-response signal that compounded the duration rally",
+      "Q4 2011 (Italian + Spanish yields cross 7% on Berlusconi resignation timeline; 'Volcker rules' begin implementation): the broader sovereign-stress context within which the US event resolved as a paper-tiger downgrade",
+    ],
+    dominantBias:
+      "AAA-as-load-bearing bias — analysts modeled UST demand as conditional on the AAA rating without weighting the larger structural drivers (depth, liquidity, reserve-currency status, mandate-driven indexed buyers). Compounded by ratings-agency-action-equals-credit-event bias: most participants treated the rating change as a discrete credit event rather than as one input into a much larger demand function.",
+    whatGoodAnalystsDid:
+      "Read 1y UST CDS widening as the leading-indicator signal, recognized that AAA was operationally one input into a larger reserve-currency demand function (not the binding constraint), tracked the mandate-driven indexed-buyer flows during the Aug 5-8 window. Lengthened UST duration into the Aug 5 announcement, faded the equity panic on Aug 8, sized for a multi-month vol-elevated regime rather than a single-event resolution. The trade that broke: short USDs into the downgrade — the dollar bid was the strongest signal that flight-to-quality dominated credit-quality concerns.",
+  },
+
+  "2018-powell-pivot-eve": {
+    priorBeliefs:
+      "Going into Q4 2018, the consensus was that the Fed under Powell would continue its quarterly hike cadence + balance-sheet runoff path through 2019 'on autopilot.' Powell's Oct 3 'long way from neutral' framing had been read as further hawkish guidance. Equity markets had been rolling over since late September; the question was whether this was a normal mid-cycle correction or the start of something more structural.",
+    marginalDataPoints: [
+      "HY OAS had widened from ~330bp in early October to >540bp by year-end 2018 — credit was visibly pricing a risk-off regime well ahead of equities catching up",
+      "S&P 500 was flirting with -20% from peak by Christmas Eve 2018 — the canonical bear-market threshold that markets were watching for as a coordinated forcing function on policy",
+      "Fed Chair Powell's Nov 28 NY Economic Club speech had subtly shifted language: the 'long way from neutral' framing of October became 'just below the broad range of estimates' — a one-sentence repositioning that was visible to anyone parsing speeches against priors",
+      "Mnuchin's Dec 23 'I have called the major banks to discuss liquidity' tweet had introduced unprecedented Treasury-side concern about market plumbing; the reverse signal that the administration was pre-positioning for a stress event",
+      "Inflation breakevens had been falling persistently through Q4 2018 — the inflation-side justification for continued hikes was visibly weakening, but Fed minutes were still framing 'further gradual increases' as the base case",
+    ],
+    decisionPoints: [
+      "Dec 19, 2018 (FOMC hikes 25bps + minor dot-plot dovish revision but presser maintains autopilot framing on balance sheet): the 'this Fed gets it' vs 'this Fed doesn't get it' read at the policy meeting",
+      "Dec 24-26, 2018 (Christmas Eve session sees S&P -2.7%; Boxing Day session reverses to +5%): the moment the equity tape itself created the political pressure that would force the policy pivot",
+      "Jan 4, 2019 (Powell sits with Yellen + Bernanke at AEA panel — phrase: 'We will be patient'): the explicit pivot moment, communicated through the most credible possible setting",
+      "Jan 30, 2019 (FOMC removes 'further gradual increases' language; Powell presser confirms 'patient'): the formal policy-statement embodiment of the verbal pivot — the 'autopilot' framing was now retired",
+    ],
+    dominantBias:
+      "Fed-as-rule-bound-actor bias — analysts modeled the Fed's reaction function as having a fixed weighting on growth + inflation gauges and underweighted the political-economy feedback loop where market stress itself becomes an input. Compounded by autopilot-framing-as-commitment bias: the explicit balance-sheet runoff narrative was treated as binding when it was always a parameter, not a constraint.",
+    whatGoodAnalystsDid:
+      "Watched HY OAS as the leading-indicator gauge, parsed the Nov 28 speech word-by-word for guidance shift, treated the AEA Jan 4 setting as a deliberate signaling venue. Took risk off into the Dec 19 hike, lengthened duration into the Christmas Eve panic, faded the Mnuchin tweet on the basis that Treasury-side stress was a contrarian indicator. The trade that broke: short banks into Q1 2019 — the Fed pivot worked through the financial sector first, not the structural-rate-environment thesis.",
+  },
+
+  "2025-trump-liberation-day": {
+    priorBeliefs:
+      "Going into early April 2025, the Trump administration's tariff threats had been priced as 'announcement-and-rollback' theatre — the prevailing template was the 2018-2019 trade-war cycle where threats were aggressive but actual implementation was incremental and reversible. Most strategists ranked the April 'Liberation Day' announcement as a negotiation tactic likely to be diluted before becoming binding.",
+    marginalDataPoints: [
+      "USTR background-paper drafts circulating in late March 2025 specified tariff structures with reciprocity formulas tied to bilateral trade deficits — operational specificity well beyond what a pure-theatre framing implied",
+      "Cabinet-level participation in the reciprocal-tariff working group through March 2025 had broadened beyond USTR to include Commerce, Treasury, and Defense — the inter-agency coordination signaled an implementation track, not a posture",
+      "The Trump White House's late-March 2025 social-media cadence had escalated specificity around country-by-country tariff rates — the 'we're really doing this' tell most analysts continued to discount",
+      "USD/CNY 3m vol had been rising through March 2025 alongside the tariff specificity — option markets were pricing implementation more aggressively than spot-FX moves suggested",
+      "Pre-announcement supply-chain-management surveys from mid-March 2025 had shown US importer pre-positioning + inventory build — physical-economy actors were already operating on a 'this is happening' base case",
+    ],
+    decisionPoints: [
+      "Apr 2-3, 2025 ('Liberation Day' announcement of reciprocal tariffs averaging ~25% across most non-FTA partners): the analyst had to decide whether the announcement was the negotiating opening or the implementation start",
+      "Apr 4-7, 2025 (S&P drops 12% in three sessions; vol regime breaks): the moment when the tariff event became a vol regime change rather than a transitional macro-noise event",
+      "Apr 9, 2025 (90-day pause announcement on bulk of country-specific tariffs): the partial-walkback that vindicated the 'announcement-and-negotiation' framing tactically while leaving the structural tariff regime in place",
+      "Through Q2 2025 (USD/CNY breaks 7.40 + Chinese retaliatory measures + supply-chain reorientation visible in shipping-rate data): the validation that even the 'paused' regime was operationally a tariff-step-up vs the 2024 baseline",
+    ],
+    dominantBias:
+      "2018-2019-template extrapolation bias — analysts mapped the 2025 tariff cycle onto the prior Trump-tariff episode (announce, negotiate, implement-in-tranches) without weighting that the political-economy context had shifted (a second-term administration with no re-election constraint, an explicit revenue-and-reorientation goal, a pre-positioned cabinet). Compounded by operational-specificity-discount bias: USTR background-paper specificity was treated as drafting, not as commitment.",
+    whatGoodAnalystsDid:
+      "Tracked USTR drafting + cabinet inter-agency coordination as the leading-indicator gauge, read the social-media cadence as commitment signaling rather than as theatre, monitored physical-economy pre-positioning (inventory builds, freight rates) as the actor-side reaction to the implementation track. Took equity beta off through late March, sized USD short positions selectively (USD/CNY long, USD/MXN long, USD/EUR neutral), lengthened duration into the Apr 2 announcement. The trade that broke: long EM equities on the 'pause vindicates negotiation' thesis — the structural tariff-step-up that survived the pause continued to compress EM exporter margins through Q2.",
+  },
+
+  "1962-cuban-missile-crisis": {
+    priorBeliefs:
+      "Going into Oct 16, 1962 (the day President Kennedy was first briefed on the U-2 photographic evidence of Soviet IRBMs in Cuba), the consensus public framing was that Cuba had received defensive Soviet weaponry but not offensive nuclear-capable systems. Most US foreign-policy analysts and certainly all market participants had no read on the imminent quarantine + readiness escalation. The Cold War was a constant background condition; binary-existential-tail-risk was not in any market base case.",
+    marginalDataPoints: [
+      "Soviet shipping volumes to Cuba had increased materially through summer 1962, including unusual deck-cargo configurations (visible to USN reconnaissance) — operational-intelligence data not yet public",
+      "S&P 500 had been in a multi-week trading range through early October 1962, recovering from the post-summer 1962 'Kennedy slide' into year-end positioning — the absolute level of the equity tape was carrying minimal vol premium",
+      "Soviet UN-General-Assembly rhetoric through September 1962 had repeatedly denied offensive-weapon deployment, framing US Senate concerns as political theatre — a public commitment that boxed in retreat options on both sides",
+      "Treasury markets had no observable defensive-positioning signal through early October — yields stable, vol low; the binary-existential-tail was effectively unhedged in financial markets",
+    ],
+    decisionPoints: [
+      "Oct 22, 1962 evening (Kennedy's televised quarantine announcement; markets close before the speech but futures + overnight wires gap on the news): the analyst had to make an asynchronous read — the next New York open would be the first traded reaction, with the binary-existential-tail explicitly priced for the first time",
+      "Oct 23, 1962 (S&P opens down ~3%, recovers most of it intraday; T-bond yields fall ~5bps): the moment when markets visibly accepted that the situation was not as catastrophic as the rhetoric suggested — the question was whether to size for de-escalation or for further escalation",
+      "Oct 27, 1962 ('Black Saturday' — U-2 shot down over Cuba, Khrushchev's 'two letters' arrive): the high-water mark of escalation; the analyst had to decide whether the back-channel diplomacy signals would resolve before military command-chain escalation forced an outcome",
+      "Oct 28, 1962 (Khrushchev announces missile withdrawal in exchange for a private US commitment on Turkey/Italy IRBMs): the resolution that vindicated the de-escalation pricing the equity market had carried through the week",
+    ],
+    dominantBias:
+      "Background-Cold-War bias — analysts treated the US-USSR strategic competition as a constant macro condition without weighting the conditional probability of binary-existential-tail outcomes. Compounded by rhetoric-as-posture bias: Soviet UN denials and Kennedy's televised escalation were both framed as performative communication for domestic-political audiences, missing that the operational-military steps (quarantine + DEFCON 2 readiness + back-channel ExCom meetings) had concrete decision-deadlines that constrained the resolution window.",
+    whatGoodAnalystsDid:
+      "Tracked back-channel diplomacy signals (the Robert Kennedy / Anatoly Dobrynin meetings + the 'two letters' framing) as the actionable resolution-pathway gauge rather than relying on public rhetoric, sized for asymmetric outcomes (small upside from de-escalation, catastrophic loss from escalation) without taking aggressive risk-on positions, recognized that the US Treasury market was carrying NO premium for the binary-existential-tail and was therefore not a useful signal. Held risk-off through the Oct 22-28 window, faded the early-October pre-crisis equity range, lengthened duration on the Oct 28 resolution. The trade that broke even amongst the careful: short equities INTO Oct 28 — the resolution rally was sharp enough that overlap with the cover trade was operationally hard to time.",
+  },
+
+  "2018-turkey-lira": {
+    priorBeliefs:
+      "Going into August 2018 the consensus framing of Turkey was as a high-yielding EM with manageable external imbalances — current-account deficit visible but funded, FX reserves declining but adequate, banking sector under stress but solvent. The political dimension (Erdogan's eldest-son-in-law as Finance Minister + Erdogan's public 'rates cause inflation' framing) was viewed as concerning but contained. The external trigger most strategists watched was Fed-driven dollar strength, not US-Turkey diplomatic friction.",
+    marginalDataPoints: [
+      "TRY had been weakening through Q1-Q2 2018 (5.0 to 4.85 against USD by July) on rate-policy disagreements between the technocratic CBT and political leadership — the structural pressure was visible but framed as 'manageable EM episode'",
+      "Turkish bank external USD funding (TL/USD swap-driven indirect dollar exposure) had grown through 2017-2018; the visible BIS data on Turkish-bank cross-border claims was a clean tell",
+      "Pastor Andrew Brunson's continued Turkish detention through summer 2018 had become a publicly stated bilateral-relations sticking point with the Trump administration; most EM strategists treated this as diplomatic noise",
+      "Erdogan's Aug 10 'we won't surrender to the dollar' speech + appointment of his son-in-law as Finance Minister coincided with US-Turkey trade-tariff escalation announcements — three signals stacking simultaneously",
+    ],
+    decisionPoints: [
+      "Aug 10, 2018 (Trump tweets 'I have just authorized a doubling of Tariffs on Steel and Aluminum'; TRY down 16% in single session, breaking 6.50 against USD): the analyst had to read this as either 'one-day political-noise spike' or 'the start of a contagion-eligible currency-board breakdown'",
+      "Aug 13-14, 2018 (CBT credit measures + emergency liquidity facilities; TRY stabilizes near 6.90): the policy-response sufficiency read — was the central bank intervention bridging or band-aiding?",
+      "Sep 13, 2018 (CBT emergency hike from 17.75% to 24.0%, Erdogan publicly attacks the move): the political-economy collision on display; the question shifted to whether technocratic policy could survive against political resistance",
+      "Q4 2018 onward (TRY stabilizes in 5.30-5.50 range as Brunson is released, US-Turkey friction de-escalates, rate hike holds): the resolution path that vindicated 'idiosyncratic political-economy event' framing over 'EM contagion broadens' framing",
+    ],
+    dominantBias:
+      "Dollar-strength-as-only-trigger bias — EM strategists modeled Turkey vulnerability primarily through the Fed-tightening + dollar-strength channel and underweighted the bilateral-political-friction trigger pathway. Compounded by 'CBT-can-handle-this' bias: the technical capacity of the central bank was overweighted relative to the political constraint that limited its actions.",
+    whatGoodAnalystsDid:
+      "Tracked Turkish-bank cross-border USD claims as the leading-indicator vulnerability gauge, read the Erdogan + son-in-law + Brunson signal stack as a coordinated political-economy regime change, sized exposure for a TRY break beyond historical EM-volatility ranges. Shorted TRY into the Aug 10 escalation, took EM-equity exposure off, faded the Aug 14 stabilization. The trade that broke: long Turkish equities on the 'CBT will deliver' thesis — the rate hike worked but the equity recovery was much slower than the FX stabilization.",
+  },
 };

@@ -2,6 +2,82 @@
 
 All notable changes to OTI. See [README](README.md) for installation and usage.
 
+## v0.6 — Platform-shift adoption + ARISE corpus + 30-day distribution (May 9 2026)
+
+The week between v0.5 ship (May 8) and v0.6 (May 9) saw three material
+platform shifts: Anthropic's May 5 Financial Services Suite (11 first-
+party MCP connectors — Moody's, Daloopa, Kensho, FactSet, Morningstar,
+MT Newswires, Aiera, LSEG, PitchBook, Chronograph, Egnyte), the May 6
+beta of Multiagent sessions + Outcomes, and the May 7 ARISE paper
+(arXiv:2605.03242) on retrieving complete reasoning trajectories. v0.6
+adopts the shifts that matter for OTI's specific shape, ships the
+distribution playbook, and stays alone in the macro-analogue lane.
+
+### Retrieval depth
+
+- **Default embedding swapped to voyage-finance-2** — domain-specialised
+  for financial prose; ~7% NDCG@10 lift on FinanceBench. Both produce
+  1024d so the schema doesn't change; switching requires `pnpm
+  embeddings --force` (different vector space).
+- **AI Gateway auto-caching + 3-deep model fallback chain** —
+  identical request bodies cache for 24h; synthesis falls through
+  Sonnet 4.6 → Haiku 4.5 → GPT-4o on rate-limit / 5xx without code
+  changes.
+
+### Corpus depth (ARISE pattern, arXiv:2605.03242)
+
+- **`analyticalTrajectory` schema** added to HistoricalEventSchema —
+  optional, backwards-compatible. Fields: priorBeliefs,
+  marginalDataPoints, decisionPoints, dominantBias, whatGoodAnalystsDid.
+  Stored at `data/trajectories.ts`; merges at module load.
+- **5 anchor trajectories shipped**: 1971-nixon-shock, 1998-russia-ltcm,
+  2007-bnp-paribas, 2008-lehman, 2020-covid-crash. Point-in-time safe.
+- **Phase A synthesis injects the trajectory** as a cognitive scaffold
+  alongside narrativeAtTime. Brief UI renders a TrajectoryPeek panel
+  per analogue card showing dominantBias + whatGoodAnalystsDid.
+- **Strategic frame**: converts OTI from corpus-of-outcomes to
+  corpus-of-reasoning. Structurally one level deeper than any
+  current Anthropic Financial Services connector or any indie tool
+  in the lane. Target N=39 trajectories by v0.7 via community PRs.
+
+### Database
+
+- **GIN index on `regime_tags`** + **btree on `date`** in
+  `drizzle/0000_material_karen_page.sql`. Apply via `pnpm db:push`.
+
+### MCP
+
+- **5 Resources** under the `oti://` URI scheme: corpus/events.json,
+  corpus/manifest.json, schema/historical-event.json, methodology,
+  corpus/version. Connected clients pin into their context without
+  burning per-event tool-calls.
+- **4 server-defined Prompts**: compare_regimes, rank_by_fit,
+  negative_analogue, today_in_history. Templates shift inference
+  cost to the connected client's quota.
+- `initialize` declares `resources` + `prompts` capabilities.
+
+### Distribution playbook (`/docs/launch/`)
+
+30-day operations playbook for the launch sequence:
+- 00-run-of-show.md — day-by-day calendar with metrics
+- 01-show-hn.md — Tuesday May 13 08:30 ET launch
+- 02-bluesky-thread.md — 8-post thread + cross-post pattern
+- 03-dm-templates.md — Substack Recommendations + podcast pitches
+- 04-loom-script.md — 30sec + 90sec demo scripts
+- 05-postmortem-template.md — Day-27 retrospective skeleton
+- 06-essay-3-scaffold.md — Friday May 23 essay scaffold
+
+### Deferred to v0.7 with rationale
+
+- **Multiagent + Outcomes migration** — May 6 beta still settling;
+  no user-visible value at current traffic.
+- **`generateObject` → `Output.object()`** — preventive only.
+- **Memory tool, Batch API** — both depend on daily cron running
+  (FRED_API_KEY not yet on prod).
+- **FS connector fan-in** — paid Moody's/Daloopa/Fiscal AI tier.
+- **Vercel Sandbox Program-of-Thought** — over-spec for current
+  brief-prose arithmetic volume.
+
 ## v0.5 — Verification, calibration, distribution (May 2026)
 
 The retrieval is best-in-class as of v0.4. v0.5's job is to make every

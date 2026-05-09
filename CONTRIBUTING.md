@@ -30,6 +30,50 @@ Required fields:
 - `consensusError` — what consensus systematically got wrong.
 - `lessons` — bulleted, transferable insights.
 - `sources` — at least one, with verifiable URL.
+- `analyticalTrajectory` (optional, v0.6+) — see "Adding an analyticalTrajectory" below.
+
+## Adding an analyticalTrajectory (ARISE pattern, v0.6+)
+
+Every event optionally carries an `analyticalTrajectory` — what
+consensus believed, the marginal data points that should have updated
+priors, the dated decision points, the dominant bias, what good
+analysts actually did. Stored at `data/trajectories.ts` keyed by
+event id; merged into the event payload at module load.
+
+**The bar for inclusion:**
+
+- `priorBeliefs` — one-sentence summary of the dominant frame held by
+  sell-side research, the financial press, and the median Fed-watcher
+  in the days BEFORE the event resolved. Hardest field to write
+  correctly because it's tempting to retrofit hindsight; resist.
+- `marginalDataPoints` — 2-6 specific gauges that were updating priors.
+  NOT "they should have known" — say "this specific gauge was telling
+  them": e.g. "ABX BBB index collapsed from 95 to 50 over Q1-Q2 2007".
+- `decisionPoints` — 1-4 dated inflection moments. Each is a date +
+  the signal available that morning. Specific dates, not "in the
+  weeks before".
+- `dominantBias` — the single most common cognitive error. e.g.
+  "containment bias", "precedent bias", "multilateral-coordination
+  bias", "SARS-shaped historical anchoring".
+- `whatGoodAnalystsDid` — operationalisable, not vibes. e.g. "Watched
+  the cross-currency basis as the dollar-squeeze proxy, lengthened
+  duration on the front end". NOT "stayed humble" or "did the work".
+
+**Submitting**: open a PR adding an entry to `data/trajectories.ts`
+keyed by the event id (e.g. `"2008-lehman": { ... }`). The schema is
+`AnalyticalTrajectorySchema` in `src/lib/types.ts`. `pnpm
+validate-event` runs the same hindsight-leakage heuristic on
+trajectory text that it runs on `narrativeAtTime` — it'll flag obvious
+leaks like "as it turned out" or "in retrospect".
+
+5 anchor trajectories ship in v0.6 (1971-nixon-shock, 1998-russia-ltcm,
+2007-bnp-paribas, 2008-lehman, 2020-covid-crash). Target N=39 (one per
+event) by v0.7 — the trajectory pass for an event you know well takes
+~30 minutes and is among the highest-leverage corpus contributions.
+
+The 20-event bounty applies: first 20 high-quality trajectories
+merged get the same permanent contributor cite + lifetime API access
+as the corpus-card bounty.
 
 ## Tag rules
 

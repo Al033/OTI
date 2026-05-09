@@ -52,37 +52,52 @@ export default function MethodologyPage() {
 
           <Section
             label="02"
-            title="Two-stage hybrid retrieval, RRF-fused, region-filtered, reranked"
+            title="Hybrid retrieval — macro-fused, multi-query, region-filtered, reranked"
           >
-            <p>The pipeline runs in five steps:</p>
+            <p>The pipeline runs in seven steps:</p>
             <ol>
               <li>
-                <strong>Tag.</strong> A cheap LLM (Claude Haiku 4.5 by default)
-                tags the user's query into a structured profile drawn from a
-                controlled vocabulary: a single trigger type, 3–7 regime tags,
-                a region, a surprise factor 1–5, and a free-form asset focus.
-                The vocabulary lives in <Code>src/lib/regime-tags.ts</Code> and
-                is the contract between the user query and the corpus.
+                <strong>Tag.</strong> Claude Haiku 4.5 tags the query into a
+                controlled-vocabulary profile: trigger type, 3–7 regime tags,
+                region, surprise factor, asset focus.
               </li>
               <li>
-                <strong>Embed.</strong> The query is embedded with{" "}
-                <Code>voyage-3-large</Code> at 1024d via the Vercel AI Gateway,
-                in parallel with tagging. The same model populates the corpus
-                at build time via <Code>pnpm embeddings</Code>.
+                <strong>Expand.</strong> Same Haiku call generates 2-3
+                paraphrases of the user's event emphasising different facets
+                (trigger / regime / asset implication). Each becomes a
+                parallel retrieval query. Cheap (~$0.001) and worth +3-5
+                NDCG@10 on small expert corpora.
               </li>
               <li>
-                <strong>Retrieve.</strong> For every event in the region-filtered
-                corpus we compute Jaccard over the regime-tag sets and cosine
-                over the embeddings. The two rankings are fused via reciprocal
-                rank fusion (k=60, weights J=1.0, C=0.7). Region is a hard
-                filter, not a score bonus — uncalibrated bonuses inflate the
-                combined score when one signal is missing. Top-15 candidates
-                pass through.
+                <strong>Embed.</strong> The original query and each paraphrase
+                are embedded with <Code>voyage-4-large</Code> at 1024d via the
+                Vercel AI Gateway. The same model populated the corpus at
+                build time. Voyage 4 is the Jan 2026 MoE family — 40% cheaper
+                than Voyage 3 and RTEB-leading.
+              </li>
+              <li>
+                <strong>Macro-fuse.</strong> Per the History Rhymes pattern
+                (arXiv:2511.09754), the query embedding is concatenated with
+                today's standardised macro state vector (the same 8-dim z-score
+                used for /today's regime fingerprint), then L2-normalised:
+                <Code>q = norm([t; α·z])</Code> with α=0.5. Retrieval cosine
+                is computed in this fused 1032-dim space; corpus events are
+                fused with their historical regime z-vector. Falls back to
+                text-only when macro data is unavailable. Macro fusion makes
+                retrieval regime-aware: today's high-vol-low-credit setup
+                matches other high-vol-low-credit history regardless of prose
+                overlap.
+              </li>
+              <li>
+                <strong>Retrieve + RRF.</strong> For each query (original +
+                paraphrases) we compute Jaccard + fused cosine and rank.
+                Region is a hard filter. The parallel rankings are fused via
+                reciprocal-rank fusion (k=60). Top-15 candidates pass through.
               </li>
               <li>
                 <strong>Rerank.</strong> A Voyage <Code>rerank-2.5</Code>{" "}
                 cross-encoder reranks the top-15 against the user's free-text
-                query. Top-10 candidates pass to synthesis. Skipped when{" "}
+                query. Top-10 pass to synthesis. Skipped when{" "}
                 <Code>VOYAGE_API_KEY</Code> is absent — retrieval still works,
                 quality just drops.
               </li>
@@ -93,6 +108,28 @@ export default function MethodologyPage() {
                 pattern with the full hindsight payload. See section 03.
               </li>
             </ol>
+          </Section>
+
+          <Section
+            label="02b"
+            title="Empirical @1m range across N=3 — labeled honestly"
+          >
+            <p>
+              The asset-moves table includes a fourth column showing the
+              empirical min / median / max of the 1-month return across the
+              three chosen analogues. <strong>This is not a calibrated
+              forecast interval.</strong> With N=3 the calibration set is
+              too thin for any meaningful conformal coverage statement; even
+              Stable Localized CP (arXiv:2605.01452) requires ≥30 calibration
+              samples to be statistically meaningful. Surfacing min/median/max
+              with the label "empirical range over N=3 analogues" is the
+              analyst's honest choice. Three datapoints describe history,
+              not probability.
+            </p>
+            <p>
+              Conformal-calibrated coverage is on the v0.5 roadmap once
+              corpus expansion brings the candidate pool past 50.
+            </p>
           </Section>
 
           <Section

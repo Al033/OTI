@@ -33,14 +33,18 @@ And get a one-page brief that:
 ## Why this is different
 
 - **Two-phase synthesis with structural look-ahead defence.** Phase A (analogue selection) only sees `narrativeAtTime` and the t=0 market reaction — never the longer-horizon outcome. Phase B writes the cross-event consensus error and failed-trade pattern with the full hindsight payload. Look-ahead bias prevention is enforced by the prompt context, not by trust.
-- **Corpus-constrained synthesis.** The Phase A schema constrains `eventId` to a `z.enum(...candidate IDs)` built dynamically per request. The model literally cannot return events outside the retrieved candidates. No hallucinated 2003 crisis. No fictional Lehman moment.
+- **Corpus-constrained synthesis.** The Phase A schema constrains `eventId` to a `z.enum(...candidate IDs)` built dynamically per request. The model literally cannot return events outside the retrieved candidates.
 - **Numeric paraphrase guard.** Every prose field is post-processed: digit-runs that aren't whitelisted (years, indices, sample-sizes) get scrubbed. The asset-move table is rendered deterministically from the corpus; the LLM never invents stats.
 - **`narrativeAtTime` ≠ `outcomeInHindsight`.** Every event stores point-in-time consensus separately from what actually happened. Embeddings are computed only over the point-in-time text — no leak at the cosine-similarity step.
-- **Two-stage hybrid retrieval with RRF fusion + cross-encoder rerank.** Jaccard over a controlled vocabulary of regime tags (deterministic, auditable) plus cosine over voyage-3-large 1024d embeddings (semantic). Both rankings fused via reciprocal-rank fusion (k=60), with region as a hard filter, then a Voyage rerank-2.5 pass over the top-15 → top-10. Every score published per candidate.
+- **Hybrid retrieval with macro fusion + multi-query expansion + cross-encoder rerank.** Jaccard over the controlled regime-tag vocabulary, plus cosine over [voyage-4-large](https://blog.voyageai.com/2026/01/15/voyage-4/) 1024d text embeddings *concatenated with the standardised macro-state z-vector* (the [History Rhymes](https://arxiv.org/abs/2511.09754) pattern, α=0.5). User queries are expanded into 2-3 paraphrases via Haiku and retrieval is RRF-fused across all parallel rankings; region is a hard filter; a [Voyage rerank-2.5](https://blog.voyageai.com/2025/10/22/the-case-against-llms-as-rerankers/) cross-encoder pass shortens top-15 → top-10. Every score published per candidate.
+- **Empirical @1m range across N=3 analogues** — labeled honestly as min/median/max, not as calibrated coverage. Three datapoints have zero statistical power; saying so is the point.
+- **FRED + Stooq programmatic asset-move refresh.** `pnpm refresh-prices` pulls canonical numbers from St. Louis Fed + Stooq into a sidecar; UI badges every asset row "FRED" / "Stooq" / "approx" so readers can distinguish hand-curated approximations from refreshed values.
+- **OTI Daily** — a self-publishing daily research artifact. Each weekday at 5pm ET a Vercel Cron runs Mahalanobis k-NN against today's macro fingerprint, picks 3 historical regimes that rhyme + 1 *negative analogue* that looked similar but resolved oppositely (the [IntRec](https://arxiv.org/abs/2602.17639) shape), generates the brief, posts to Bluesky + emails the digest at 6am ET.
 - **Streaming UI.** The brief streams in progressively — headline first, then each analogue card, then the cross-event synthesis. No 20-second blank-screen wait.
-- **Show your work.** Every brief reveals all 10 retrieved candidates with scores, the LLM's tag rationale, the model used, the embedding source, whether rerank ran, and the wall-clock time. Intellectual honesty is enforced at the UI surface, not aspirational.
-- **Sharable permalinks.** Generated briefs are persisted with stable hash-IDs at `/b/:id` — copy a link, share it on FinTwit, the recipient sees the same analogues without re-running the LLM.
-- **Multi-provider via Vercel AI Gateway.** Switch between Claude (Sonnet/Haiku/Opus), OpenAI (GPT-4o, o1), Google Gemini, Mistral. One key, plain `provider/model` strings.
+- **Show your work.** Every brief reveals all 10 retrieved candidates with Jaccard / cosine / rerank / combined scores, the LLM's tag rationale, the embedding source, whether rerank ran, whether macro fusion was active, and the multi-query count.
+- **Sharable permalinks.** Generated briefs are persisted with stable hash-IDs at `/b/:id`; daily briefs at `/today/<date>`. Each gets a custom 1200×675 OG card.
+- **Multi-provider via Vercel AI Gateway.** Switch between Claude (Sonnet/Haiku/Opus), OpenAI, Google Gemini, Mistral. One key, plain `provider/model` strings.
+- **Observability.** [Langfuse](https://langfuse.com) Cloud free-tier auto-instruments every AI SDK call. Public `/stats` page surfaces aggregate corpus + brief volume metrics.
 
 See [`/methodology`](src/app/methodology/page.tsx) for the full design rationale.
 
@@ -49,42 +53,69 @@ See [`/methodology`](src/app/methodology/page.tsx) for the full design rationale
 ```
 User input
     │
-    ├─────► Tag (Haiku 4.5)  ─── generateObject + Zod
+    ├─────► Tag (Haiku 4.5) ──────── generateObject + Zod
     │       ► {triggerType, regimeTags[], region, surpriseFactor, ...}
     │
-    └─────► Embed query (voyage-3-large @ 1024d via AI Gateway)
+    ├─────► Embed query (voyage-4-large 1024d via AI Gateway)
+    │
+    ├─────► fetchTodayMacroZ (FRED + Yahoo, 1h cached)
+    │       ► z-vector across VIX, MOVE, HY OAS, term slope, real rate,
+    │         5y BE, dollar regime, policy stance
+    │
+    └─────► Multi-query expand (Haiku) ─ 2-3 paraphrases
                 │
                 ▼
-Two-stage hybrid retrieval (deterministic)
+Hybrid retrieval (deterministic, fused, multi-query)
     • Jaccard over regimeTags
-    • Cosine over voyage-3-large embeddings (Postgres + pgvector HNSW)
-    • Region as hard filter; RRF (k=60) for fusion (weights: J 1.0, C 0.7)
-    • top-15 candidates
+    • Cosine over [t; α·z]  (History Rhymes fusion, α=0.5)
+    • Region as hard filter
+    • Per-query RRF fusion (k=60), one ranking per paraphrase
+    • Cross-paraphrase RRF fusion → top-15 candidates
                 │
                 ▼
-Voyage rerank-2.5 pass (cross-encoder)
+Voyage rerank-2.5 cross-encoder pass
     • narrativeAtTime + tags as document text
     • top-15 → top-10
                 │
                 ▼
-Synthesis Phase A (default: Claude Sonnet 4.6, streamObject)
+Synthesis Phase A (Claude Sonnet 4.6, streamObject)
     • Sees narrativeAtTime + t=0 market reaction only
     • Schema constrains eventId to candidate IDs
-    • Emits: headline, summary, 3 analogues with whyAnalogous + whereThisMightNotFit, disagreementNote
+    • Emits headline + summary + 3 analogues + disagreementNote
                 │
                 ▼
 Synthesis Phase B (same model, streamObject)
-    • Sees full hindsight payload for the 3 chosen analogues
-    • Emits: failedTradesPattern, consensusError, caveats
+    • Full hindsight for 3 chosen analogues
+    • Emits failedTradesPattern + consensusError + caveats
                 │
                 ▼
 Numeric guard scrubs digit-runs from prose
                 │
                 ▼
+Empirical @1m bands computed across N=3 (min/median/max)
+                │
+                ▼
 React streams the brief progressively
-    • headline → analogue cards → asset-moves table → synthesis prose
+    • headline → analogue cards → asset-moves table + bands
     • ShareBar with copy-link / X-intent / print
     • Persists to Postgres for permalink at /b/:id
+    • Langfuse OTel traces every LLM call
+```
+
+The daily-regime track runs on its own schedule:
+
+```
+21:05 UTC weekdays  cron/regime-snapshot
+  ├ buildRegimeSnapshot(today)        FRED + Yahoo, 8-vec, z-score
+  ├ matchRegime()                     Mahalanobis, Ledoit-Wolf shrinkage
+  │   ├─► top-3 positive analogues
+  │   └─► 1 negative analogue (similar setup, opposite outcome)
+  ├ buildDailyBrief()                 Sonnet, schema-constrained
+  └ persist  → regime_snapshots / daily_matches / daily_briefs
+
+10:00 UTC next day  cron/publish-digest
+  ├ Bluesky post (headline + OG card via @atproto/api)
+  └ Resend email broadcast
 ```
 
 ## Stack
@@ -227,11 +258,25 @@ pnpm test    # node:test runner — corpus integrity + retrieval gold-set
 pnpm eval    # same, with verbose per-case scoring
 ```
 
-The retrieval gold set is in [`tests/eval/gold.ts`](tests/eval/gold.ts) — 20 hand-tagged queries with their expected analogues. CI gates on `recall@3 ≥ 0.80` and `precision@1 ≥ 0.50`. Adjust the floors only with a comment explaining why.
+The retrieval gold set is in [`tests/eval/gold.ts`](tests/eval/gold.ts) — 24 hand-tagged queries with their expected analogues. CI gates on `recall@3 ≥ 0.80` and `precision@1 ≥ 0.50`. Adjust the floors only with a comment explaining why.
+
+## What's new in v0.4
+
+| Feature | What it gets you |
+|---------|------------------|
+| Voyage 4 large embeddings | +10% NDCG@10 vs v0.3, $0.12/1M (40% cheaper than v3-large), MoE architecture |
+| History Rhymes macro-fusion | Retrieval becomes regime-aware: today's high-vol-low-credit setup matches other high-vol-low-credit history regardless of prose overlap |
+| Multi-query expansion | +3-5 NDCG@10 points; Haiku generates 2-3 paraphrases, RRF-fuse parallel rankings |
+| Empirical @1m range | Honest min/median/max across N=3 — labeled as empirical range, not calibrated coverage |
+| `pnpm refresh-prices` | FRED + Stooq programmatic asset-move backfill; UI badges every row "FRED" / "Stooq" / "approx" |
+| Corpus 30 → 39 events | Pre-1971 anchors (1929, 1962, 1970), EM gaps (1998 Indonesia, 2002 Argentina, 2018 Turkey), commodity (1980 Hunt), recent (2022 LME nickel, 2023 CS-UBS) |
+| Langfuse + /stats | OTel traces for every AI call; public aggregate metrics page |
+
+Deferred to v0.5: LAP CI gate (Anthropic logprobs gap), changepoint anchoring (heavy Python CPD dependency), conformal-calibrated coverage (needs corpus past 50 for meaningful calibration set).
 
 ## The dataset
 
-30 hand-curated macro events spanning 1971–2025. Each entry includes structured tags, point-in-time narrative, asset moves, failed trades with attribution, and a retrospective lesson. See [`data/events.ts`](data/events.ts) and the [`/dataset`](src/app/dataset/page.tsx) browser.
+39 hand-curated macro events spanning 1929–2025. Each entry includes structured tags, point-in-time narrative, asset moves, failed trades with provenance flags, and a retrospective lesson. See [`data/events.ts`](data/events.ts) and the [`/dataset`](src/app/dataset/page.tsx) browser.
 
 The events are sourced from public records (FRED, central-bank archives, contemporaneous reporting). Asset-move data is approximate — intended to convey direction and magnitude rather than tick-accuracy.
 
@@ -239,7 +284,7 @@ The events are sourced from public records (FRED, central-bank archives, contemp
 
 The full list lives in [`/methodology`](src/app/methodology/page.tsx). The big ones:
 
-- Coverage clusters around developed-market crises; EM and pre-1971 events are under-represented.
+- Coverage at 39 events still skews developed-market; v0.5 plan continues toward ~50 with 1986-oil-collapse, 2003-Iraq-war, 1976-sterling-IMF, 2024-TOPIX-flash, and a few additional EM entries.
 - Asset-move precision is approximate — sourced from public records, not tick-accurate.
 - The schema forces three analogues even when the corpus has fewer than three good fits. The "where this might not fit" surface and the disagreement banner mitigate; they are imperfect.
 - We have not seen LLM quote fabrication, but we cannot prove its absence.

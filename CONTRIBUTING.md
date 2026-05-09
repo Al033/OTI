@@ -24,7 +24,7 @@ Required fields:
 - `catalyst` — the proximate trigger.
 - `narrativeAtTime` — **what consensus believed _before_ the event resolved.** Critical: do not leak hindsight here.
 - `outcomeInHindsight` — what actually happened. Used only by the `consensusError` and `failedTradesPattern` synthesis fields.
-- `assetMoves` — return series at 1d / 5d / 1m / 3m / 6m horizons for S&P, UST10Y (bps), DXY (%), gold (%), oil (%), HY OAS (bps), VIX (level points). Use `null` when the underlying index didn't exist (pre-1990 VIX, pre-1996 HY OAS).
+- `assetMoves` — return series at 1d / 5d / 1m / 3m / 6m horizons for S&P, UST10Y (bps), DXY (%), gold (%), oil (%), HY OAS (bps), VIX (level points). Use `null` when the underlying index didn't exist (pre-1990 VIX, pre-1996 HY OAS, pre-2003 real rate / breakeven, pre-2006 DXY broad). Hand-curated entries should be approximate; canonical numbers are pulled from FRED + Stooq via `pnpm refresh-prices` and merged at module-load time. Each (event, asset) gets a provenance flag rendered in the UI: "FRED" / "Stooq" (programmatically refreshed) or "approx" (hand-curated).
 - `flowPatterns` — narrative description of positioning / flow dynamics.
 - `failedTrades` — array of contemporary quotes. Each entry has `quote`, `attribution`, optional `sourceUrl`, optional `archiveUrl` (Wayback snapshot), and `provenance` ∈ {`verified`, `paraphrase_with_source`, `paraphrase_no_source`}. **New quotes added in v0.2+ should be `verified` with `sourceUrl` set.** Existing v0.1 paraphrases without URLs render with a visible "paraphrase" badge in the brief; adding a `sourceUrl` and bumping the provenance is one of the highest-leverage contributions.
 - `consensusError` — what consensus systematically got wrong.

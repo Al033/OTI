@@ -32,7 +32,7 @@ And get a one-page brief that:
 
 ## Why this is different
 
-- **Corpus-of-reasoning, not just corpus-of-outcomes.** Every event optionally carries an `analyticalTrajectory` — what consensus believed, the marginal data points that should have updated priors, the dated decision points, the dominant bias that misled most analysts, what good analysts actually did. Inspired by [ARISE (arXiv:2605.05409)](https://arxiv.org/abs/2605.03242). Phase A injects the trajectory as a cognitive scaffold; the brief reasons over *how to think* about the regime, not just what happened in it.
+- **Corpus-of-reasoning, not just corpus-of-outcomes.** Every event optionally carries an `analyticalTrajectory` — what consensus believed, the marginal data points that should have updated priors, the dated decision points, the dominant bias that misled most analysts, what good analysts actually did. Inspired by [ARISE (arXiv:2605.03242)](https://arxiv.org/abs/2605.03242). Phase A injects the trajectory as a cognitive scaffold; the brief reasons over *how to think* about the regime, not just what happened in it. **10 of 39 events carry trajectories today**; community PRs push toward N=39 for v0.7 (`data/trajectories.ts`).
 - **Two-phase synthesis with structural look-ahead defence.** Phase A (analogue selection) only sees `narrativeAtTime` and the t=0 market reaction — never the longer-horizon outcome. Phase B writes the cross-event consensus error and failed-trade pattern with the full hindsight payload. Look-ahead bias prevention is enforced by the prompt context, not by trust.
 - **Corpus-constrained synthesis.** The Phase A schema constrains `eventId` to a `z.enum(...candidate IDs)` built dynamically per request. The model literally cannot return events outside the retrieved candidates.
 - **Numeric paraphrase guard.** Every prose field is post-processed: digit-runs that aren't whitelisted (years, indices, sample-sizes) get scrubbed. The asset-move table is rendered deterministically from the corpus; the LLM never invents stats.
@@ -286,6 +286,8 @@ In dev without a Vercel Cron, you can manually trigger a snapshot:
 curl -X POST localhost:3000/api/cron/regime-snapshot \
      -H "Authorization: Bearer ${CRON_SECRET}"
 ```
+
+In dev or pre-launch state — when `FRED_API_KEY` + `POSTGRES_URL` aren't set yet — `/today` falls through to a hand-curated **synthetic preview** keyed to the project clock date. Same UI, same shape, hand-picked analogues, with a clearly visible PREVIEW pill. The home page renders the same preview as a card above the fold so first-time visitors see a real-shaped brief before typing anything. Live cron path takes precedence whenever data is persisted — no masquerade risk. See [`src/lib/regime/synthetic-today.ts`](src/lib/regime/synthetic-today.ts).
 
 The flywheel: every weekday adds an entry to a public `/today/<date>` archive; each entry has its own OG card; FinTwit accounts can quote-tweet ("OTI says today rhymes with Aug 2007 — here's why I disagree"); the cron runs free; the corpus is the moat.
 

@@ -2,6 +2,36 @@
 
 All notable changes to OTI. See [README](README.md) for installation and usage.
 
+## v0.6.1 — Launch-day landing polish (May 9 2026)
+
+Pre-launch polish so the URL shared in the Show HN / Bluesky posts
+lands on a real-shaped page from minute one rather than a stub.
+
+### Home + /today
+
+- **Inline OTI Daily preview card on `/`** — first-time visitors see a
+  real (or PREVIEW-labelled) brief above the fold without typing or
+  clicking. Headline + summary + three analogue cards with sparklines.
+  Resolves the live persisted brief first; falls through to synthetic.
+- **Synthetic `/today` preview** at `src/lib/regime/synthetic-today.ts`
+  when `FRED_API_KEY` + `POSTGRES_URL` aren't set yet. Hand-curated
+  z-vector + brief + similarities, anchored on 1998-russia-ltcm with
+  2007-bnp-paribas + 2024-yen-carry-unwind as supporting positives and
+  2018-volmageddon as the negative. PREVIEW pill on the page banner +
+  the OG card so the synthetic state is never a masquerade. Live cron
+  path takes precedence whenever it has data.
+- **OG card route handles synthetic state** — `/api/og/today/[date]`
+  renders the preview's top analogue + similarity meter when the date
+  is today and nothing's persisted, with a PREVIEW pill in the top band.
+
+### Corpus depth
+
+- **+5 ARISE trajectories** — 1987-black-monday, 1992-black-wednesday,
+  2013-taper-tantrum, 2018-volmageddon, 2022-uk-gilt-crisis. Total now
+  10 of 39 events. The gilt-crisis trajectory anchors the LDI/forced-
+  seller pattern that the W4 Treasury-curve essay relies on. Target
+  N=39 for v0.7 via community PRs.
+
 ## v0.6 — Platform-shift adoption + ARISE corpus + 30-day distribution (May 9 2026)
 
 The week between v0.5 ship (May 8) and v0.6 (May 9) saw three material

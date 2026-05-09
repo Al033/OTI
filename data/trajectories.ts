@@ -105,6 +105,111 @@ export const TRAJECTORIES: Record<string, AnalyticalTrajectory> = {
       "Took the Treasury's no-public-money line at face value, watched the buyer stack collapse on Saturday morning Sep 13, sized positions for a no-rescue Sunday before knowing the outcome. The trade that worked: long Treasuries, long USD, short equities into Sunday close, covered shorts on the Friday Sep 19 short-sale-ban rally before the Oct 6-10 capitulation.",
   },
 
+  "1987-black-monday": {
+    priorBeliefs:
+      "Equity markets through summer 1987 were celebrating disinflation, falling rates from 1984's peak, and a record-breaking bull market. Most strategists framed October 1987's rate creep as a healthy cyclical adjustment; the prevailing concern was 'how high can the market go' not 'how low can it fall.'",
+    marginalDataPoints: [
+      "10y UST yield had crept from 7.0% in January 1987 to 10.2% by mid-October — the duration repricing that nobody on the equity desk had reconciled",
+      "USD had been weakening through 1987 after the Plaza Accord (Sep 1985) and the Louvre Accord (Feb 1987) — Treasury Secretary Baker's Oct 14 'will not defend dollar' comment was the proximate trigger most analysts later credited",
+      "Portfolio insurance was on ~$60bn of equity exposure by mid-October, mechanically programmed to sell into weakness — this dynamic was visible to anyone reading the systematic-trading literature but ignored by fundamental analysts",
+      "S&P futures basis had been trading at -50bps to -100bps premium-collapse for two weeks before Oct 19 — the cash-futures arb desks knew something was breaking",
+      "Volume on the Friday Oct 16 sell-off was a record at the time; the price-volume divergence was a clean tell of forced selling",
+    ],
+    decisionPoints: [
+      "Wed Oct 14, 1987 (Baker's dollar comment): the analyst had to read this as either 'one more soft dollar comment' or 'the dollar trade is unwinding into the equity-rates fragility'",
+      "Fri Oct 16, 1987 close (-5% S&P, record volume): the Friday-night decision — cover into the weekend or hold through to test Monday",
+      "Mon Oct 19, 1987 09:30 ET open (-10% gap before lunch, -22.6% close): the intraday choice between 'this is the bottom, buy the close' (right by Oct 21) and 'we're in a 1929 cascade' (wrong)",
+    ],
+    dominantBias:
+      "Mechanism-blindness — fundamental analysts didn't model portfolio insurance's stop-loss feedback loop or the cash-futures arbitrage breakdown. The 'fundamental story' was unchanged through Oct 19; the cascade was structural.",
+    whatGoodAnalystsDid:
+      "Watched the futures basis as the funding-stress proxy, sized for a forced-selling cascade rather than a fundamental selloff. Bought the Tuesday Oct 20 lows (Greenspan-pivot day) and held through to year-end. The trade that broke: shorts who held past Tuesday's open got steamrolled by the Fed's emergency-liquidity response.",
+  },
+
+  "1992-black-wednesday": {
+    priorBeliefs:
+      "Sterling's ERM band defence was viewed as politically and reputationally non-negotiable through summer 1992. The Conservative government had staked its credibility on staying in the ERM since October 1990; markets were pricing a 90%+ probability of band hold even as German Bundesbank held rates at 9.75%.",
+    marginalDataPoints: [
+      "Cable was trading 1bp above the ERM floor for most of August-September 1992 — the central bank intervention was visible in the spot tape, not concealed",
+      "UK forex reserves had drawn down £15bn in August alone — the Treasury's defensive-FX-purchase capacity was visibly running out",
+      "Italian lira had broken its band Sep 13, 1992 — the cleanest leading indicator of ERM stress on a higher-credibility currency",
+      "Soros' Quantum Fund's $10bn short position was an open secret in London FX markets by mid-September; the 'whales are positioned' tell was on the tape",
+      "UK bank rate was raised from 10% to 12% to 15% in a single Sep 16 morning — the panic-defence sequence revealed how thin the policy was beneath the rhetoric",
+    ],
+    decisionPoints: [
+      "Sep 13, 1992 (Italian lira floats): the analyst had to read this as 'isolated EU-periphery problem' or 'the binding-rail-on-EMS itself is failing'",
+      "Sep 16, 1992 morning (BoE 10%→12% intervention rate hike): the 'will-they-or-won't-they-defend' became 'they're losing.' Trade window was 6-8 hours",
+      "Sep 16, 1992 19:00 GMT (Lamont announces ERM exit): the post-exit positioning — covered shorts at the panic-low or held for the trend that followed",
+    ],
+    dominantBias:
+      "Policy-credibility bias — analysts assumed sterling defence would be sustained because the political cost of failure was framed as catastrophic. The argument 'they cannot afford to fail' obscured the operational truth that they were running out of reserves to defend with.",
+    whatGoodAnalystsDid:
+      "Tracked UK FX reserves drawdown as the binding constraint, ignored political rhetoric about commitment to the band. Sized short-sterling positions through August-September; took profits on the Sep 16 evening exit announcement; rotated into long DM-vs-USD on the post-ERM relief rally. The trade that broke: long-only sterling-bond books that didn't size for the 200bp+ inflation pass-through that the float created.",
+  },
+
+  "2013-taper-tantrum": {
+    priorBeliefs:
+      "Through Q1 2013 the consensus was 'low rates forever, EM carry intact, USD weakish.' Bernanke's January 2013 testimony reaffirmed open-ended QE. Sell-side strategists were broadly pricing 10y UST at 1.6-2.0% through 2013 with a bias toward the lower end.",
+    marginalDataPoints: [
+      "Atlanta Fed's labor-market conditions index had inflected from accelerating to decelerating in early 2013 — but the headline NFP prints stayed firm, masking the change",
+      "USD had bottomed in February 2013; the dollar leading the rates trade by ~3 months was the cleanest cross-asset signal",
+      "Implied breakeven inflation 5y5y forward had compressed below 2.5% through April; Fed-watchers calling 'tapering doesn't make sense yet' were anchored on this",
+      "EM bond fund flows had remained net-positive through May despite tightening spreads; the 'crowded trade' signal was the FoF sponsorship data, not the price",
+      "Bernanke May 22 testimony Q&A specifically used 'next few meetings' for taper timing — that phrasing was the leading indicator most analysts dismissed as boilerplate",
+    ],
+    decisionPoints: [
+      "May 22, 2013 (Bernanke testimony Q&A): the 'business as usual' read vs the 'they are going to taper' read. Window was ~30 minutes between the prepared remarks and the Q&A specifying timing",
+      "Jun 19, 2013 (FOMC + Bernanke press conference confirming taper baseline): the second confirmation; positioning desks who hadn't covered shorts on EM-FX from May 22 had a second window",
+      "Sep 18, 2013 (FOMC delays taper): the contrarian decision point — most desks faded EM bonds further; the actual move was the policy delay, not a continued tightening",
+    ],
+    dominantBias:
+      "Forward-guidance literalism — analysts treated each Fed communication in isolation rather than as one data point in an evolving policy reaction function. The 'open-ended QE' frame from Sep 2012 dominated until well after the Q&A specifying timing.",
+    whatGoodAnalystsDid:
+      "Tracked USD as the leading indicator, sized for EM-FX dispersion (long INR / short ZAR + TRY) rather than betting on direction of the carry trade in aggregate. Positioned for steeper UST curve via 5s30s flatteners reversing — the curve-trade was the cleaner expression than outright duration. The trade that broke: long EM local-currency carry that didn't hedge the FX leg.",
+  },
+
+  "2018-volmageddon": {
+    priorBeliefs:
+      "Through January 2018, the dominant narrative was 'goldilocks' — coordinated global growth, contained inflation, low and falling vol. Short-vol structures (XIV ETN, SVXY ETF, plus a long tail of short-vol-as-yield retail products) had ~$3bn AUM. 'Vol-of-vol' was framed as 'too high relative to realized'.",
+    marginalDataPoints: [
+      "VIX had been below 12 for 76 of 80 trading days through Jan 26, 2018 — the longest such streak in the index's history. Compressed-vol regimes are mean-reverting; the question is timing, not direction",
+      "1y rates had moved from 1.5% to 2.0% over December 2017 — the duration-funding-of-equity-multiples math was repricing in real time",
+      "UST 10y broke 2.85% on Jan 30, 2018 (highest since 2014); the 'rates can't break out without breaking equities' conditional was being tested",
+      "Friday Feb 2 NFP wage growth (+2.9% YoY, highest since 2009) was the tell that the wage-vs-inflation regime had inflected — the post-2009 'high employment without wage growth' anomaly was ending",
+      "VIX futures basis had inverted (front month > 2nd month) by Feb 2 close — the structural feature short-vol products depend on (positive carry from contango) had broken before the equity move started",
+    ],
+    decisionPoints: [
+      "Fri Feb 2, 2018 close (NFP wage print, S&P -2.1%, VIX 17.3): the 'normal correction' vs 'short-vol cascade brewing' read. Window was the weekend",
+      "Mon Feb 5, 2018 14:00 ET (S&P drops 4% in 90 minutes, XIV publishing intraday NAV crashing): the 'cover the short-vol or sit through it' decision; XIV's terminating 80% drop happened in the 15:30-16:00 window",
+      "Tue Feb 6, 2018 morning (XIV announces termination, SVXY rebalancing): the post-event position-cleanup — covering shorts at the panic-low vs holding through the bounce",
+    ],
+    dominantBias:
+      "Stationarity bias — short-vol products had compounded for 2+ years through low-vol regimes, and the '12 VIX is the new normal' frame made the structural fragility (negative-convexity in the rebalancing math) invisible. The reflex was 'vol always mean-reverts' which is true on average but fatal in the 1-day move that triggers product unwind.",
+    whatGoodAnalystsDid:
+      "Monitored the VIX futures basis as the leading indicator (when contango broke, short-vol products were no longer a positive-carry trade). Sized for a short-vol unwind in late January 2018; bought VXX puts as cheap optionality; covered Feb 6 morning at the panic low. The trade that broke: doubling down on short-vol after Feb 2 because 'vol always mean-reverts' — the products terminated before the mean-reversion arrived.",
+  },
+
+  "2022-uk-gilt-crisis": {
+    priorBeliefs:
+      "Through summer 2022 UK pension LDI books were viewed as low-risk, well-collateralised positions. Truss's September 23 mini-budget was framed by sell-side as 'growth-positive but funding-questionable'; consensus expected a 30-50bp gilt sell-off. The structural-leverage feedback loop was visible only to specialised LDI desks.",
+    marginalDataPoints: [
+      "30y gilt yields had moved 50bps in 2 days post-mini-budget (Sep 23-26, 2022) before any pension-fund forced-selling — the move had two legs: fiscal credibility, then the liability-driven feedback",
+      "GBP had broken below 1.05 vs USD on Sep 26 morning (intraday low ~1.0350) — the FX market was pricing a credibility crisis the gilt market hadn't fully reflected",
+      "DMO's Sep 26 announcement that auction sizes would NOT be cut despite the funding gap was the cleanest signal that the forward supply imbalance was binding",
+      "Pension industry leverage estimate: ~£1.5tn LDI book against £200bn collateral capacity; the math of 'how many bps before margin calls cascade' was readable in early reports",
+      "BoE's 'will not buy gilts' position from Sep 23-27 was the policy stance; reversal on Sep 28 was the inflection — the pre-emptive decision was whether to position for the BoE blink",
+    ],
+    decisionPoints: [
+      "Fri Sep 23, 2022 11:00 BST (Kwarteng mini-budget speech): the 'fiscal expansion is growth-positive' read vs 'this is unfunded and gilt market will gag'",
+      "Mon Sep 26, 2022 morning (GBP cross-rate sub-1.05): the cross-asset confirmation — when FX, gilts, and equity all moved together, the 'is this contained' question was answered",
+      "Wed Sep 28, 2022 11:00 BST (BoE intervention announcement): the 'authorities will fix this' confirmation; positioning desks who covered shorts AT the announcement made the trade",
+    ],
+    dominantBias:
+      "Plumbing-blindness — the fundamental analysts didn't model LDI's mechanical interaction with collateral calls. The 'fiscal credibility' frame dominated headlines; the structural-leverage feedback loop was an LDI-desk specialism that took 4 days to become visible to broader markets.",
+    whatGoodAnalystsDid:
+      "Watched the 30y gilt yield + GBP cross simultaneously rather than either in isolation. Identified Sep 26 morning that the LDI feedback loop was breaching collateral capacity — sized for forced selling. Took profits on short gilts AT the BoE intervention rather than chasing the post-intervention rally. The trade that broke: long-only gilt funds that didn't reduce duration before the auction-size confirmation Sep 26.",
+  },
+
   "2020-covid-crash": {
     priorBeliefs:
       "Through mid-February 2020, consensus framed COVID as 'a regional Asian epidemic' that would resolve by Q2 like SARS in 2003, with at most a 1-2% global growth dent. Most strategists expected the Fed to cut 25bps as insurance and the dip to be bought.",

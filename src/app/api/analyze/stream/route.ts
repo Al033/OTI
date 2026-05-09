@@ -6,6 +6,7 @@ import { retrieve, hydrate, getEmbeddingsSource } from "@/lib/retrieval";
 import { rerankCandidates } from "@/lib/rerank";
 import { fetchTodayMacroZ } from "@/lib/regime/today";
 import { FUSION_ALPHA } from "@/lib/regime/fuse";
+import { expandQuery, reciprocalRankFusion } from "@/lib/multi-query";
 import { sanitiseUserQuery } from "@/lib/prompts";
 import {
   consumeRateLimitToken,
@@ -139,26 +140,61 @@ export async function POST(req: NextRequest) {
       try {
         send({ kind: "started" });
 
-        // Tagging, query embedding, and today's macro z in parallel.
-        const [queryTags, queryEmbedding, todayMacroZ] = await Promise.all([
+        // Tagging, query embedding, today's macro z, and paraphrase
+        // expansion in parallel. The first three are cheap; expansion
+        // is one Haiku call.
+        const [queryTags, queryEmbedding, todayMacroZ, paraphrases] = await Promise.all([
           tagQuery({ query, model: tagModelFinal }),
           embedQuery(query),
           fetchTodayMacroZ(),
+          expandQuery({ query, model: tagModelFinal }),
         ]);
         send({ kind: "queryTags", queryTags });
 
-        // Retrieve + rerank. Fused (text + α·macro) cosine when both
-        // signals are available; falls back to text-only otherwise.
-        const preRerank = await retrieve(queryTags, {
+        // Primary retrieval — original query.
+        const primaryRanking = await retrieve(queryTags, {
           topK: 15,
           queryEmbedding,
           queryMacroZ: todayMacroZ,
         });
-        if (preRerank.length < 3) {
+        if (primaryRanking.length < 3) {
           send({ kind: "error", code: "too_few_candidates" });
           controller.close();
           return;
         }
+
+        // Paraphrase retrievals + RRF fusion.
+        const paraphraseRankings: RetrievalCandidate[][] = [];
+        if (paraphrases.length > 0 && queryEmbedding) {
+          const paraphraseEmbeddings = await Promise.all(
+            paraphrases.map((p) => embedQuery(p)),
+          );
+          for (let i = 0; i < paraphrases.length; i++) {
+            const pe = paraphraseEmbeddings[i];
+            if (!pe) continue;
+            const ranked = await retrieve(queryTags, {
+              topK: 10,
+              queryEmbedding: pe,
+              queryMacroZ: todayMacroZ,
+            });
+            if (ranked.length > 0) paraphraseRankings.push(ranked);
+          }
+        }
+
+        const preRerank: RetrievalCandidate[] =
+          paraphraseRankings.length === 0
+            ? primaryRanking
+            : reciprocalRankFusion(
+                [
+                  { items: primaryRanking, idOf: (c) => c.eventId },
+                  ...paraphraseRankings.map((r) => ({
+                    items: r,
+                    idOf: (c: RetrievalCandidate) => c.eventId,
+                  })),
+                ],
+                { topK: 15 },
+              );
+
         const hydrated = hydrate(preRerank);
         const reranked = await rerankCandidates({
           query,
@@ -177,7 +213,7 @@ export async function POST(req: NextRequest) {
           rerankModel: reranked.used ? "voyage/rerank-2.5" : null,
           fusedRetrieval,
           fusionAlpha: fusedRetrieval ? FUSION_ALPHA : undefined,
-          multiQueryCount: 1,
+          multiQueryCount: 1 + paraphraseRankings.length,
         };
 
         send({

@@ -704,6 +704,7 @@ function CandidatesAudit({
               <th className="px-2 py-2 font-medium">Event</th>
               <th className="px-2 py-2 font-medium text-right">Jaccard</th>
               <th className="px-2 py-2 font-medium text-right">Cosine</th>
+              <th className="px-2 py-2 font-medium text-right">Rerank</th>
               <th className="px-2 py-2 font-medium text-right">Combined</th>
             </tr>
           </thead>
@@ -738,6 +739,11 @@ function CandidatesAudit({
                   <td className="px-2 py-2 text-right mono text-[var(--color-muted-foreground)]">
                     {c.cosine === null ? "—" : c.cosine.toFixed(3)}
                   </td>
+                  <td className="px-2 py-2 text-right mono text-[var(--color-muted-foreground)]">
+                    {c.rerankScore === null || c.rerankScore === undefined
+                      ? "—"
+                      : c.rerankScore.toFixed(3)}
+                  </td>
                   <td className="px-2 py-2 text-right mono font-medium">{c.combined.toFixed(3)}</td>
                 </tr>
               );
@@ -746,7 +752,20 @@ function CandidatesAudit({
         </table>
       </div>
       <p className="text-[11px] text-[var(--color-muted-foreground)] leading-relaxed">
-        Cosine scores require precomputed embeddings (run <code className="mono text-[10px] px-1 py-0.5 rounded bg-[var(--color-surface-elevated)] border border-[var(--color-border-subtle)]">pnpm embeddings</code> with an embedding-capable provider key). Without them, retrieval falls back to deterministic Jaccard scoring only.
+        Cosine scores require precomputed embeddings (run <code className="mono text-[10px] px-1 py-0.5 rounded bg-[var(--color-surface-elevated)] border border-[var(--color-border-subtle)]">pnpm embeddings</code> with an embedding-capable provider key). Rerank scores from Voyage rerank-2.5; "—" when{" "}
+        <code className="mono text-[10px] px-1 py-0.5 rounded bg-[var(--color-surface-elevated)] border border-[var(--color-border-subtle)]">VOYAGE_API_KEY</code> isn't set or the rerank pass was skipped.
+        {result.retrievalAudit?.fusedRetrieval ? (
+          <>
+            {" "}
+            Cosine was computed in the History-Rhymes-fused space (text + α·z) with α={result.retrievalAudit.fusionAlpha?.toFixed(2)}.
+          </>
+        ) : null}
+        {result.retrievalAudit?.multiQueryCount && result.retrievalAudit.multiQueryCount > 1 ? (
+          <>
+            {" "}
+            Combined ranking is RRF-fused across {result.retrievalAudit.multiQueryCount} parallel retrievals (original query + paraphrases).
+          </>
+        ) : null}
       </p>
     </div>
   );

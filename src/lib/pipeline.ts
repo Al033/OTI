@@ -10,7 +10,12 @@ import { rerankCandidates } from "./rerank";
 import { CORPUS_VERSION } from "./events";
 import { fetchTodayMacroZ } from "./regime/today";
 import { FUSION_ALPHA } from "./regime/fuse";
-import type { PipelineResult, RetrievalAudit } from "./types";
+import { expandQuery, reciprocalRankFusion } from "./multi-query";
+import type {
+  PipelineResult,
+  RetrievalAudit,
+  RetrievalCandidate,
+} from "./types";
 
 /**
  * End-to-end orchestration: tag → embed → retrieve → rerank → synthesise.
@@ -42,25 +47,63 @@ export async function runPipeline(args: RunPipelineArgs): Promise<PipelineResult
   const topK = args.topK ?? 10;
   const pool = Math.max(args.rerankPool ?? 15, topK);
 
-  // Tagging, query-embedding, and today's macro z run in parallel.
-  // The macro fetch is cached for 1h across requests, so this is cheap
-  // after the first request of the hour.
-  const [queryTags, queryEmbedding, todayMacroZ] = await Promise.all([
+  // Tagging, query-embedding, today's macro z, and paraphrase expansion
+  // all run in parallel. The macro fetch is cached for 1h. Paraphrase
+  // expansion is one Haiku call (~50ms, cents-per-1000) and adds 2-3
+  // extra embeddings worth ~$0.0001.
+  const [queryTags, queryEmbedding, todayMacroZ, paraphrases] = await Promise.all([
     tagQuery({ query: args.query, model: tagModel }),
     embedQuery(args.query),
     fetchTodayMacroZ(),
+    expandQuery({ query: args.query, model: tagModel }),
   ]);
 
-  const preRerank = await retrieve(queryTags, {
+  // Primary retrieval — original query.
+  const primaryRanking = await retrieve(queryTags, {
     topK: pool,
     queryEmbedding,
     queryMacroZ: todayMacroZ,
   });
-  if (preRerank.length < 3) {
+  if (primaryRanking.length < 3) {
     throw new Error(
-      `Retrieval returned only ${preRerank.length} candidates after region/score filters; loosen the regimeTags or set region=GLOBAL.`,
+      `Retrieval returned only ${primaryRanking.length} candidates after region/score filters; loosen the regimeTags or set region=GLOBAL.`,
     );
   }
+
+  // Paraphrase retrievals — same tags + macro z (deterministic), but
+  // re-embed the paraphrase text. Skipped silently if expansion failed
+  // or no Gateway key. Use a smaller pool (pool/2) per paraphrase to
+  // keep total embedding cost minimal.
+  const paraphraseRankings: RetrievalCandidate[][] = [];
+  if (paraphrases.length > 0 && queryEmbedding) {
+    const paraphraseEmbeddings = await Promise.all(
+      paraphrases.map((p) => embedQuery(p)),
+    );
+    for (let i = 0; i < paraphrases.length; i++) {
+      const pe = paraphraseEmbeddings[i];
+      if (!pe) continue;
+      const ranked = await retrieve(queryTags, {
+        topK: Math.max(8, Math.floor(pool / 2)),
+        queryEmbedding: pe,
+        queryMacroZ: todayMacroZ,
+      });
+      if (ranked.length > 0) paraphraseRankings.push(ranked);
+    }
+  }
+
+  const preRerank: RetrievalCandidate[] =
+    paraphraseRankings.length === 0
+      ? primaryRanking
+      : reciprocalRankFusion(
+          [
+            { items: primaryRanking, idOf: (c) => c.eventId },
+            ...paraphraseRankings.map((r) => ({
+              items: r,
+              idOf: (c: RetrievalCandidate) => c.eventId,
+            })),
+          ],
+          { topK: pool },
+        );
 
   const hydrated = hydrate(preRerank);
   const reranked = await rerankCandidates({
@@ -91,7 +134,7 @@ export async function runPipeline(args: RunPipelineArgs): Promise<PipelineResult
     rerankModel: reranked.used ? "voyage/rerank-2.5" : null,
     fusedRetrieval,
     fusionAlpha: fusedRetrieval ? FUSION_ALPHA : undefined,
-    multiQueryCount: 1,
+    multiQueryCount: 1 + paraphraseRankings.length,
   };
 
   return {
